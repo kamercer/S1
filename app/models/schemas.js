@@ -1,0 +1,57 @@
+var mongoose = require('mongoose');
+
+var organizationSchema = mongoose.Schema({
+    name                          : String,
+    summary                       : String,
+    events                        : [{type : mongoose.Schema.Types.ObjectId, ref: 'Event'}],
+    admins                        : [{type : mongoose.Schema.Types.ObjectId, ref: 'User'}],
+    members                       : [{type : mongoose.Schema.Types.ObjectId, ref: 'User'}],
+    memberOrganizationAssociation : [{type : mongoose.Schema.Types.ObjectId, ref : 'MemberOrganizationAssociation'}]
+});
+
+var eventSchema = mongoose.Schema({
+    name             : String,
+    startDate        : Date,
+    endDate          : Date,
+    organization     : {type : mongoose.Schema.Types.ObjectId, ref : 'Organization'},
+    createdBy        : {type : mongoose.Schema.Types.ObjectId, ref : 'User'},
+    public           : Boolean,
+    eventIdentifier  : String,
+    eventUserRecords : [{type : mongoose.Schema.Types.ObjectId, ref : 'eventUserRecord'}]//not sure if I need to use this
+});
+
+var eventUserRecordSchema = mongoose.Schema({
+    event   : {type : mongoose.Schema.Types.ObjectId, ref : 'Event'},
+    user    : {type : mongoose.Schema.Types.ObjectId, ref : 'User'},
+    signIn  : Date,
+    signOut : Date,
+});
+
+var userSchema = mongoose.Schema({
+   username                      : String,
+   password                      : String,
+   email                         : String,
+   memberOf                      : [{type : mongoose.Schema.Types.ObjectId, ref : 'Organization'}],
+   adminOf                       : [{type : mongoose.Schema.Types.ObjectId, ref : 'Organization'}],
+   eventsAttended                : [{type : mongoose.Schema.Types.ObjectId, ref : 'Event'}], //not sure if I need to use this
+   memberOrganizationAssociation : [{type : mongoose.Schema.Types.ObjectId, ref : 'MemberOrganizationAssociation'}],
+   eventUserRecords              : [{type : mongoose.Schema.Types.ObjectId, ref : 'eventUserRecord'}]
+});
+
+//change name
+var MemberInOrganizationSchema = mongoose.Schema({
+    user         : {type : mongoose.Schema.Types.ObjectId, ref : 'User'},
+    organization : {type : mongoose.Schema.Types.ObjectId, ref : 'Organization'},
+    hours        : {type : Number, min : 0}
+});
+
+//salt later
+userSchema.methods.authenticate = function(password){
+    return password == this.password;
+};
+
+mongoose.model('eventUserRecord', eventUserRecordSchema);
+mongoose.model('User', userSchema);
+mongoose.model('Organization', organizationSchema);
+mongoose.model('Event', eventSchema);
+mongoose.model('MemberOrganizationAssociation', MemberInOrganizationSchema);

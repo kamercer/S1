@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>title</title>
+    
+    <script src="//code.jquery.com/jquery-2.2.1.min.js"></script>
+    <script type='text/javascript' src="../JS/log.js"></script>
+  </head>
+  <body>
+    <p>Needs additional work - more clarification</p>
+    <div id="organizationDiv">
+        <select id="organizationSelect">
+            <option value="-1">Select an Organization</option>
+            <% for(var i = 0; i < orgs.length; i++){ %>
+                <option><%= orgs[i].name %></option>
+            <% } %>
+        </select>   
+    </div>
+    
+    <div id="eventDiv">
+        
+    </div>
+    
+    <script type='text/javascript'>
+        var log = new log();
+        log.init();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>title</title>
+    
+    <script src="//code.jquery.com/jquery-2.2.1.min.js"></script>
+    <script type='text/javascript' src="/JS/organization.js"></script>
+  </head>
+  <body>
+    <h1><%= name %> </h1>
+    
+    <p> <%= summary %></p>
+    
+    <p>User: <%= user%> </p>
+    
+    <p> <%= status %>
+    
+    <% if(statusNumber == 1) {%>
+        <button id="join">join</button>
+    <% } %>
+    
+    <% if(statusNumber == 3){%>
+        <div>
+            <p>Create Events</p>
+            
+            <label for="name">Event Name:</label>
+            <input id="name" required><br>
+            
+            <label for="sDate">Start Date :</label>
+            <input id="sDate" type="date" required/><br>
+            
+            <label for="eDate">End Date:</label>
+            <input id="eDate" type="date" required/><br>
+          
+            <label for="public">Public:</label>
+            <input id="public" type="checkbox" required/><br>
+            
+          <button id="submitEvent">submit event</button>
+        </div>
+        
+        <div>
+            <p>Members</p>
+            <table>
+            <tr>
+                <th>Member name</th>
+                <th>Hours</th>
+            </tr>
+            
+            <% for(var i = 0; i < members.length; i++){ %>
+                <tr>
+                    <td><%= members[i].user.username %></td>
+                    <td><%= members[i].hours %></td>
+                </tr>
+            <% } %>
+            </table>
+        </div>
+    <% } %>
+    
+    
+    <% if(statusNumber > 1){%>
+        <div>
+            <p>Events</p>
+            <ul>
+            <% for(var i = 0; i < events.length; i++){ %>
+                <li id=<%= events[i]._id %>><%= events[i].name %><button class="Events">Going</button>
+                <% if(statusNumber == 3){%>
+                    <button class="editEvent">Edit</button>
+                <% } %>
+                </li>
+            <% } %>
+            </ul>
+        </div>
+     <% } %>
+  </body>
+</html>

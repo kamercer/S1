@@ -1,0 +1,24 @@
+{
+  "name": "service-one",
+  "version": "0.1.0",
+  "main": "server.js",
+  "dependencies": {
+    "express": "latest",
+    "body-parser": "latest",
+    "mongoose": "latest",
+    "ejs": "latest",
+    "passport": "latest",
+    "passport-local": "latest",
+    "express-session": "latest",
+    "cookie-parser": "latest",
+    "connect-mongodb-session": "latest"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "devDependencies": {},
+  "keywords": [],
+  "author": "Kyle Mercer",
+  "license": "ISC",
+  "description": ""
+}

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+  </head>
+  <body>
+  
+  <h1>Home Page</h1>
+  <p>Organizations</p>
+  <table>
+    <% for(var i = 0; i < organizations.length; i++){ %>
+        <tr>
+            <td>
+                <%= organizations[i].name %>
+            </td>
+            <td>
+                <a href="/organization/<%= organizations[i].name %>">link</a>
+            </td>
+        </tr>
+    <% } %>
+  </table>
+  
+  <p>Calendar - Upcoming Events</p>
+  <% for(var i = 0; i < events.length; i++){ %>
+    <li><%= events[i].name %></li>
+  <% } %>
+  
+  </body>
+</html>

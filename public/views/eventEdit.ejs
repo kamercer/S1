@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>title</title>
+    
+     <script src="//code.jquery.com/jquery-2.2.1.min.js"></script>
+     <script type='text/javascript' src="/JS/qrcode.min.js"></script>
+  </head>
+  <body>
+  
+    <table>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Signin Date</th>
+            <th>Signout Date</th>
+        </tr>
+        
+        <% for(var i = 0; i < docs.length; i++){ %>
+            <tr>
+                <td><%= (i + 1) %></td>
+                <td><%= docs[i].user.username %></td>
+                <td><%= ((docs[i].signIn == null) ? '----' : docs[i].signIn) %></td>
+                <td><%= ((docs[i].signOut == null) ? '----' : docs[i].signOut) %></td>
+            </tr>
+        <% } %>
+    </table>
+  
+  
+    <img id="qrcode" data-code="<%= qrcode%>">
+    
+    <script type="text/javascript">
+        new QRCode(document.getElementById("qrcode"), $("#qrcode").attr("data-code"));
+    </script>
+  </body>
+</html>
