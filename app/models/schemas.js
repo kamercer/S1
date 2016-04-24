@@ -17,12 +17,14 @@ var eventSchema = mongoose.Schema({
     createdBy        : {type : mongoose.Schema.Types.ObjectId, ref : 'User'},
     public           : Boolean,
     eventIdentifier  : String,
-    eventUserRecords : [{type : mongoose.Schema.Types.ObjectId, ref : 'eventUserRecord'}]//not sure if I need to use this
+    eventUserRecords : [{type : mongoose.Schema.Types.ObjectId, ref : 'eventUserRecord'}],//not sure if I need to use this
+    eventPhoto       : {type : mongoose.Schema.Types.ObjectId, ref : 'fs.files'}
 });
 
 var eventUserRecordSchema = mongoose.Schema({
     event   : {type : mongoose.Schema.Types.ObjectId, ref : 'Event'},
     user    : {type : mongoose.Schema.Types.ObjectId, ref : 'User'},
+    unregisteredUser : {type : mongoose.Schema.Types.ObjectId, ref : 'UnregisteredUser'},
     signIn  : Date,
     signOut : Date,
 });
@@ -35,7 +37,14 @@ var userSchema = mongoose.Schema({
    adminOf                       : [{type : mongoose.Schema.Types.ObjectId, ref : 'Organization'}],
    eventsAttended                : [{type : mongoose.Schema.Types.ObjectId, ref : 'Event'}], //not sure if I need to use this
    memberOrganizationAssociation : [{type : mongoose.Schema.Types.ObjectId, ref : 'MemberOrganizationAssociation'}],
-   eventUserRecords              : [{type : mongoose.Schema.Types.ObjectId, ref : 'eventUserRecord'}]
+   eventUserRecords              : [{type : mongoose.Schema.Types.ObjectId, ref : 'eventUserRecord'}],
+   profilePic                    : {type : mongoose.Schema.Types.ObjectId, ref : 'fs.files'}
+});
+
+var unregisteredUserSchema = mongoose.Schema({
+    name : String,
+    email : String,
+    event : {type : mongoose.Schema.Types.ObjectId, ref : 'eventUserRecord'}
 });
 
 //change name
@@ -52,6 +61,7 @@ userSchema.methods.authenticate = function(password){
 
 mongoose.model('eventUserRecord', eventUserRecordSchema);
 mongoose.model('User', userSchema);
+mongoose.model('UnregisteredUser', unregisteredUserSchema);
 mongoose.model('Organization', organizationSchema);
 mongoose.model('Event', eventSchema);
 mongoose.model('MemberOrganizationAssociation', MemberInOrganizationSchema);

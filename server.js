@@ -24,7 +24,7 @@ db.on('error', function(){
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/public/views');
 
-var port = 80;
+var port = 3000;
 
 require('./app/models/schemas.js')
 

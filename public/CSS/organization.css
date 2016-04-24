@@ -1,0 +1,56 @@
+body{
+    background: #FBFCFF;
+    
+    margin: 0;
+    padding: 0;
+}
+
+#banner{ 
+    height: 3.5em;
+    margin: 0;
+    background: #1C6EBC
+}
+
+#banner a{
+    text-decoration: none;
+    color: white;
+}
+
+#banner ul{
+    display: inline-block;
+    float: right;
+    
+    margin: 0;
+    padding: 0;
+    
+    margin-right: 8em;
+}
+
+#banner li{
+    display : inline;
+    
+    padding-left: .2em;
+    
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1em;
+}
+
+#banner p{
+    display: inline-block;
+    
+    font-family: Arial, Helvvetica, sans-serif;
+    font-size: 2em;
+    
+    margin: 0;
+    padding: 0;
+    margin-top: .3em;
+}
+
+#banner ul p{
+    margin-left: .4em;
+}
+
+#banner #logo{
+    margin-left: 4em;
+}

@@ -1,0 +1,30 @@
+body{
+    background: #FBFCFF;
+    
+    margin: 0;
+    padding: 0;
+}
+
+#banner{
+    height: 3.5em;
+    margin: 0;
+    background: #1C6EBC
+}
+
+#banner a{
+    text-decoration: none;
+    color: white;
+}
+
+#banner p{
+    display: inline-block;
+    float: left;
+    
+    font-family: Arial, Helvvetica, sans-serif;
+    font-size: 2em;
+    
+    margin: 0;
+    padding: 0;
+    margin-top: .3em;
+    margin-left: .4em;
+}

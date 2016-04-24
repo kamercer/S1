@@ -6,13 +6,38 @@
     
     <script src="//code.jquery.com/jquery-2.2.1.min.js"></script>
     <script type='text/javascript' src="/JS/organization.js"></script>
+    
+    <script type='text/javascript' src="/JS/support/jquery-ui-1.11.4.custom/jquery-ui.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/JS/support/jquery-ui-1.11.4.custom/jquery-ui.min.css">
+    <script src="https://cdn.jsdelivr.net/jquery.ui.timepicker.addon/1.4.5/jquery-ui-timepicker-addon.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/jquery.ui.timepicker.addon/1.4.5/jquery-ui-timepicker-addon.min.css">
+    <link rel="stylesheet" type="text/css" href="/CSS/organization.css">
   </head>
   <body>
+  
+      <div id="banner">
+        <p id="logo"><a href='/'>ServiceOne</a/></p>
+        
+        <% if(user != 'null'){ %>
+            <ul>
+                <li>
+                    <p><%= user %></p>
+                </li>
+                
+                <li>
+                    <p>|</p> 
+                </li>
+                    
+                <li>
+                    <input type="submit" value="Logout"/>
+                </li>
+            </ul>
+        <% } %>
+    </div>
+    
     <h1><%= name %> </h1>
     
     <p> <%= summary %></p>
-    
-    <p>User: <%= user%> </p>
     
     <p> <%= status %>
     
@@ -22,16 +47,19 @@
     
     <% if(statusNumber == 3){%>
         <div>
-            <p>Create Events</p>
+            <p>Create Events - will be moved to a dialog</p>
             
             <label for="name">Event Name:</label>
             <input id="name" required><br>
             
             <label for="sDate">Start Date :</label>
-            <input id="sDate" type="date" required/><br>
+            <input id="sDate" type="datetime-local" required/><br>
             
             <label for="eDate">End Date:</label>
-            <input id="eDate" type="date" required/><br>
+            <input id="eDate" type="datetime-local" required/><br>
+            
+            <label for="eventPhoto">Upload Event Photo: </label>
+            <input id="eventPhoto" type="file" accept="image/*"><br>
           
             <label for="public">Public:</label>
             <input id="public" type="checkbox" required/><br>

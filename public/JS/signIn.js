@@ -1,5 +1,7 @@
 $(function(){
     
+    init();
+    
     function init(){
         $("#file").change(function(){
             createImg();

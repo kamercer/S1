@@ -1,10 +1,22 @@
+"use strict"
 var passport = require('passport');
 var model = require('./models/model.js');
+var multer = require('multer');
+var upload = multer({dest: './uploads/'});
 
 module.exports = function(app){
     
     app.get('/', function(req, res){
+        if(req.user){
+            res.redirect('/home');
+            return;
+        }
         res.sendFile('/views/index.html', {root: __dirname + '/../public'});
+    });
+    
+    app.post('/', function(req, res){
+        console.log('hit post /');
+        res.end();
     });
     
     //used to login
@@ -15,6 +27,16 @@ module.exports = function(app){
     //homepage of users
     app.get('/home', loginCheck, function(req, res){
        model.createHomePage(req, res);
+    });
+    
+    app.post('/home/changeProfilePic', upload.any(), loginCheck, function(req, res){
+        model.changeProfilePic(req, res);
+    });
+    
+    app.get('/home/userImage', loginCheck, function(req, res){
+        console.log(req.user);
+        
+        model.getProfilePic(req, res);
     });
     
     app.post('/createAccount', function(req, res){
@@ -36,8 +58,8 @@ module.exports = function(app){
     
     //check to make sure that user has permission to create event
     //add date and time picker
-    app.post('/organization/:id/createEvent', loginCheck, function(req, res){
-        //console.log('create event: ' + req.body.name);
+    app.post('/organization/:id/createEvent', upload.any(), loginCheck, function(req, res){
+       //console.log('create event: ' + req.body.name);
        model.createEvent(req, res); 
     });
     
@@ -47,6 +69,14 @@ module.exports = function(app){
     
     app.get('/organization/:id/editEvent/:eventId', loginCheck, function(req, res){
         model.createEventEditPage(req, res);
+    });
+    
+    app.post('/organization/:id/editEvent/:eventId/submitUnregisteredUser', loginCheck, function(req, res){
+        model.submitUnregisteredUser(req, res);
+    });
+    
+    app.post('/organization/:id/editEvent/:eventId/updateUser', loginCheck, function(req,res){
+        model.updateUser(req, res);
     });
     
     //used for log page  not used

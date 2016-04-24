@@ -6,12 +6,14 @@
     "express": "latest",
     "body-parser": "latest",
     "mongoose": "latest",
+    "mongodb" : "latest",
     "ejs": "latest",
     "passport": "latest",
     "passport-local": "latest",
     "express-session": "latest",
     "cookie-parser": "latest",
-    "connect-mongodb-session": "latest"
+    "connect-mongodb-session": "latest",
+    "multer" : "latest"
   },
   "scripts": {
     "start": "node server.js"

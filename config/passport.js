@@ -10,11 +10,11 @@ module.exports = function(){
 
     //I can add -password to not fetch the password field, do later
     passport.deserializeUser(function(id, done){
-	User.findOne({_id: id}, function(err, user){
-	    //console.log('de err: ' + err);
-	    //console.log('de user: ' + user);
-	    done(err, user);
-	});
+        User.findOne({_id: id}, function(err, user){
+            //console.log('de err: ' + err);
+            //console.log('de user: ' + user);
+            done(err, user);
+        });
     });
 
     require('./strategies/local.js')();

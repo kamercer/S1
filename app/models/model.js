@@ -4,6 +4,11 @@ var Organization = require('mongoose').model('Organization');
 var Event = require('mongoose').model('Event');
 var MemberOrganizationAssociation = require('mongoose').model('MemberOrganizationAssociation');
 var eventUserRecord = require('mongoose').model('eventUserRecord');
+var UnregisteredUser = require('mongoose').model('UnregisteredUser');
+
+var mongoose = require('mongoose');
+var mongodb = require('mongodb');
+var fs = require('fs');
 
 module.exports = {
     createAccount : function(req, res){
@@ -16,9 +21,17 @@ module.exports = {
         //encrypt password later
         var newAccount = new User({username: req.body.username, password: req.body.password, email: req.body.email});
         
-        newAccount.save(function(err, newAccount, numAffected){
-             console.log("create new Account error : " + err);
-             res.redirect('/');
+        User.find({username : req.body.username}, {email : req.body.email}, function(err, docs){
+            if(docs.length > 0){
+                console.log('new accout not made');
+                res.redirect('/');
+                return;
+            }else{
+                newAccount.save(function(err, newAccount, numAffected){
+                    console.log("create new Account error : " + err);
+                    res.redirect('/');
+                });
+            }
         });
     },
     
@@ -113,36 +126,42 @@ module.exports = {
     },
     
     createEvent : function(req, res){
-        Organization.findOne({name : req.params.id}, function(err, organization){
+        uploadImage(req, res).then(function(eventPhotoId){
             
-            if(req.body.name == null || !req.body.name || req.body.sDate == null || !req.body.sDate || req.body.eDate == null || !req.body.eDate || organization == null || req.body.public == null || !req.body.public){
-                console.log('CreateEvent error: something is undefined or null');
-                res.end();
-                return;
-            }
-            
-            var newEvent = new Event({name : req.body.name,
-             startDate : new Date(req.body.sDate),
-             endDate : new Date(req.body.eDate),
-             organization : organization._id,
-             createdBy : req.user._id,
-             public : req.body.public,
-             eventIdentifier : createEventId()});
-            
-            newEvent.save(function(err, savedEvent, numAffected){
-                console.log('new event err : ' + err);
-                console.log('new event savedEvent : ' + savedEvent);
-                if(savedEvent != null){
-                    organization.update({$addToSet : {events : savedEvent._id}}, function(err, doc){
-                    console.log('update add event organization err: ' + err);
-                    console.log('update add event organization doc: ' + doc); 
+            Organization.findOne({name : req.params.id}, function(err, organization){
+                
+                if(req.body.name == null || !req.body.name || req.body.sDate == null || !req.body.sDate || req.body.eDate == null || !req.body.eDate || organization == null || req.body.public == null || !req.body.public){
+                    console.log('CreateEvent error: something is undefined or null');
                     res.end();
-                    });
-                }else{
-                    res.end();
+                    return;
                 }
+                
+                console.log('this hit');
+                
+                var newEvent = new Event({name : req.body.name,
+                startDate : new Date(req.body.sDate),
+                endDate : new Date(req.body.eDate),
+                organization : organization._id,
+                createdBy : req.user._id,
+                public : req.body.public,
+                eventIdentifier : createEventId(),
+                eventPhoto : eventPhotoId});
+                
+                newEvent.save(function(err, savedEvent, numAffected){
+                    console.log('new event err : ' + err);
+                    console.log('new event savedEvent : ' + savedEvent);
+                    if(savedEvent != null){
+                        organization.update({$addToSet : {events : savedEvent._id}}, function(err, doc){
+                        console.log('update add event organization err: ' + err);
+                        console.log('update add event organization doc: ' + doc); 
+                        res.end();
+                        });
+                    }else{
+                        res.end();
+                    }
+                });
             });
-        });
+        })
     },
     
     //this query may be incorrect
@@ -172,6 +191,9 @@ module.exports = {
                         return false;
                     }
                 });
+            }else{
+                res.end();
+                return;
             }
             
             console.log(temp);
@@ -218,27 +240,24 @@ module.exports = {
             //console.log(docs);
             
             //There is probably a better way to do this
-            var temp = [];
+            var events = [];
             for(var i = 0; i < docs.length; i++){
                 docs[i].events.forEach(function(value, index){
-                    
                     if(value.startDate >= new Date()){      
-                        temp.push(value);     
+                        events.push(value);     
                     }
                 });
             }
             
-            res.render('home', {organizations : docs, events: temp});
+            res.render('home', {organizations : docs, events: events, user: req.user.username});
         });
     },
     
     createEventEditPage: function(req, res){
         
-        console.log(req.params.eventId);
-        
-        eventUserRecord.find({event : req.params.eventId}).populate('event user').exec(function(err, docs){
+        eventUserRecord.find({event : req.params.eventId}).populate('event user unregisteredUser').exec(function(err, docs){
             console.log(err);
-            console.log(docs);
+            console.log('createEventEditPage: ' + docs);
             
             if(err == null && docs.length > 0){
                 res.render('eventEdit', {qrcode : docs[0].event.eventIdentifier, docs : docs}); 
@@ -290,8 +309,91 @@ module.exports = {
             });
         });
         */   
+    },
+    
+    //check event id
+    submitUnregisteredUser : function(req, res){
+        
+        var sDate = new Date(req.body.inputs[1]);
+        var eDate = new Date(req.body.inputs[2]);
+        
+        var newEventUserRecord = new eventUserRecord({event : req.params.eventId, signIn : sDate, signOut : eDate});
+        newEventUserRecord.save(function(err, record, numAffected){
+            console.log(err);
+            
+            var newUnregisteredUser = new UnregisteredUser({name : req.body.inputs[0], email : req.body.inputs[3], event : record._id});
+            
+            newUnregisteredUser.save(function(err, record2, numAffected){
+                console.log(err);
+                console.log(record2);
+                
+                eventUserRecord.findByIdAndUpdate(record._id, {unregisteredUser : record2._id}, {new : true}, function(err, doc){
+                    console.log(err);
+                    
+                    res.send([record2.name, doc.signIn, doc.signOut, record2.email, doc._id]);
+                });
+            });
+        });
+    },
+    
+    updateUser : function(req, res){       
+        var sDate = new Date(req.body.inputs[0]);
+        var eDate = new Date(req.body.inputs[1]);
+        eventUserRecord.findByIdAndUpdate(req.body.id, {signIn : sDate, signOut : eDate}, {new : true}, function(err, doc){
+            console.log(err);
+            console.log(doc);
+            
+            res.send([doc.signIn, doc.signOut]);
+        });
+    },
+    
+    changeProfilePic : function(req, res){
+        uploadImage(req, res).then(function(imageId){
+            if(imageId == null){
+                res.end();
+                console.log('profile pic upload failed');
+                return;
+            }
+            
+            User.findByIdAndUpdate(req.user._id, {profilePic : imageId}, {new : true}, function(err, doc){
+                console.log(err);
+                console.log(doc);
+                
+                res.end();
+            });
+        });
+    },
+    
+    getProfilePic : function(req, res){
+        retrieveProfilePic(req, res);
     }
 };
+
+function uploadImage(req, res){
+    return new Promise(function(resolve, reject){
+        if(req.files.length > 0){            
+            var db = mongoose.connection;
+            
+            var readStream = fs.createReadStream(req.files[0].path);
+            
+            var bucket = new mongodb.GridFSBucket(db.db);
+            var uploadStream = bucket.openUploadStream(req.files[0].originalName);
+            
+            uploadStream.once('finish', function(){
+                console.log('upload image success: ' + uploadStream.id);
+                resolve(uploadStream.id);
+            });
+            
+            uploadStream.once('error', function(err){
+                console.log('upload image error: ' + err);
+            });
+            
+            readStream.pipe(uploadStream);
+        }else{
+            resolve(null);
+        }
+    });
+}
 
 function createEventId(){
     var milliseconds = (new Date().getTime()  % 1000000);
@@ -308,4 +410,30 @@ function createEventId(){
 
 function filterPublicEvents(value){
     return value.public;
+}
+
+function retrieveProfilePic(req, res){
+    var db = mongoose.connection;
+    
+    var bucket = new mongodb.GridFSBucket(db.db);
+    
+    console.log(req);
+    
+    if(req.user.profilePic == null || req.user.profilePic == undefined){
+        res.end();
+        console.log('no profile pic');
+        return;
+    }
+    
+    var downloadStream = bucket.openDownloadStream(req.user.profilePic);
+    
+    downloadStream.once('end', function(){
+        console.log('end');
+    });
+    
+    downloadStream.once('error', function(error){
+        console.log(error);
+    });
+    
+    downloadStream.pipe(res);
 }

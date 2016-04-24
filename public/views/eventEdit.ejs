@@ -6,6 +6,12 @@
     
      <script src="//code.jquery.com/jquery-2.2.1.min.js"></script>
      <script type='text/javascript' src="/JS/qrcode.min.js"></script>
+     <script type="text/javascript" src="/JS/eventEdit.js">/script>
+     
+     <script type='text/javascript' src="/JS/support/jquery-ui-1.11.4.custom/jquery-ui.min.js"></script>
+     <link rel="stylesheet" type="text/css" href="/JS/support/jquery-ui-1.11.4.custom/jquery-ui.min.css">
+     <script src="https://cdn.jsdelivr.net/jquery.ui.timepicker.addon/1.4.5/jquery-ui-timepicker-addon.min.js"></script>
+     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/jquery.ui.timepicker.addon/1.4.5/jquery-ui-timepicker-addon.min.css">
   </head>
   <body>
   
@@ -18,20 +24,24 @@
         </tr>
         
         <% for(var i = 0; i < docs.length; i++){ %>
-            <tr>
+            <tr id='<%= docs[i]._id %>'>
                 <td><%= (i + 1) %></td>
-                <td><%= docs[i].user.username %></td>
+                <% if(docs[i].user != null){ %>
+                    <td><%= docs[i].user.username %></td>
+                <% }else if(docs[i].unregisteredUser != null){ %>
+                    <td><%= docs[i].unregisteredUser.name %></td>
+                <% }else{ %>
+                    <td>----</td>
+                <% } %>
+                
                 <td><%= ((docs[i].signIn == null) ? '----' : docs[i].signIn) %></td>
                 <td><%= ((docs[i].signOut == null) ? '----' : docs[i].signOut) %></td>
+                <td><button class="editUser">Edit User</button></td>
             </tr>
         <% } %>
     </table>
-  
-  
+    <button id="addUserRow">+</button>
+
     <img id="qrcode" data-code="<%= qrcode%>">
-    
-    <script type="text/javascript">
-        new QRCode(document.getElementById("qrcode"), $("#qrcode").attr("data-code"));
-    </script>
   </body>
 </html>

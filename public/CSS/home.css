@@ -1,0 +1,147 @@
+body{
+    background: #FBFCFF;
+    
+    margin: 0;
+    padding: 0;
+}
+
+#banner{ 
+    height: 3.5em;
+    margin: 0;
+    background: #1C6EBC
+}
+
+#banner a{
+    text-decoration: none;
+    color: white;
+}
+
+#banner ul{
+    display: inline-block;
+    float: right;
+    
+    margin: 0;
+    padding: 0;
+    
+    margin-right: 8em;
+}
+
+#banner li{
+    display : inline;
+    
+    padding-left: .2em;
+    
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1em;
+}
+
+#banner p{
+    display: inline-block;
+    
+    font-family: Arial, Helvvetica, sans-serif;
+    font-size: 2em;
+    
+    margin: 0;
+    padding: 0;
+    margin-top: .3em;
+}
+
+#banner ul p{
+    margin-left: .4em;
+}
+
+#banner #logo{
+    margin-left: 4em;
+}
+
+#main{
+    width: 45em;
+    height: 50em;
+    
+    margin: 0 auto;
+    margin-top: 2em;
+    
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.2em;
+    
+    text-align: center;
+}
+
+#main #temp{
+    display: inline-block;
+    height: 40em;
+    width: 19.5em;
+    
+    float: left;
+    
+    border: 1px solid black;
+}
+
+#main #temp #userProfileImage{
+    float: left;
+    
+    width: 15em;
+    height: 15em;
+}
+
+#organizations{
+    display: inline-block;
+    height: 40em;
+    width: 10em;
+    
+    list-style: none;
+    
+    border: 1px solid black;
+}
+
+#events{
+    display: inline-block;
+    float: right;
+    width: 15em;
+}
+
+#events table{
+    border-collapse: collapse;
+}
+
+#events p{
+    margin: 0;
+    padding: 0;
+    
+    padding-bottom: .5em;
+    
+    border-bottom: 1px solid gray;
+}
+
+#events li{
+    list-style: none;
+    
+    border-bottom: 1px solid gray;
+    padding-top: .5em;
+    padding-bottom: .5em;
+}
+
+#events #upcomingEvents{
+    vertical-align: top;
+    width: 14em;
+    
+    padding-top: .5em;
+    padding-left: 1em;
+    padding-right: 1em;
+    height: 19.5em;
+    
+    border: 1px solid black;
+}
+
+#events #nearEvents{
+    vertical-align: top;
+    width: 14em;
+    
+    padding-top: .5em;
+    padding-left: 1em;
+    padding-right: 1em;
+    height: 19.5em;
+   
+    border: 1px solid black;
+}

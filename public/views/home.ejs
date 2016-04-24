@@ -3,28 +3,82 @@
   <head>
     <meta charset="UTF-8">
     <title>Home</title>
+    
+    <link rel="stylesheet" type="text/css" href="/CSS/home.css">
+    <script src="//code.jquery.com/jquery-2.2.3.min.js"></script>
+    <script type='text/javascript' src="/JS/home.js"></script
   </head>
   <body>
   
-  <h1>Home Page</h1>
-  <p>Organizations</p>
-  <table>
-    <% for(var i = 0; i < organizations.length; i++){ %>
-        <tr>
-            <td>
-                <%= organizations[i].name %>
-            </td>
-            <td>
-                <a href="/organization/<%= organizations[i].name %>">link</a>
-            </td>
-        </tr>
-    <% } %>
-  </table>
+    <div id="banner">
+        <p id="logo"><a href='/'>ServiceOne</a/></p>
+        
+        <ul>
+            <li>
+                <p><%= user %></p>
+            </li>
+            
+            <li>
+                <p>|</p> 
+            </li>
+                
+            <li>
+                <input type="submit" value="Logout"/>
+            </li>
+        </ul>
+    </div>
   
-  <p>Calendar - Upcoming Events</p>
-  <% for(var i = 0; i < events.length; i++){ %>
-    <li><%= events[i].name %></li>
-  <% } %>
+  <div id="main">
+    
+    <div id="temp">
+        <table>
+            <tr>
+                <td>
+                    <img id="userProfileImage" src="/home/userImage">
+                    <input id="profilePic" type="file" accept="image/*"><br>
+                    <button id="uploadPic">Upload Pic</button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="/signIn">Sign In Link</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+  
+    <div id="organizations">
+        <p>Organizations</p>
+        <% for(var i = 0; i < organizations.length; i++){ %>
+            <li>
+                <a href="/organization/<%= organizations[i].name %>"><%= organizations[i].name %></a>
+            </li>
+        <% } %>
+    </div>
+    
+    <div id="events">
+        <table>
+            <tr>
+                <td id="upcomingEvents">
+                    <p>Calendar - Upcoming Events</p>
+                    <% for(var i = 0; i < events.length; i++){ %>
+                        <li>
+                            <%= events[i].name %><br>
+                            <%= events[i].startDate %><br>
+                            <%= events[i].endDate %>
+                        </li>
+                    <% } %>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div id="nearEvents">
+                        <p>Calendar - Near Events</p>  
+                    </div>
+                </td>
+            </tr>
+        <table>
+    </div>
   
   </body>
 </html>
