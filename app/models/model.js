@@ -336,6 +336,7 @@ module.exports = {
         });
     },
     
+    //allows an admin to update when an user signed in or out
     updateUser : function(req, res){       
         var sDate = new Date(req.body.inputs[0]);
         var eDate = new Date(req.body.inputs[1]);
