@@ -331,7 +331,7 @@ module.exports = {
                     console.log(err);
                     
                     res.send([record2.name, doc.signIn, doc.signOut, record2.email, doc._id]);
-                });d
+                });
             });
         });
     },
