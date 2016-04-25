@@ -11,8 +11,21 @@ $(function(){
             ajaxCall(window.location.href + ((window.location.href.endsWith('/')) ? 'join' : '/join')  , 'Post', null, null, callback);
         });
         
-        $("#sDate").datetimepicker();
-        $("#eDate").datetimepicker();
+        //$("#sDate").datetimepicker();
+        //$("#eDate").datetimepicker();
+        
+        $("#sDate").appendDtpicker({
+            futureOnly : true,
+            autodateOnStart : false,
+            todayButton : false,
+            closeOnSelected : true
+        });
+        $("#eDate").appendDtpicker({
+            futureOnly : true,
+            autodateOnStart : false,
+            todayButton : false,
+            closeOnSelected : true
+        });
         
         $("#submitEvent").click(function(){
            submitEvent();
