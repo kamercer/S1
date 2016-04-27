@@ -428,9 +428,11 @@ function retrieveProfilePic(req, res){
     
     var downloadStream = bucket.openDownloadStream(req.user.profilePic);
     
+    /* current unnecessary code
     downloadStream.once('end', function(){
         console.log('end');
     });
+    */
     
     downloadStream.once('error', function(error){
         console.log(error);
