@@ -3,17 +3,18 @@
   "version": "0.1.0",
   "main": "server.js",
   "dependencies": {
-    "express": "latest",
     "body-parser": "latest",
-    "mongoose": "latest",
-    "mongodb" : "latest",
+    "connect-mongodb-session": "latest",
+    "cookie-parser": "latest",
     "ejs": "latest",
+    "express": "latest",
+    "express-session": "latest",
+    "mongodb": "latest",
+    "mongoose": "latest",
+    "multer": "latest",
     "passport": "latest",
     "passport-local": "latest",
-    "express-session": "latest",
-    "cookie-parser": "latest",
-    "connect-mongodb-session": "latest",
-    "multer" : "latest"
+    "semantic-ui": "^2.1.8"
   },
   "scripts": {
     "start": "node server.js"

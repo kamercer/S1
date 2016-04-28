@@ -14,6 +14,7 @@ $(function(){
         //$("#sDate").datetimepicker();
         //$("#eDate").datetimepicker();
         
+        /*
         $("#sDate").appendDtpicker({
             futureOnly : true,
             autodateOnStart : false,
@@ -26,6 +27,7 @@ $(function(){
             todayButton : false,
             closeOnSelected : true
         });
+        */
         
         $("#submitEvent").click(function(){
            submitEvent();
@@ -38,6 +40,8 @@ $(function(){
         $(".editEvent").click(function(){
            editEvent(this); 
         });
+        
+        $('.menu .item').tab();
     }
     
     var submitEvent = function(){

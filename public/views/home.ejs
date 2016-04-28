@@ -4,8 +4,12 @@
     <meta charset="UTF-8">
     <title>Home</title>
     
-    <link rel="stylesheet" type="text/css" href="/CSS/home.css">
     <script src="//code.jquery.com/jquery-2.2.3.min.js"></script>
+    
+    <link rel="stylesheet" type="text/css" href="/semantic/dist/semantic.min.css">
+    <script src="/semantic/dist/semantic.min.js"></script>
+    
+    <link rel="stylesheet" type="text/css" href="/CSS/home.css">
     <script type='text/javascript' src="/JS/home.js"></script
   </head>
   <body>
@@ -28,7 +32,61 @@
         </ul>
     </div>
   
-  <div id="main">
+  
+  <div class="ui container" id="main">
+    <div class="ui three column center aligned grid">
+        <div class="four wide column">
+            <img class="ui image rounded" id="userProfileImage" src="/home/userImage">
+            <input class="ui button" id="profilePic" type="file" accept="image/*"><br>
+            <button class="ui button" id="uploadPic">Upload Pic</button>
+        </div>
+        
+        <div class="four wide column">
+            <p>Organizations</p>
+            <div class="ui list">
+                <% for(var i = 0; i < organizations.length; i++){ %>
+                    <div class="item">
+                        <a href="/organization/<%= organizations[i].name %>"><%= organizations[i].name %></a>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+        
+        <div class="four wide column">
+            <p>Calendar - Upcoming Events</p>
+            <div class="ui list">
+                <% for(var i = 0; i < events.length; i++){ %>
+                    <div class="item">
+                        <%= events[i].name %><br>
+                        <%= events[i].startDate %><br>
+                        <%= events[i].endDate %>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="four wide column">
+                <a href="/signIn">Sign In Link</a>
+            </div>
+            
+            <div class="four wide column">
+            
+            </div>
+        
+            <div class="four wide column">
+                <p>Calendar - Near Events</p>  
+            </div>
+        </div>
+    </div>
+  </div>
+  
+
+  
+  
+  
+  
+  <!-- <div id="main">
     
     <div id="temp">
         <table>
@@ -78,7 +136,7 @@
                 </td>
             </tr>
         <table>
-    </div>
+    </div> -->
   
   </body>
 </html>

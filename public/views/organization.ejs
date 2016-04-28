@@ -3,18 +3,21 @@
   <head>
     <meta charset="UTF-8">
     <title>title</title>
+    
+    <script src="//code.jquery.com/jquery-2.2.3.min.js"></script>
+    
+    <link rel="stylesheet" type="text/css" href="/semantic/dist/semantic.min.css">
+    <script src="/semantic/dist/semantic.min.js"></script>
         
     <link rel="stylesheet" type="text/css" href="/CSS/organization.css">
   
-    <script src="//code.jquery.com/jquery-2.2.3.min.js"></script>
     <script type='text/javascript' src="/JS/organization.js"></script>
     
-    <script type="text/javascript" src="/JS/support/jquery.simple-dtpicker.js"></script>
-	<link type="text/css" href="/CSS/support/jquery.simple-dtpicker.css" rel="stylesheet" />
+    <!-- <script type="text/javascript" src="/JS/support/jquery.simple-dtpicker.js"></script>
+	<link type="text/css" href="/CSS/support/jquery.simple-dtpicker.css" rel="stylesheet"/> -->
   </head>
-  <body>
-  
-      <div id="banner">
+  <body> 
+       <div id="banner">
         <p id="logo"><a href='/'>ServiceOne</a/></p>
         
         <% if(user != 'null'){ %>
@@ -34,7 +37,76 @@
         <% } %>
     </div>
     
-    <h1><%= name %> </h1>
+    <div class="ui container">
+        <div class="ui two column left aligned divided grid">
+            <div class="three wide column">
+                <img class="ui medium image" src="http://www.dpreview.com/files/p/articles/7192167506/images/intro.jpeg">
+            </div>
+            
+            <div class="6 wide column">
+                <div class="ui top attached tabular menu">
+                    <a class="item active" data-tab="first">Events</a>
+                    <a class="item" data-tab="second">Members</a>
+                    <a class="item" data-tab="third">Create Events</a>
+                </div>
+                
+                <div class="ui bottom attached active tab segment" data-tab="first">
+                    <ul>
+                        <% for(var i = 0; i < events.length; i++){ %>
+                            <li id=<%= events[i]._id %>><%= events[i].name %><button class="Events">Going</button>
+                            <% if(statusNumber == 3){%>
+                                <button class="editEvent">Edit</button>
+                            <% } %>
+                            </li>
+                        <% } %>
+                    </ul>
+                </div>
+                
+                <div class="ui bottom attached tab segment" data-tab="second">
+                    <table>
+                        <tr>
+                            <th>Member name</th>
+                            <th>Hours</th>
+                        </tr>
+                        
+                        <% for(var i = 0; i < members.length; i++){ %>
+                            <tr>
+                                <td><%= members[i].user.username %></td>
+                                <td><%= members[i].hours %></td>
+                            </tr>
+                        <% } %>
+                    </table>
+                </div>
+                
+                <div class="ui bottom attached tab segment" data-tab="third">
+                    <label for="name">Event Name:</label>
+                    <input id="name" required><br>
+                    
+                    <label for="sDate">Start Date :</label>
+                    <input id="sDate" required/><br>
+                    
+                    <label for="eDate">End Date:</label>
+                    <input id="eDate" required/><br>
+                    
+                    <label for="eventPhoto">Upload Event Photo: </label>
+                    <input id="eventPhoto" type="file" accept="image/*"><br>
+                
+                    <label for="public">Public:</label>
+                    <input id="public" type="checkbox" required/><br>
+                    
+                    <button id="submitEvent">submit event</button>
+                </div>
+            </div>
+            
+             <div class="row">
+                <div class="left floated three wide column">
+                    <p> <%= summary %></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- <h1><%= name %> </h1>
     
     <p> <%= summary %></p>
     
@@ -99,5 +171,6 @@
             </ul>
         </div>
      <% } %>
+     -->
   </body>
 </html>
