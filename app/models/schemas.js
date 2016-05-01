@@ -17,16 +17,16 @@ var eventSchema = mongoose.Schema({
     createdBy        : {type : mongoose.Schema.Types.ObjectId, ref : 'User'},
     public           : Boolean,
     eventIdentifier  : String,
-    eventUserRecords : [{type : mongoose.Schema.Types.ObjectId, ref : 'eventUserRecord'}],//not sure if I need to use this
+    //eventUserRecords : [{type : mongoose.Schema.Types.ObjectId, ref : 'eventUserRecord'}],//not sure if I need to use this
     eventPhoto       : {type : mongoose.Schema.Types.ObjectId, ref : 'fs.files'}
 });
 
 var eventUserRecordSchema = mongoose.Schema({
-    event   : {type : mongoose.Schema.Types.ObjectId, ref : 'Event'},
-    user    : {type : mongoose.Schema.Types.ObjectId, ref : 'User'},
+    parentEvent      : {type : mongoose.Schema.Types.ObjectId, ref : 'Event'},
+    user             : {type : mongoose.Schema.Types.ObjectId, ref : 'User'},
     unregisteredUser : {type : mongoose.Schema.Types.ObjectId, ref : 'UnregisteredUser'},
-    signIn  : Date,
-    signOut : Date,
+    signIn           : Date,
+    signOut          : Date,
 });
 
 var userSchema = mongoose.Schema({
@@ -49,9 +49,9 @@ var unregisteredUserSchema = mongoose.Schema({
 
 //change name
 var MemberInOrganizationSchema = mongoose.Schema({
-    user         : {type : mongoose.Schema.Types.ObjectId, ref : 'User'},
-    organization : {type : mongoose.Schema.Types.ObjectId, ref : 'Organization'},
-    hours        : {type : Number, min : 0}
+    user             : {type : mongoose.Schema.Types.ObjectId, ref : 'User'},
+    organization     : {type : mongoose.Schema.Types.ObjectId, ref : 'Organization'},
+    hours            : {type : Number, min : 0}
 });
 
 //salt later

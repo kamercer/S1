@@ -7,10 +7,10 @@ var upload = multer({dest: './uploads/'});
 module.exports = function(app){
     
     app.get('/', function(req, res){
-        if(req.user){
-            res.redirect('/home');
-            return;
-        }
+        //if(req.user){
+          //  res.redirect('/home');
+            //return;
+        //}
         res.sendFile('/views/index.html', {root: __dirname + '/../public'});
     });
     

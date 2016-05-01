@@ -33,11 +33,11 @@ $(function(){
            submitEvent();
         });
         
-        $(".Events").click(function(){
+        $(".RSVP").click(function(){
             submitRSVP(this); 
         });
         
-        $(".editEvent").click(function(){
+        $(".Edit").click(function(){
            editEvent(this); 
         });
         
@@ -63,13 +63,13 @@ $(function(){
     
     var submitRSVP = function(event){
         var data = {};
-        data.id = event.parentNode.id;
+        data.id = event.id;
         
         ajaxCall(window.location.href + ((window.location.href.endsWith('/')) ? 'submitRSVP' : '/submitRSVP'), 'POST', JSON.stringify(data), 'application/json', null);
     }
     
     function editEvent(event){
-        window.location.href = window.location.href + '/editEvent/' + event.parentNode.id;
+        window.location.href = window.location.href + '/editEvent/' + event.id;
     }
     
     var ajaxCall = function(url, type, data, cType,callbackSuccess){

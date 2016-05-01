@@ -42,7 +42,7 @@
         </div>
         
         <div class="four wide column">
-            <p>Organizations</p>
+            <h1 class="ui header">Organizations</h1>
             <div class="ui list">
                 <% for(var i = 0; i < organizations.length; i++){ %>
                     <div class="item">
@@ -53,13 +53,13 @@
         </div>
         
         <div class="four wide column">
-            <p>Calendar - Upcoming Events</p>
+            <h1 class="ui header">Upcoming Events</h1>
             <div class="ui list">
                 <% for(var i = 0; i < events.length; i++){ %>
                     <div class="item">
                         <%= events[i].name %><br>
-                        <%= events[i].startDate %><br>
-                        <%= events[i].endDate %>
+                        <%= events[i].startDate.getDate() + " " + events[i].startDate.getMonth()  + ", " + events[i].startDate.getHours() + ":" + events[i].startDate.getMinutes()%><br>
+                        <%= events[i].endDate.getDate() + " " + events[i].endDate.getMonth()  + ", " + events[i].endDate.getHours() + ":" + events[i].endDate.getMinutes()%>
                     </div>
                 <% } %>
             </div>
@@ -75,7 +75,7 @@
             </div>
         
             <div class="four wide column">
-                <p>Calendar - Near Events</p>  
+                <h1 class="ui header">Near Events</h1>  
             </div>
         </div>
     </div>

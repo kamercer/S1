@@ -2,7 +2,7 @@
 var User = require('mongoose').model('User');
 var Organization = require('mongoose').model('Organization');
 var Event = require('mongoose').model('Event');
-var MemberOrganizationAssociation = require('mongoose').model('MemberOrganizationAssociation');
+var MemberInOrganizationSchema = require('mongoose').model('MemberOrganizationAssociation');
 var eventUserRecord = require('mongoose').model('eventUserRecord');
 var UnregisteredUser = require('mongoose').model('UnregisteredUser');
 
@@ -50,18 +50,35 @@ module.exports = {
         var newOrganization = new Organization({name: req.body.name, summary: req.body.summary, admins: temp, members : temp});
         newOrganization.save(function(err, newDoc, numAffected){
             
-            var newMemberOrganizationAssociation = new MemberOrganizationAssociation({user : req.user._id, organization: newOrganization._id, hours: 0});
+            var newMemberOrganizationAssociation = new MemberInOrganizationSchema({user : req.user._id, organization: newOrganization._id, hours: 0, events : []});
             newMemberOrganizationAssociation.save(function(err, newDoc1, numAffected){
                     
-                User.findByIdAndUpdate(req.user._id, {$addToSet: {adminOf : newOrganization._id, memberOf : newOrganization._id /*,memberOrganizationAssociation: newDoc1._id*/}}, {new : true}, function(err2, doc2){
+                User.findByIdAndUpdate(req.user._id, {$addToSet: {adminOf : newOrganization._id, memberOf : newOrganization._id ,memberOrganizationAssociation: newDoc1._id}}, {new : true}, function(err2, doc2){
                     res.redirect('/');
                 });
             });
         });
     },
     
+    //needs work?
     loadOrganizationPage : function(req, res){
-        Organization.findOne({name : req.params.id}).populate('events').exec(function(err, organization){
+
+        Organization.findOne({name : req.params.id}).populate('members events').exec(function(err, organization){
+            if (req.user){
+                User.find({_id : {$in : organization.members}}).populate({path : 'memberOrganizationAssociation' , match : {organization : organization._id}, options : {limit : 1}}).populate({path : 'eventUserRecords', select : {event : {$in : organization.events}}}).exec(function(err, docs){
+                    //console.log(docs);
+                    //console.log(docs[0]);
+                    res.render('organization', {name : organization.name, summary: organization.summary, stranger: false, status : "admin", statusNumber: 3, user: req.user, members : docs, events : organization.events});
+                });
+            }else{
+                res.render('organization', {name : organization.name, summary: organization.summary, stranger: false, status : "stranger", statusNumber: 0, user: 'null', members : null, events : organization.events.filter(filterPublicEvents)});
+            }
+        });
+        
+
+        
+        /*
+        Organization.findOne({name : req.params.id}).populate('members memberOrganizationAssociation events').exec(function(err, organization){
             //console.log('load organization page error: ' + err);
             //console.log('load organization page: ' + organization);
             if (organization != null){
@@ -74,12 +91,20 @@ module.exports = {
                 
                 //admin
                 if(req.user.adminOf.indexOf(organization._id) != -1){
-                    MemberOrganizationAssociation.find({'organization' : organization._id}).populate('user').exec(function(err, docs){
+                    eventUserRecord.find({event : {$in : organization.events}}).populate('user').exec(function(err, docs){
+                        console.log(err);
+                        console.log(docs);
+                        
+                        res.render('organization', {name : organization.name, summary: organization.summary, stranger: false, status : "admin", statusNumber: 3, user: req.user, members : organization.members, events : organization.events});
+                    });
+                    
+                    
+                    //MemberOrganizationAssociation.find({'organization' : organization._id}).populate('user').exec(function(err, docs){
                         //console.log(err);
                         //console.log(docs);
                         
-                        res.render('organization', {name : organization.name, summary: organization.summary, stranger: false, status : "admin", statusNumber: 3, user: req.user.username, members : docs, events : organization.events});
-                    });
+                        //res.render('organization', {name : organization.name, summary: organization.summary, stranger: false, status : "admin", statusNumber: 3, user: req.user.username, members : docs, events : organization.events});
+                    //});
                     //User.find({_id : {$in: organization.members}}).populate('memberOrganizationAssociation').exec(function(err, docs){
                         //console.log(docs);
                         //res.render('organization', {name : organization.name, summary: organization.summary, stranger: false, status : "admin", statusNumber: 3, user: req.user.username, members : docs, events : organization.events});
@@ -103,6 +128,7 @@ module.exports = {
                 res.render('organization', {});
             }
         });
+        */
     },
     
     joinUser : function(req, res){
@@ -135,8 +161,6 @@ module.exports = {
                     res.end();
                     return;
                 }
-                
-                console.log('this hit');
                 
                 var newEvent = new Event({name : req.body.name,
                 startDate : new Date(req.body.sDate),
@@ -253,23 +277,83 @@ module.exports = {
         });
     },
     
+    //return to this and improve query
     createEventEditPage: function(req, res){
-        
-        eventUserRecord.find({event : req.params.eventId}).populate('event user unregisteredUser').exec(function(err, docs){
-            console.log(err);
-            console.log('createEventEditPage: ' + docs);
-            
-            if(err == null && docs.length > 0){
-                res.render('eventEdit', {qrcode : docs[0].event.eventIdentifier, docs : docs}); 
-            }else{
-                res.end();
-            }
+        Event.findOne({_id : req.params.eventId}, function(err, event){
+            eventUserRecord.find({event : req.params.eventId}).populate('user unregisteredUser').exec(function(err, docs){
+                console.log(err);
+                console.log('createEventEditPage: ' + docs);
+                
+                if(err == null){
+                    res.render('eventEdit', {qrcode : event.eventIdentifier, docs : docs}); 
+                }else{
+                    res.end();
+                }
+            });
         });
     },
     
-    //this needs work
+    //could I cut down the database calls?
     submitRSVP : function(req, res){
+        //req.body.id is an event id
         
+        //verify that req.body.id is of an objectId form
+        if (!mongoose.Types.ObjectId.isValid(req.body.id)){
+            console.log('submitRSVP: req.body.id is not a valid objectID form');
+            res.end();
+            return;
+        }
+        
+        //verify that req.body.id is an actual event id
+        Event.findById(req.body.id, function(err, parentEvent){
+            if(err != null){
+                console.log('submitRSVP: parent event does not exist');
+                res.end();
+                return;
+            }
+            
+            //check if eventUserRecord already exists
+            eventUserRecord.find({event : parentEvent._id, user : req.user.id}, function(err, docs){
+                if(err != null){
+                    console.log('submitRSVP: error when checking for existing eventUserRecords');
+                    res.end();
+                    return;
+                }
+                
+                if(docs.length > 0){
+                    console.log('submitRSVP: eventUserRecords already exists');
+                    res.end();
+                    return;
+                }
+                
+                //create new eventUserRecord and save it
+                var newEventUserRecord = new eventUserRecord({parentEvent : parentEvent._id, user : req.user._id});
+                newEventUserRecord.save(function(err, newRecord, numAffected){
+                    if(err != null){
+                        console.log('submitRSVP: error saving newEventUserRecord');
+                        res.end();
+                        return;
+                    }
+                    
+                    res.end();
+                    return;
+                });
+            });
+        });
+        
+                            /*
+                    //update parentEvent to include newEventUserRecord
+                    Event.findByIdAndUpdate(parentEvent._id, {$addToSet : {eventUserRecords : newRecord._id}}, function(err, doc){
+                        if(err != null){
+                            console.log('submitRSVP: error updating parentEvent with newEventUserRecords');
+                        }
+                            
+                        res.end();
+                        return;
+                    });
+                    */
+        
+        /*
         eventUserRecord.findOne({event : req.body.id}, function(err, doc){
             
             console.log('err:' + err);
@@ -277,7 +361,7 @@ module.exports = {
             
             if(doc == null){
                 
-                var newEventUserRecord = new eventUserRecord({event : req.body.id, user : req.user._id});
+                var newEventUserRecord = new eventUserRecord({event : mongoose.Types.ObjectId(req.body.id), user : req.user._id});
                 newEventUserRecord.save(function(err, record, numAffected){
                     console.log(err);
                     
@@ -287,7 +371,6 @@ module.exports = {
                         res.end();
                     });
                 });
-                
             }else{
                 Event.findOneAndUpdate({_id : req.body.id}, {$addToSet : {eventUserRecords : doc._id}}, {new : true}, function(err, eventDoc){
                     console.log('d ' + err);
@@ -296,6 +379,7 @@ module.exports = {
                 });
             }
         });
+        */
         
         /*
         Event.findOneAndUpdate({_id : req.body.id}, {$addToSet : {usersGoing : req.user._id}}, {new : true}, function(err, doc){

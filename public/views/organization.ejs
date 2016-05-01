@@ -23,7 +23,7 @@
         <% if(user != 'null'){ %>
             <ul>
                 <li>
-                    <p><%= user %></p>
+                    <p><%= user.username %></p>
                 </li>
                 
                 <li>
@@ -39,11 +39,11 @@
     
     <div class="ui container">
         <div class="ui two column left aligned divided grid">
-            <div class="three wide column">
+            <div class="four wide column">
                 <img class="ui medium image" src="http://www.dpreview.com/files/p/articles/7192167506/images/intro.jpeg">
             </div>
             
-            <div class="6 wide column">
+            <div class="column">
                 <div class="ui top attached tabular menu">
                     <a class="item active" data-tab="first">Events</a>
                     <a class="item" data-tab="second">Members</a>
@@ -51,7 +51,37 @@
                 </div>
                 
                 <div class="ui bottom attached active tab segment" data-tab="first">
-                    <ul>
+                    <div class="ui list">
+                        <% for(var i = 0; i < events.length; i++){ %>
+                            <div class="item">
+                                <div class="ui card">
+                                    <div class="content">
+                                        <div class="header">
+                                            <%= events[i].name %>
+                                        </div>
+                                        
+                                        <div class="description">
+                                            description
+                                        </div>
+                                    </div>
+                                    
+                                    <div id=<%= events[i]._id %> class="RSVP ui bottom attached button">
+                                        RSVP
+                                    </div>
+                                    
+                                    <% if (statusNumber == 3){ %>
+                                        <div id=<%= events[i]._id %> class="Edit ui bottom attached button">
+                                            Edit
+                                        </div>
+                                    <% } %>
+                                    
+                                </div>
+                            </div>
+                        <% } %>
+                    </div>
+                
+                
+                    <!-- <ul>
                         <% for(var i = 0; i < events.length; i++){ %>
                             <li id=<%= events[i]._id %>><%= events[i].name %><button class="Events">Going</button>
                             <% if(statusNumber == 3){%>
@@ -59,7 +89,7 @@
                             <% } %>
                             </li>
                         <% } %>
-                    </ul>
+                    </ul>-->
                 </div>
                 
                 <div class="ui bottom attached tab segment" data-tab="second">
@@ -71,8 +101,8 @@
                         
                         <% for(var i = 0; i < members.length; i++){ %>
                             <tr>
-                                <td><%= members[i].user.username %></td>
-                                <td><%= members[i].hours %></td>
+                                <td><%= members[i].username %></td>
+                                <td><%= members[i].memberOrganizationAssociation[0].hours %></td>
                             </tr>
                         <% } %>
                     </table>
@@ -148,7 +178,7 @@
             
             <% for(var i = 0; i < members.length; i++){ %>
                 <tr>
-                    <td><%= members[i].user.username %></td>
+                    <td><%= members[i].username %></td>
                     <td><%= members[i].hours %></td>
                 </tr>
             <% } %>
