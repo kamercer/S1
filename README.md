@@ -19,7 +19,7 @@ index
 Home page
   This is the home page for users.  It shows organizations they are a part of as well as nearby events.  They can edit information about themselves here too.
 Organization page
-  This is the page for a specific organization.  Members can view other members, pay fees, view and RSVP for events and post on the organization wall.  Admins can edit members, create events and edit the organization wall.
+  This is the page for a specific organization, it includes the club image and summary.  Strangers are able to view public events.  Members can view other members, pay fees, view and RSVP for events and post on the organization wall.  Admins can edit members, create events and edit the organization wall.
 
 The date-time picker is from http://mugifly.github.io/jquery-simple-datetimepicker/
 currently unused - may revisit at a later time

@@ -45,7 +45,7 @@ module.exports = {
         }
         
         var temp = [];
-        temp.push(req.user._id);
+        temp.push(req.user);
         
         var newOrganization = new Organization({name: req.body.name, summary: req.body.summary, admins: temp, members : temp});
         newOrganization.save(function(err, newDoc, numAffected){
@@ -63,15 +63,46 @@ module.exports = {
     //needs work?
     loadOrganizationPage : function(req, res){
 
-        Organization.findOne({name : req.params.id}).populate('members events').exec(function(err, organization){
+        //find the requested organization and populate the members and events
+        Organization.findOne({name : req.params.id}).populate('members admins events').exec(function(err, organization){
+
+            if(organization == null){
+                res.end();
+                console.log('loadOrganizationPage: organization is null');
+                return;
+            }
+
+            //if there is an user logged in
             if (req.user){
+
+                //This checks if the user is a member of the organization
+                var memberinOrganization = organization.members.some(function(value){
+                        return value._id.equals(req.user._id);
+                    });
+
+                //If the member is not part of the organization, render the page appropriately
+                if (!memberinOrganization){
+                    res.render('organization', {name : organization.name, summary: organization.summary, statusNumber: 1, user: req.user, members : null, events : organization.events});
+                    return;
+                }
+
+                //at this point, user is either a member or an admin of the specified organization  
+                //This gets all the users that are a member of the organization, it populates their memberOrganizationAssociation.  I forget what the rest does, need to review this query
                 User.find({_id : {$in : organization.members}}).populate({path : 'memberOrganizationAssociation' , match : {organization : organization._id}, options : {limit : 1}}).populate({path : 'eventUserRecords', select : {event : {$in : organization.events}}}).exec(function(err, docs){
-                    //console.log(docs);
-                    //console.log(docs[0]);
-                    res.render('organization', {name : organization.name, summary: organization.summary, stranger: false, status : "admin", statusNumber: 3, user: req.user, members : docs, events : organization.events});
+                    
+                    //check if user is an admin of the specified organization and respond appropriately
+                    var isMemberAdmin = organization.admins.some(function(value){
+                        return value._id.equals(req.user.id);
+                    });
+
+                    if(isMemberAdmin){
+                        res.render('organization', {name : organization.name, summary: organization.summary, statusNumber: 3, user: req.user, members : docs, events : organization.events});
+                    }else{
+                        res.render('organization', {name : organization.name, summary: organization.summary, statusNumber: 2, user: req.user, members : docs, events : organization.events});
+                    }
                 });
-            }else{
-                res.render('organization', {name : organization.name, summary: organization.summary, stranger: false, status : "stranger", statusNumber: 0, user: 'null', members : null, events : organization.events.filter(filterPublicEvents)});
+            }else{//if there is not an user logged in
+                res.render('organization', {name : organization.name, summary: organization.summary, statusNumber: 0, user: null, members : null, events : organization.events.filter(filterPublicEvents)});
             }
         });
         

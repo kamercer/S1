@@ -20,7 +20,7 @@
        <div id="banner">
         <p id="logo"><a href='/'>ServiceOne</a/></p>
         
-        <% if(user != 'null'){ %>
+        <% if(user != null){ %>
             <ul>
                 <li>
                     <p><%= user.username %></p>
@@ -46,8 +46,11 @@
             <div class="column">
                 <div class="ui top attached tabular menu">
                     <a class="item active" data-tab="first">Events</a>
-                    <a class="item" data-tab="second">Members</a>
-                    <a class="item" data-tab="third">Create Events</a>
+
+                    <% if(statusNumber > 1){ %>
+                        <a class="item" data-tab="second">Members</a>
+                        <a class="item" data-tab="third">Create Events</a>
+                    <% } %>
                 </div>
                 
                 <div class="ui bottom attached active tab segment" data-tab="first">
@@ -92,40 +95,42 @@
                     </ul>-->
                 </div>
                 
-                <div class="ui bottom attached tab segment" data-tab="second">
-                    <table>
-                        <tr>
-                            <th>Member name</th>
-                            <th>Hours</th>
-                        </tr>
-                        
-                        <% for(var i = 0; i < members.length; i++){ %>
+                <% if(statusNumber > 1){ %>
+                    <div class="ui bottom attached tab segment" data-tab="second">
+                        <table>
                             <tr>
-                                <td><%= members[i].username %></td>
-                                <td><%= members[i].memberOrganizationAssociation[0].hours %></td>
+                                <th>Member name</th>
+                                <th>Hours</th>
                             </tr>
-                        <% } %>
-                    </table>
-                </div>
-                
-                <div class="ui bottom attached tab segment" data-tab="third">
-                    <label for="name">Event Name:</label>
-                    <input id="name" required><br>
+                            
+                            <% for(var i = 0; i < members.length; i++){ %>
+                                <tr>
+                                    <td><%= members[i].username %></td>
+                                    <td><%= members[i].memberOrganizationAssociation[0].hours %></td>
+                                </tr>
+                            <% } %>
+                        </table>
+                    </div>
                     
-                    <label for="sDate">Start Date :</label>
-                    <input id="sDate" required/><br>
+                    <div class="ui bottom attached tab segment" data-tab="third">
+                        <label for="name">Event Name:</label>
+                        <input id="name" required><br>
+                        
+                        <label for="sDate">Start Date :</label>
+                        <input id="sDate" required/><br>
+                        
+                        <label for="eDate">End Date:</label>
+                        <input id="eDate" required/><br>
+                        
+                        <label for="eventPhoto">Upload Event Photo: </label>
+                        <input id="eventPhoto" type="file" accept="image/*"><br>
                     
-                    <label for="eDate">End Date:</label>
-                    <input id="eDate" required/><br>
-                    
-                    <label for="eventPhoto">Upload Event Photo: </label>
-                    <input id="eventPhoto" type="file" accept="image/*"><br>
-                
-                    <label for="public">Public:</label>
-                    <input id="public" type="checkbox" required/><br>
-                    
-                    <button id="submitEvent">submit event</button>
-                </div>
+                        <label for="public">Public:</label>
+                        <input id="public" type="checkbox" required/><br>
+                        
+                        <button id="submitEvent">submit event</button>
+                    </div>
+                <% } %>
             </div>
             
              <div class="row">
@@ -136,11 +141,10 @@
         </div>
     </div>
     
-    <!-- <h1><%= name %> </h1>
+    <!-- 
+    <h1><%= name %> </h1>
     
     <p> <%= summary %></p>
-    
-    <p> <%= status %>
     
     <% if(statusNumber == 1) {%>
         <button id="join">join</button>
