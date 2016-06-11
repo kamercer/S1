@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
+
+  <!-- organization image does not need to loaded twice, once on main page and once on settings page.  I can probably improve this -->
+
     <meta charset="UTF-8">
     <title>title</title>
     
@@ -40,7 +43,7 @@
     <div class="ui container">
         <div class="ui two column left aligned divided grid">
             <div class="four wide column">
-                <img class="ui medium image" src="http://www.dpreview.com/files/p/articles/7192167506/images/intro.jpeg">
+                <img class="ui medium image" src="organizationImage">
             </div>
             
             <div class="column">
@@ -49,7 +52,11 @@
 
                     <% if(statusNumber > 1){ %>
                         <a class="item" data-tab="second">Members</a>
-                        <a class="item" data-tab="third">Create Events</a>
+                        
+                        <% if(statusNumber == 3){ %>
+                            <a class="item" data-tab="third">Create Events</a>
+                            <a class="item" data-tab="fourth">Settings</a>
+                        <% } %>
                     <% } %>
                 </div>
                 
@@ -112,24 +119,30 @@
                         </table>
                     </div>
                     
-                    <div class="ui bottom attached tab segment" data-tab="third">
-                        <label for="name">Event Name:</label>
-                        <input id="name" required><br>
+                    <% if(statusNumber == 3){ %>
+                        <div class="ui bottom attached tab segment" data-tab="third">
+                            <label for="name">Event Name:</label>
+                            <input id="name" required><br>
+                            
+                            <label for="sDate">Start Date :</label>
+                            <input id="sDate" required/><br>
+                            
+                            <label for="eDate">End Date:</label>
+                            <input id="eDate" required/><br>
+                            
+                            <label for="eventPhoto">Upload Event Photo: </label>
+                            <input id="eventPhoto" type="file" accept="image/*"><br>
                         
-                        <label for="sDate">Start Date :</label>
-                        <input id="sDate" required/><br>
-                        
-                        <label for="eDate">End Date:</label>
-                        <input id="eDate" required/><br>
-                        
-                        <label for="eventPhoto">Upload Event Photo: </label>
-                        <input id="eventPhoto" type="file" accept="image/*"><br>
-                    
-                        <label for="public">Public:</label>
-                        <input id="public" type="checkbox" required/><br>
-                        
-                        <button id="submitEvent">submit event</button>
-                    </div>
+                            <label for="public">Public:</label>
+                            <input id="public" type="checkbox" required/><br>
+                            
+                            <button id="submitEvent">submit event</button>
+                        </div>
+
+                        <div class="ui bottom attached tab segment" data-tab="fourth">
+                            <button id="updateImage">update image</button>
+                        </div>
+                    <% } %>
                 <% } %>
             </div>
             
@@ -137,6 +150,22 @@
                 <div class="left floated three wide column">
                     <p> <%= summary %></p>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ui modal" id="imageModal">
+        <div class="header">
+            Organization Image
+        </div>
+        <div class="image content">
+            <div class="ui medium image">
+                <img src="organizationImage">
+            </div>
+            <div class="description">
+                <div class="ui header">Select an image</div>
+                <input id="organizationProfileImage" type="file" accept="image/*"><br>
+                <button id="uploadPic">Upload Pic</button>
             </div>
         </div>
     </div>

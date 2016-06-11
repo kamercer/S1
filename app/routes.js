@@ -21,11 +21,11 @@ module.exports = function(app){
     
     //used to login
     app.post('/login', passport.authenticate('local'),function(req, res){
-       res.redirect('/home');
+       res.redirect('/home/');
     });
     
     //homepage of users
-    app.get('/home', loginCheck, function(req, res){
+    app.get('/home/', loginCheck, function(req, res){
        model.createHomePage(req, res);
     });
     
@@ -34,8 +34,6 @@ module.exports = function(app){
     });
     
     app.get('/home/userImage', loginCheck, function(req, res){
-        console.log(req.user);
-        
         model.getProfilePic(req, res);
     });
     
@@ -47,8 +45,12 @@ module.exports = function(app){
        model.createOrganization(req, res);
     });
     
-    app.get('/organization/:id', function(req, res){
+    app.get('/organization/:id/', function(req, res){
         model.loadOrganizationPage(req, res);
+    });
+
+    app.get('/organization/:id/organizationImage', function(req, res){
+        model.getOrganizationImage(req, res);
     });
     
     //check to make sure that user has permission to join
@@ -65,6 +67,10 @@ module.exports = function(app){
     
     app.post('/organization/:id/submitRSVP', loginCheck, function(req, res){
         model.submitRSVP(req, res);
+    });
+
+    app.post('/organization/:id/changeOrganizationImage', upload.any(), loginCheck, function(req, res){
+        model.changeOrganizationImage(req, res);
     });
     
     app.get('/organization/:id/editEvent/:eventId', loginCheck, function(req, res){
@@ -93,7 +99,7 @@ module.exports = function(app){
         model.getUserEvents(req, res);
     });
     
-    app.get('/signIn', loginCheck, function(req, res){
+    app.get('/signIn/', loginCheck, function(req, res){
         res.sendFile('/views/signIn.html', {root: __dirname + '/../public'});
     });
     

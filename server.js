@@ -7,6 +7,8 @@ var cookieParser = require('cookie-parser');
 var express = require('express');
 var app = express();
 
+//This is done to fix the problem of a lack of trailing slash in the url
+app.enable('strict routing');
 
 mongoose.connect('mongodb://localhost/S1');
 

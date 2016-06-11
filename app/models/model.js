@@ -61,14 +61,16 @@ module.exports = {
     },
     
     //needs work?
+    //This function determines the status of an user in an organization and loads the appropriate organization page
     loadOrganizationPage : function(req, res){
 
         //find the requested organization and populate the members and events
         Organization.findOne({name : req.params.id}).populate('members admins events').exec(function(err, organization){
 
+            //checks if the query did not find the organization and if so, exits
             if(organization == null){
                 res.end();
-                console.log('loadOrganizationPage: organization is null');
+                console.log('loadOrganizationPage: organization is null(probably does not exist)');
                 return;
             }
 
@@ -414,7 +416,7 @@ module.exports = {
         
         /*
         Event.findOneAndUpdate({_id : req.body.id}, {$addToSet : {usersGoing : req.user._id}}, {new : true}, function(err, doc){
-            console.log(err);
+            console.log(err);events
             console.log(doc);
             
            User.findOneAndUpdate({_id : req.user._id}, {$addToSet : {eventsAttended : req.body.id}}, {new: true}, function(err, doc){
@@ -482,6 +484,48 @@ module.exports = {
     
     getProfilePic : function(req, res){
         retrieveProfilePic(req, res);
+    },
+
+    changeOrganizationImage : function(req, res){
+        //verify that user is an admin
+        Organization.findOne({name : req.params.id}).populate('admins').exec(function(err, organization){
+            var isMemberAdmin = organization.admins.some(function(value){
+                        return value._id.equals(req.user.id);
+            });
+
+            //if user is not an admin, do not go any further
+            if(!isMemberAdmin){
+                console.log('requesting user is not an admin');
+                res.end();
+                return;
+            }
+
+            //upload the image to the database, then add the id to the organization record
+            uploadImage(req,res).then(function(imageId){
+                if(imageId == null){
+                    res.end();
+                    console.log('upload organization image failed');
+                    return;
+                }
+
+                Organization.findByIdAndUpdate(organization._id, {organizationImage : imageId}, {new : true}, function(err, doc){
+                    if(err != null){
+                        console.log('error updating organization image');
+                        console.log('err: ' + err);
+                        console.log('doc: ' + doc);
+
+                        res.end();
+                        return;
+                    }
+
+                    res.end();
+                });
+            });
+        });
+    },
+
+    getOrganizationImage : function(req, res){
+        retrieveOrganizationImage(req, res);
     }
 };
 
@@ -533,8 +577,6 @@ function retrieveProfilePic(req, res){
     
     var bucket = new mongodb.GridFSBucket(db.db);
     
-    console.log(req);
-    
     if(req.user.profilePic == null || req.user.profilePic == undefined){
         res.end();
         console.log('no profile pic');
@@ -554,4 +596,27 @@ function retrieveProfilePic(req, res){
     });
     
     downloadStream.pipe(res);
+}
+
+function retrieveOrganizationImage(req, res){
+    var db = mongoose.connection;
+
+    var bucket = new mongodb.GridFSBucket(db.db);
+
+    Organization.findOne({name : req.params.id}, function(err, organization){
+        if(organization.organizationImage == null){
+            res.end();
+            console.log('organization image cannot be found or does not exist');
+            return;
+        }
+
+        var downloadStream = bucket.openDownloadStream(organization.organizationImage);
+
+        downloadStream.once('error', function(error){
+            console.log('error opening organization image: ' + error);
+            res.end();
+        });
+
+        downloadStream.pipe(res);
+    });
 }

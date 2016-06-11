@@ -6,7 +6,8 @@ var organizationSchema = mongoose.Schema({
     events                        : [{type : mongoose.Schema.Types.ObjectId, ref: 'Event'}],
     admins                        : [{type : mongoose.Schema.Types.ObjectId, ref: 'User'}],
     members                       : [{type : mongoose.Schema.Types.ObjectId, ref: 'User'}],
-    memberOrganizationAssociation : [{type : mongoose.Schema.Types.ObjectId, ref : 'MemberOrganizationAssociation'}]
+    memberOrganizationAssociation : [{type : mongoose.Schema.Types.ObjectId, ref : 'MemberOrganizationAssociation'}],
+    organizationImage             : {type : mongoose.Schema.Types.ObjectId, ref : 'fs.files'}
 });
 
 var eventSchema = mongoose.Schema({

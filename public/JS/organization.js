@@ -40,6 +40,14 @@ $(function(){
         $(".Edit").click(function(){
            editEvent(this); 
         });
+
+        $("#updateImage").click(function(){
+            $("#imageModal").modal('show');
+        });
+
+        $("#uploadPic").click(function(){
+            submitPic();
+        });
         
         $('.menu .item').tab();
     }
@@ -70,6 +78,14 @@ $(function(){
     
     function editEvent(event){
         window.location.href = window.location.href + '/editEvent/' + event.id;
+    }
+
+    function submitPic(){
+        var data = new FormData();
+        
+        data.append('image', $("#organizationProfileImage")[0].files[0]);
+        
+        ajaxCall(window.location.href + ((window.location.href.endsWith('/')) ? 'changeOrganizationImage' : '/changeOrganizationImage'), 'POST', data, false, null); 
     }
     
     var ajaxCall = function(url, type, data, cType,callbackSuccess){
