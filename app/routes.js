@@ -28,6 +28,11 @@ module.exports = function(app){
     app.get('/home/', loginCheck, function(req, res){
        model.createHomePage(req, res);
     });
+
+    //done to handle lack of trailing slash - not sure if this is a good way to do this
+    app.get('/home', loginCheck, function(req, res){
+        res.redirect('/home/');
+    });
     
     app.post('/home/changeProfilePic', upload.any(), loginCheck, function(req, res){
         model.changeProfilePic(req, res);
@@ -47,6 +52,11 @@ module.exports = function(app){
     
     app.get('/organization/:id/', function(req, res){
         model.loadOrganizationPage(req, res);
+    });
+
+    //done to handle lack of trailing slash - not sure if this is a good way to do this
+    app.get('/organization/:id', function(req, res){
+        res.redirect('/organization/' + req.params.id + '/');
     });
 
     app.get('/organization/:id/organizationImage', function(req, res){
@@ -71,6 +81,10 @@ module.exports = function(app){
 
     app.post('/organization/:id/changeOrganizationImage', upload.any(), loginCheck, function(req, res){
         model.changeOrganizationImage(req, res);
+    });
+
+    app.get('/events/eventImage/:id', function(req, res){
+        model.getEventImage(req, res);
     });
     
     app.get('/organization/:id/editEvent/:eventId', loginCheck, function(req, res){
@@ -101,6 +115,10 @@ module.exports = function(app){
     
     app.get('/signIn/', loginCheck, function(req, res){
         res.sendFile('/views/signIn.html', {root: __dirname + '/../public'});
+    });
+
+    app.get('/signIn', loginCheck, function(req, res){
+        res.redirect('/signIn/');
     });
     
     function loginCheck(req, res, next){

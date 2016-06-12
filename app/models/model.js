@@ -84,7 +84,7 @@ module.exports = {
 
                 //If the member is not part of the organization, render the page appropriately
                 if (!memberinOrganization){
-                    res.render('organization', {name : organization.name, summary: organization.summary, statusNumber: 1, user: req.user, members : null, events : organization.events});
+                    res.render('organization', {name : organization.name, summary: organization.summary, statusNumber: 1, user: req.user, members : null, events : organization.events.filter(filterPublicEvents)});
                     return;
                 }
 
@@ -526,6 +526,10 @@ module.exports = {
 
     getOrganizationImage : function(req, res){
         retrieveOrganizationImage(req, res);
+    },
+
+    getEventImage : function(req, res){
+        retrieveEventImage(req, res);
     }
 };
 
@@ -598,23 +602,59 @@ function retrieveProfilePic(req, res){
     downloadStream.pipe(res);
 }
 
+//this function gets the single image associated with an organization
 function retrieveOrganizationImage(req, res){
     var db = mongoose.connection;
 
     var bucket = new mongodb.GridFSBucket(db.db);
 
     Organization.findOne({name : req.params.id}, function(err, organization){
+        if(organization == null){
+            res.end();
+            console.log('retrieveOrganizationImage: organization could not be found');
+            return;
+        }
+
         if(organization.organizationImage == null){
             res.end();
-            console.log('organization image cannot be found or does not exist');
+            console.log('retrieveOrganizationImage: organization image cannot be found or does not exist');
             return;
         }
 
         var downloadStream = bucket.openDownloadStream(organization.organizationImage);
 
         downloadStream.once('error', function(error){
-            console.log('error opening organization image: ' + error);
+            console.log('retrieveOrganizationImage: error opening organization image: ' + error);
             res.end();
+        });
+
+        downloadStream.pipe(res);
+    });
+}
+
+//this function gets the single image associated with an event
+function retrieveEventImage(req, res){
+    var db = mongoose.connection;
+
+    var bucket = new mongodb.GridFSBucket(db.db);
+
+    Event.findById(req.params.id, function(err, event){
+        if(event == null){
+            res.end();
+            console.log('retrieveEventImage: event could not be found');
+            return;
+        }
+
+        if(event.eventPhoto == null){
+            res.end();
+            console.log('retrieveEventImage: event image cannot be found or does not exist');
+            return;
+        }
+
+        var downloadStream = bucket.openDownloadStream(event.eventPhoto);
+
+        downloadStream.once('error', function(error){
+            console.log('retrieveEventImage: error opening event image: ' + error);
         });
 
         downloadStream.pipe(res);

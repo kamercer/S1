@@ -36,10 +36,15 @@ $(function(){
         $(".RSVP").click(function(){
             submitRSVP(this); 
         });
+
+        $(".Details").click(function(){
+            viewDetails(this);
+        });
         
         $(".Edit").click(function(){
            editEvent(this); 
         });
+
 
         $("#updateImage").click(function(){
             $("#imageModal").modal('show');
@@ -66,7 +71,7 @@ $(function(){
         //data.eDate = $("#eDate").val();
         //data.public = $("#public").prop("checked");
         
-        ajaxCall(window.location.href + ((window.location.href.endsWith('/')) ? 'createEvent' : '/createEvent'), 'POST', data, false, null); 
+        ajaxCall('createEvent', 'POST', data, false, null); 
     };
     
     var submitRSVP = function(event){
@@ -75,9 +80,16 @@ $(function(){
         
         ajaxCall(window.location.href + ((window.location.href.endsWith('/')) ? 'submitRSVP' : '/submitRSVP'), 'POST', JSON.stringify(data), 'application/json', null);
     }
+
+    function viewDetails(event){
+
+        $("#eventImage").attr('src', "/events/eventImage/" + event.id);
+
+        $("#detailModal").modal('show');
+    }
     
     function editEvent(event){
-        window.location.href = window.location.href + '/editEvent/' + event.id;
+        window.location.href = window.location.href + 'editEvent/' + event.id;
     }
 
     function submitPic(){
