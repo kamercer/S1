@@ -32,6 +32,7 @@ var eventUserRecordSchema = mongoose.Schema({
 
 var userSchema = mongoose.Schema({
    facebookID                    : String,
+   googleID                      : String,
    first_name                    : String,
    last_name                     : String,
    username                      : String,

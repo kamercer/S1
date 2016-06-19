@@ -28,6 +28,19 @@ module.exports = function(app){
     function(req, res){
         res.redirect('/home/');
     });
+
+
+    /////////////////////////
+    app.get('/auth/google', passport.authenticate('google', {scope : ['profile', 'email']}));
+
+    app.get('/auth/google/callback', 
+    passport.authenticate('google', {failureRedirect : '/'}),
+    function(req, res){
+        res.redirect('/home/');
+    });
+
+
+    //////////////
     
     //used to login through local authentication
     app.post('/login', passport.authenticate('local'),function(req, res){

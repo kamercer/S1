@@ -28,5 +28,5 @@ https://github.com/Semantic-Org/Semantic-UI/pull/3256
 
 to-do:
   can remove client javascript that handles lack of a trailing slash, problem has been fixed
-  secure mongo database later
-  add config file for things such as facebook app id
+  secure mongo database
+  add config file for things such as facebook app id and google app id
