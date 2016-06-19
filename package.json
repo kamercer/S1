@@ -7,14 +7,15 @@
     "connect-mongodb-session": "latest",
     "cookie-parser": "1.4.3",
     "ejs": "2.4.2",
-    "express": "4.13.4",
+    "express": "4.14.0",
     "express-session": "latest",
     "mongodb": "2.1.18",
-    "mongoose": "4.4.20",
+    "mongoose": "4.5.1",
     "multer": "latest",
     "passport": "latest",
     "passport-local": "latest",
-    "semantic-ui": "^2.1.8"
+    "passport-facebook": "latest",
+    "semantic-ui": "2.1.8"
   },
   "scripts": {
     "start": "node server.js"

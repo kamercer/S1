@@ -18,8 +18,18 @@ module.exports = function(app){
         console.log('hit post /');
         res.end();
     });
+
+    //This is called when the user clicks on the facebook login button.  It redirects them to the facebook popup and they log in.
+    //They are then redirected back to the callback route specified in facebook.js
+    app.get('/auth/facebook', passport.authenticate('facebook', {scope : ['public_profile', 'email']}));
+
+    //This is the facebook callback function specified in facebook.js.  Once the user logs in through facebook, they are redirected back to this route.
+    app.get('/auth/facebook/callback', passport.authenticate('facebook', {failureRedirect : '/'}),
+    function(req, res){
+        res.redirect('/home/');
+    });
     
-    //used to login
+    //used to login through local authentication
     app.post('/login', passport.authenticate('local'),function(req, res){
        res.redirect('/home/');
     });

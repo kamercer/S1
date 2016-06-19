@@ -4,7 +4,6 @@ var User = require('mongoose').model('User');
 module.exports = function(){
 
     passport.serializeUser(function(user, done){
-	   //console.log('serialize ran');
 	   done(null, user.id);
     });
 
@@ -18,4 +17,5 @@ module.exports = function(){
     });
 
     require('./strategies/local.js')();
+    require('./strategies/facebook.js')();
 };
