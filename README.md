@@ -13,6 +13,8 @@ member - a user that is a part of a specific organization
   This user can look up members, pay fees, RSVP for events, and post on their organization wall.
 Admin - a user that manages a specific organization
   This user can manager member hours, create events and edit the organization wall.
+
+Page Outline: https://docs.google.com/document/d/1Hd8Qcd1SH_cDyI6wvaBXESlddOim06APdcCzCWFl-O4/edit?usp=sharing
   
 index
   This is the splash page for the site.
