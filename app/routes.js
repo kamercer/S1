@@ -11,7 +11,7 @@ module.exports = function(app){
           //  res.redirect('/home');
             //return;
         //}
-        res.sendFile('/views/index.html', {root: __dirname + '/../public'});
+        res.sendFile('/views/tempIndex.html', {root: __dirname + '/../public'});
     });
     
     app.post('/', function(req, res){
@@ -29,8 +29,6 @@ module.exports = function(app){
         res.redirect('/home/');
     });
 
-
-    /////////////////////////
     app.get('/auth/google', passport.authenticate('google', {scope : ['profile', 'email']}));
 
     app.get('/auth/google/callback', 
@@ -39,9 +37,6 @@ module.exports = function(app){
         res.redirect('/home/');
     });
 
-
-    //////////////
-    
     //used to login through local authentication
     app.post('/login', passport.authenticate('local'),function(req, res){
        res.redirect('/home/');
@@ -72,6 +67,14 @@ module.exports = function(app){
     app.post('/createOrganization', loginCheck, function(req, res){
        model.createOrganization(req, res);
     });
+
+    ////////////
+    app.get('/tempOrganization', function(req, res){
+        res.sendFile('/views/tempOrganization.html', {root: __dirname + '/../public'});
+    });
+
+
+    ////////////
     
     app.get('/organization/:id/', function(req, res){
         model.loadOrganizationPage(req, res);

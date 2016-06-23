@@ -107,61 +107,6 @@ module.exports = {
                 res.render('organization', {name : organization.name, summary: organization.summary, statusNumber: 0, user: null, members : null, events : organization.events.filter(filterPublicEvents)});
             }
         });
-        
-
-        
-        /*
-        Organization.findOne({name : req.params.id}).populate('members memberOrganizationAssociation events').exec(function(err, organization){
-            //console.log('load organization page error: ' + err);
-            //console.log('load organization page: ' + organization);
-            if (organization != null){
-                
-               //stranger
-                if (req.user == null || req.user == undefined){
-                    res.render('organization', {name : organization.name, summary: organization.summary, stranger: false, status : "stranger", statusNumber: 0, user: 'null', members : null, events : organization.events.filter(filterPublicEvents)});
-                    return;
-                }
-                
-                //admin
-                if(req.user.adminOf.indexOf(organization._id) != -1){
-                    eventUserRecord.find({event : {$in : organization.events}}).populate('user').exec(function(err, docs){
-                        console.log(err);
-                        console.log(docs);
-                        
-                        res.render('organization', {name : organization.name, summary: organization.summary, stranger: false, status : "admin", statusNumber: 3, user: req.user, members : organization.members, events : organization.events});
-                    });
-                    
-                    
-                    //MemberOrganizationAssociation.find({'organization' : organization._id}).populate('user').exec(function(err, docs){
-                        //console.log(err);
-                        //console.log(docs);
-                        
-                        //res.render('organization', {name : organization.name, summary: organization.summary, stranger: false, status : "admin", statusNumber: 3, user: req.user.username, members : docs, events : organization.events});
-                    //});
-                    //User.find({_id : {$in: organization.members}}).populate('memberOrganizationAssociation').exec(function(err, docs){
-                        //console.log(docs);
-                        //res.render('organization', {name : organization.name, summary: organization.summary, stranger: false, status : "admin", statusNumber: 3, user: req.user.username, members : docs, events : organization.events});
-                    //});
-                    return;
-                }
-                
-                //user not affiliated        
-                if(req.user.memberOf.indexOf(organization._id) == -1){
-                    res.render('organization', {name : organization.name, summary: organization.summary, stranger: false, status : "member not affiliated", statusNumber: 1, user: req.user.username, members : null, events : organization.events.filter(filterPublicEvents)});
-                    return;  
-                }
-                
-                //member
-                if(req.user.memberOf.indexOf(organization._id) != -1){
-                    res.render('organization', {name : organization.name, summary: organization.summary, stranger: false, status : "member affiliated", statusNumber: 2, user: req.user.username, members : null, events : organization.events});
-                    //return;
-                }
-         
-            }else{ //handles if organization name does not exist
-                res.render('organization', {});
-            }
-        });
-        */
     },
     
     joinUser : function(req, res){
