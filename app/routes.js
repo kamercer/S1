@@ -67,14 +67,6 @@ module.exports = function(app){
     app.post('/createOrganization', loginCheck, function(req, res){
        model.createOrganization(req, res);
     });
-
-    ////////////
-    app.get('/tempOrganization', function(req, res){
-        res.sendFile('/views/tempOrganization.html', {root: __dirname + '/../public'});
-    });
-
-
-    ////////////
     
     app.get('/organization/:id/', function(req, res){
         model.loadOrganizationPage(req, res);

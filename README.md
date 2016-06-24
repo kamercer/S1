@@ -32,3 +32,5 @@ to-do:
   can remove client javascript that handles lack of a trailing slash, problem has been fixed
   secure mongo database
   add config file for things such as facebook app id and google app id
+
+  I might change javascript files so strangers get a different javascript file than an admin

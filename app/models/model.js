@@ -84,27 +84,26 @@ module.exports = {
 
                 //If the member is not part of the organization, render the page appropriately
                 if (!memberinOrganization){
-                    res.render('organization', {name : organization.name, summary: organization.summary, statusNumber: 1, user: req.user, members : null, events : organization.events.filter(filterPublicEvents)});
+                    res.render('tempOrganization', {name : organization.name, summary: organization.summary, statusNumber: 1, user: req.user, members : null, events : organization.events.filter(filterPublicEvents)});
                     return;
                 }
 
                 //at this point, user is either a member or an admin of the specified organization  
                 //This gets all the users that are a member of the organization, it populates their memberOrganizationAssociation.  I forget what the rest does, need to review this query
                 User.find({_id : {$in : organization.members}}).populate({path : 'memberOrganizationAssociation' , match : {organization : organization._id}, options : {limit : 1}}).populate({path : 'eventUserRecords', select : {event : {$in : organization.events}}}).exec(function(err, docs){
-                    
                     //check if user is an admin of the specified organization and respond appropriately
                     var isMemberAdmin = organization.admins.some(function(value){
                         return value._id.equals(req.user.id);
                     });
 
                     if(isMemberAdmin){
-                        res.render('organization', {name : organization.name, summary: organization.summary, statusNumber: 3, user: req.user, members : docs, events : organization.events});
+                        res.render('tempOrganization', {name : organization.name, summary: organization.summary, statusNumber: 3, user: req.user, members : docs, events : organization.events});
                     }else{
-                        res.render('organization', {name : organization.name, summary: organization.summary, statusNumber: 2, user: req.user, members : docs, events : organization.events});
+                        res.render('tempOrganization', {name : organization.name, summary: organization.summary, statusNumber: 2, user: req.user, members : docs, events : organization.events});
                     }
                 });
             }else{//if there is not an user logged in
-                res.render('organization', {name : organization.name, summary: organization.summary, statusNumber: 0, user: null, members : null, events : organization.events.filter(filterPublicEvents)});
+                res.render('tempOrganization', {name : organization.name, summary: organization.summary, statusNumber: 0, user: null, members : null, events : organization.events.filter(filterPublicEvents)});
             }
         });
     },
