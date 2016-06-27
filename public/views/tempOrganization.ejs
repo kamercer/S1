@@ -11,6 +11,7 @@
 
     <script src="//code.jquery.com/jquery-2.2.3.min.js"></script>
     <script src="/semantic/dist/semantic.js"></script>
+    <script src="/JS/organization.js"></script>
 
     <link rel="stylesheet" type="text/css" href="/semantic/dist/semantic.css">
     <style type="text/css">
@@ -59,7 +60,8 @@
                 <p>contact organization(what other things should be here?)</p>
 
                 <% if (statusNumber === 3){ %>
-                    <button class="ui button">Update Image</button>
+                    <button class="ui button" id="orgUpdateImg">Update Image</button>
+                    <button class="ui button" id="createEvent">Create Event</button>
                 <% } %>
                 </div>
             </div>
@@ -107,5 +109,65 @@
                 <h1>Service Report</h1>
             </div>
         </div>
+
+    <div class="ui modal" id="imageModal">
+        <div class="header">
+            Organization Image
+        </div>
+        <div class="image content">
+            <div class="ui medium image">
+                <img src="organizationImage">
+            </div>
+            <div class="description">
+                <div class="ui header">Select an image</div>
+                <input id="organizationProfileImage" type="file" accept="image/*"><br>
+                <button id="uploadPic">Upload Pic</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="ui modal" id="newEventModal">
+        <div class="header">
+            New Event
+        </div>
+        <div class="content">
+            <label for="name">Event Name:</label>
+            <input id="name" required><br>
+                            
+            <label for="sDate">Start Date :</label>
+            <input id="sDate" required/><br>
+                            
+            <label for="eDate">End Date:</label>
+            <input id="eDate" required/><br>
+                            
+            <label for="eventPhoto">Upload Event Photo: </label>
+            <input id="eventPhoto" type="file" accept="image/*"><br>
+                       
+            <label for="public">Public:</label>
+            <input id="public" type="checkbox" required/><br>
+                           
+            <button id="submitEvent">submit event(add feedback to user knows event has been submitted)</button>
+        </div>
+    </div>
+
+    <div class="ui modal" id="memberInfoModal">
+        <div class="header">
+            Member Info
+        </div>
+
+        <div class="medium image content">
+            <div class="ui medium image">
+                <img>
+            </div>
+
+            <div class="description">
+                Name</br>
+                Email address</br>
+                Hours</br>
+                events attended</br>
+            </div>
+        </div>
+    </div>
+
     </body>
 </html>

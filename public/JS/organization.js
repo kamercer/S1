@@ -3,6 +3,7 @@ $(function(){
     init();
     
     function init(){
+        /*
         $("#join").click(function(){
             var callback = function(result){
                 location.reload();
@@ -10,28 +11,31 @@ $(function(){
             
             ajaxCall(window.location.href + ((window.location.href.endsWith('/')) ? 'join' : '/join')  , 'Post', null, null, callback);
         });
-        
-        //$("#sDate").datetimepicker();
-        //$("#eDate").datetimepicker();
-        
-        /*
-        $("#sDate").appendDtpicker({
-            futureOnly : true,
-            autodateOnStart : false,
-            todayButton : false,
-            closeOnSelected : true
-        });
-        $("#eDate").appendDtpicker({
-            futureOnly : true,
-            autodateOnStart : false,
-            todayButton : false,
-            closeOnSelected : true
-        });
         */
-        
+
+        $(document).ready(function(){
+            $("#orgUpdateImg").click(function(){
+                $("#imageModal").modal('show');
+            });
+        });
+
+        $("#uploadPic").click(function(){
+            submitPic();
+        });
+
+        $("#createEvent").click(function(){
+            $("#newEventModal").modal('show');
+        });
+
+        $("table tr").click(function(event){
+            $('#memberInfoModal').modal('show');
+        });
+
         $("#submitEvent").click(function(){
            submitEvent();
         });
+
+        /*
         
         $(".RSVP").click(function(){
             submitRSVP(this); 
@@ -49,12 +53,10 @@ $(function(){
         $("#updateImage").click(function(){
             $("#imageModal").modal('show');
         });
-
-        $("#uploadPic").click(function(){
-            submitPic();
-        });
         
         $('.menu .item').tab();
+
+        */
     }
     
     var submitEvent = function(){

@@ -5,18 +5,18 @@
   "dependencies": {
     "body-parser": "1.15.1",
     "connect-mongodb-session": "latest",
-    "cookie-parser": "1.4.3",
-    "ejs": "2.4.2",
-    "express": "4.14.0",
+    "cookie-parser": "latest",
+    "ejs": "latest",
+    "express": "latest",
     "express-session": "latest",
-    "mongodb": "2.1.18",
+    "mongodb": "latest",
     "mongoose": "4.5.1",
     "multer": "latest",
     "passport": "latest",
     "passport-local": "latest",
     "passport-facebook": "latest",
     "passport-google-oauth20": "latest",
-    "semantic-ui": "2.1.8"
+    "semantic-ui": "2.2.0"
   },
   "scripts": {
     "start": "node server.js"
