@@ -59,6 +59,13 @@ module.exports = function(app){
     app.get('/home/userImage', loginCheck, function(req, res){
         model.getProfilePic(req, res);
     });
+
+    ///////////////////////////////////
+    //This is intended to be the one route for profile pics.  will replace /home/userImage
+    app.get('/userImage/:id', loginCheck, function(req, res){
+        model.getProfilePic(req, res);
+    });
+    ///////////////////////////////////
     
     app.post('/createAccount', function(req, res){
          model.createAccount(req, res);
@@ -79,6 +86,12 @@ module.exports = function(app){
 
     app.get('/organization/:id/organizationImage', function(req, res){
         model.getOrganizationImage(req, res);
+    });
+
+    //This gets information about a member that only other members can see
+    //incomplete
+    app.get('/organization/:id/userInfo', loginCheck, function(req, res){
+        model.getUserInfo(req, res);
     });
     
     //check to make sure that user has permission to join

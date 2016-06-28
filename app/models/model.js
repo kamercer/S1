@@ -425,9 +425,65 @@ module.exports = {
             });
         });
     },
+
+    //This method returns information about a particular user that only other members can see
+    getUserInfo : function(req, res){
+
+        //check if requesting user has access
+        Organization.findOne({name : req.body.id}, function(err, org){
+            if (err == null){
+                if (org != null){
+                     User.findById(req.params.id, function(err, user){
+                         res.json({first : user.first_name, last : user.last_name, email});
+                    });
+                }else{
+                    console.log('getUserInfo org is null');
+                    res.end();
+                }
+            }else{
+                console.log('getUserInfo error: ' + err);
+                res.end();
+            }
+        });
+    },
     
+    //This methods returns the profile picture of an user
     getProfilePic : function(req, res){
-        retrieveProfilePic(req, res);
+
+        //check that the req.params.id supplied is an actual objectId
+        console.log(mongoose.Types.ObjectId.isValid(req.params.id));
+        if(!mongoose.Types.ObjectId.isValid(req.params.id)){
+            console.log('getProfilePic invalid id supplied');
+            res.end();
+            return;
+        }
+        
+        if(req.params.id == req.user._id){
+            if(req.user.profilePic == null || req.user.profilePic == undefined){
+                res.end();
+                console.log('no profile pic for req.user');
+            }else{
+                retrieveProfilePic(req, res, req.user.profilePic);
+            }
+        }else{
+            User.findById(mongoose.Types.ObjectId(req.params.id), function(err, user){
+                if(err == null){
+                    if(user != null){
+                        if(!(req.user.profilePic == null || req.user.profilePic == undefined)){
+                            retrieveProfilePic(user.profilePic);
+                        }else{
+                            res.end();
+                            console.log('getProfilePic no user pic found');
+                        }
+                    }else{
+                        console.log('getProfilePic user not found');
+                    }
+                }else{
+                    console.log('getProfilePic err: ' + err);
+                    res.end();
+                }
+            });
+        }
     },
 
     changeOrganizationImage : function(req, res){
@@ -520,18 +576,11 @@ function filterPublicEvents(value){
     return value.public;
 }
 
-function retrieveProfilePic(req, res){
+function retrieveProfilePic(req, res, id){
+
     var db = mongoose.connection;
-    
     var bucket = new mongodb.GridFSBucket(db.db);
-    
-    if(req.user.profilePic == null || req.user.profilePic == undefined){
-        res.end();
-        console.log('no profile pic');
-        return;
-    }
-    
-    var downloadStream = bucket.openDownloadStream(req.user.profilePic);
+    var downloadStream = bucket.openDownloadStream(id);
     
     /* current unnecessary code
     downloadStream.once('end', function(){
