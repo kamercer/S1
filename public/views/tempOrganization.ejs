@@ -68,7 +68,7 @@
             
             <div class="column">
                 <h1>Events</h1>
-                <div class="ui vertical menu">
+                <div class="ui vertical menu" id="eventMenu">
                     <% for(var i = 0; i < events.length; i++){ %>
                         <div class="item">
                             <%= events[i].name %>
@@ -166,6 +166,18 @@
                 Hours</br>
                 events attended</br>
             </div>
+        </div>
+    </div>
+
+    <div class="ui modal" id="eventInfoModal">
+        <div class="header">
+            Event Info
+        </div>
+
+        <div class="description">
+            Event Name</br>
+            Time</br>
+            Location</br>
         </div>
     </div>
 

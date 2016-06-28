@@ -31,6 +31,10 @@ $(function(){
             $('#memberInfoModal').modal('show');
         });
 
+        $("#eventMenu .item").click(function(){
+            $("#eventInfoModal").modal('show');
+        });      
+
         $("#submitEvent").click(function(){
            submitEvent();
         });
