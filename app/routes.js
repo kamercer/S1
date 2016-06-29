@@ -65,6 +65,12 @@ module.exports = function(app){
     app.get('/userImage/:id', loginCheck, function(req, res){
         model.getProfilePic(req, res);
     });
+
+
+    //This returns information about a particular user, used for a modal
+    app.get('/organization/:id/userInfo/:userId', loginCheck, function(req, res){
+        model.getUserInfo(req, res)
+    });
     ///////////////////////////////////
     
     app.post('/createAccount', function(req, res){

@@ -91,7 +91,7 @@
                         </thead>
                         <tbody>
                             <% for(var i = 0; i < members.length; i++){ %>
-                            <tr>
+                            <tr id="<%= members[i]._id %>" >
                                 <td>
                                     <%= members[i].first_name %>
                                 </td>
@@ -157,14 +157,32 @@
 
         <div class="medium image content">
             <div class="ui medium image">
-                <img>
+                <img id="userImg">
             </div>
 
             <div class="description">
-                Name</br>
-                Email address</br>
-                Hours</br>
-                events attended</br>
+                <div class="ui list">
+                    <div class="item">
+                        <div class="ui header">
+                            Name
+                        </div>
+                        <div class="content"  id="userName"></div>
+                    </div>
+                    
+                    <div class="item">
+                        <div class="header">
+                            Email
+                        </div>
+                        <div class="content" id="userEmail"></div>
+                    </div>
+
+                    <div class="item">
+                        <div class="header">
+                            Hours
+                        </div>
+                        <div class="content" id="userHours"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

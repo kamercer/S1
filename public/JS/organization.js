@@ -28,7 +28,9 @@ $(function(){
         });
 
         $("table tr").click(function(event){
-            $('#memberInfoModal').modal('show');
+            $("#userImg").attr('src', '/userImage/' + event.currentTarget.id);
+
+            ajaxCall(window.location.href + 'userInfo/' + event.currentTarget.id, 'Get', null, null, loadUserData);
         });
 
         $("#eventMenu .item").click(function(){
@@ -104,6 +106,15 @@ $(function(){
         data.append('image', $("#organizationProfileImage")[0].files[0]);
         
         ajaxCall(window.location.href + ((window.location.href.endsWith('/')) ? 'changeOrganizationImage' : '/changeOrganizationImage'), 'POST', data, false, null); 
+    }
+
+    function loadUserData(data){
+
+        $("#userName").text(data.first + " " + data.last);
+        $("#userEmail").text(data.email);
+        $("#userHours").text(data.hours);
+
+        $('#memberInfoModal').modal('show');
     }
     
     var ajaxCall = function(url, type, data, cType,callbackSuccess){

@@ -430,11 +430,12 @@ module.exports = {
     getUserInfo : function(req, res){
 
         //check if requesting user has access
-        Organization.findOne({name : req.body.id}, function(err, org){
+        Organization.findOne({name : req.params.id}, function(err, org){
             if (err == null){
                 if (org != null){
-                     User.findById(req.params.id, function(err, user){
-                         res.json({first : user.first_name, last : user.last_name, email});
+                     User.findById(req.params.userId).populate('memberOrganizationAssociation', null, {organization : org._id}).exec(function(err, user){
+
+                         res.json({first : user.first_name, last : user.last_name, email : user.email, hours : user.memberOrganizationAssociation[0].hours});
                     });
                 }else{
                     console.log('getUserInfo org is null');
