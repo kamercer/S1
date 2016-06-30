@@ -22,6 +22,10 @@
     .column{
         !border: black 1px solid;
     }
+
+    #mainView{
+        margin-top: 5em;
+    }
     </style>
 
     </head>
@@ -49,7 +53,7 @@
         </div>
 
 
-        <div class="ui three column grid container">
+        <div class="ui three column grid container" id="mainView">
             <div class="row">
                 <div class="column">
                     <p><%= name %></p>
@@ -62,6 +66,7 @@
                 <% if (statusNumber === 3){ %>
                     <button class="ui button" id="orgUpdateImg">Update Image</button>
                     <button class="ui button" id="createEvent">Create Event</button>
+                    <button class="ui button">Organization settings</button>
                 <% } %>
                 </div>
             </div>
@@ -72,6 +77,9 @@
                     <% for(var i = 0; i < events.length; i++){ %>
                         <div class="item">
                             <%= events[i].name %>
+
+                            <div class="ui button">Edit</div>
+                            <div class="ui button">Admin View</div>
                         </div>
                     <% } %>
 
@@ -182,6 +190,9 @@
                         </div>
                         <div class="content" id="userHours"></div>
                     </div>
+
+                    <div class="ui button">Change Status</div>
+                    <div class="ui button">Change hours</div>
                 </div>
             </div>
         </div>

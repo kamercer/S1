@@ -241,16 +241,16 @@ module.exports = {
             //console.log(docs);
             
             //There is probably a better way to do this
-            var events = [];
+            var upcomingEvents = [];
             for(var i = 0; i < docs.length; i++){
                 docs[i].events.forEach(function(value, index){
                     if(value.startDate >= new Date()){      
-                        events.push(value);     
+                        upcomingEvents.push(value);     
                     }
                 });
             }
             
-            res.render('home', {organizations : docs, events: events, user: req.user.username});
+            res.render('tempHome', {organizations : docs, events: upcomingEvents, user: req.user});
         });
     },
     

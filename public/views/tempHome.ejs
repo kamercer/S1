@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    
+    <script src="//code.jquery.com/jquery-2.2.3.min.js"></script>
+    
+    <link rel="stylesheet" type="text/css" href="/semantic/dist/semantic.min.css">
+    <script src="/semantic/dist/semantic.min.js"></script>
+    
+    <link rel="stylesheet" type="text/css" href="/CSS/home.css">
+    <script type='text/javascript' src="/JS/home.js"></script>
+
+    <style type="text/css">
+    #mainContent{
+        margin: auto;
+
+        margin-top: 5em;
+        width: 800px;
+    }
+
+    h4{
+        text-align: center;
+    }
+    </style>
+  </head>
+  <body>
+      <div class="ui fixed inverted menu">
+        <div class="ui container">
+            <a href="/" class="header item">
+                Service One
+            </a>
+
+            <div class="ui simple dropdown item">
+                Organizations <i class="dropdown icon"></i>
+                    <div class="menu">
+                        <% for(var i = 0; i < user.memberOf.length; i++){ %>
+                            <a class="item" href="/organization/<%= user.memberOf[i].name %>"><%= user.memberOf[i].name %></a>
+                        <% } %>
+                    </div>
+                </div>
+                
+                    <a class="right item"><%= user.first_name %></a>
+            </div>
+        </div>
+
+    <div class="ui segment" id="mainContent">
+        <div class="ui left rail">
+            <div class="ui segment">
+                
+            </div>
+        </div>
+
+        <div class="ui right rail">
+            <div class="ui segment">
+                <h4 class="ui header">
+                    Upcoming Events
+                <h4>
+
+                <div class="ui divider"></div>
+
+                <div class="ui list">
+                    <% for(var i = 0; i < events.length; i++){ %>
+                        <a class="item"><%= events[i].name %></a>
+                    <% } %>
+                </div>
+
+                <div class="ui divider"></div>
+
+                <h4 class="ui header">
+                    Nearby Events
+                <h4>
+            </div>
+        </div>
+    </div>
+  </body>
+</html>
