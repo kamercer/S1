@@ -191,8 +191,36 @@
                         <div class="content" id="userHours"></div>
                     </div>
 
-                    <div class="ui button">Change Status</div>
+                    <div class="ui selection dropdown">
+                        <i class="dropdown icon"></i>
+                        <div class="default text">Member Status</div>
+
+                        <div class="menu" id="statusMenu"></div>
+                    </div>
                     <div class="ui button">Change hours</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ui basic modal" id="statusChangeConfirmation">
+        <div class="header">
+            Change Member Status?
+        </div>
+
+        <div class="content">
+            <div class="description"></div>
+        </div>
+
+        <div class="actions">
+            <div class="two fluid ui inverted buttons">
+                <div class="ui cancel red basic inverted button">
+                    <i class="remove icon"></i>
+                    No
+                </div>
+                <div class="ui ok green basic inverted button" id="statusConfirmed">
+                    <i class="checkmark icon"></i>
+                    Yes
                 </div>
             </div>
         </div>

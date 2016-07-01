@@ -114,6 +114,23 @@ $(function(){
         $("#userEmail").text(data.email);
         $("#userHours").text(data.hours);
 
+        if(data.status == 0){
+            $("#statusMenu").html("<div class=\"item\">Make Admin</div><div class=\"item\">Remove Member</div>")
+        }else{
+            $("#statusMenu").html("<div class=\"item\">Make Member</div><div class=\"item\">Remove Member</div>")
+        }
+
+        $(".ui.selection.dropdown").dropdown({
+            onChange: function(value, text, $selectedItem){
+                $("#statusChangeConfirmation .description").html("Are you sure you want to change the status of " + $("#userName").text());
+
+                $("#statusConfirmed").click(function(){
+                    console.log('d');
+                });
+                $("#statusChangeConfirmation").modal('show');
+            }
+        });
+
         $('#memberInfoModal').modal('show');
     }
     

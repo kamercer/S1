@@ -80,7 +80,7 @@ module.exports = {
                 //This checks if the user is a member of the organization
                 var memberinOrganization = organization.members.some(function(value){
                         return value._id.equals(req.user._id);
-                    });
+                });
 
                 //If the member is not part of the organization, render the page appropriately
                 if (!memberinOrganization){
@@ -93,7 +93,7 @@ module.exports = {
                 User.find({_id : {$in : organization.members}}).populate({path : 'memberOrganizationAssociation' , match : {organization : organization._id}, options : {limit : 1}}).populate({path : 'eventUserRecords', select : {event : {$in : organization.events}}}).exec(function(err, docs){
                     //check if user is an admin of the specified organization and respond appropriately
                     var isMemberAdmin = organization.admins.some(function(value){
-                        return value._id.equals(req.user.id);
+                        return value._id.equals(req.user._id);
                     });
 
                     if(isMemberAdmin){
@@ -435,7 +435,31 @@ module.exports = {
                 if (org != null){
                      User.findById(req.params.userId).populate('memberOrganizationAssociation', null, {organization : org._id}).exec(function(err, user){
 
-                         res.json({first : user.first_name, last : user.last_name, email : user.email, hours : user.memberOrganizationAssociation[0].hours});
+                         console.log(org);
+                         console.log(org.members);
+                        //This checks if the user is a member of the organization
+                        var memberinOrganization = org.members.some(function(value){
+                            return value.equals(user._id);
+                        });
+
+                        //member is not in organization if this runs
+                        if(!memberinOrganization){
+                            console.log(user._id + " is not in " + org._id);
+                            res.end();
+                            return;
+                        }
+
+                        var isMemberAdmin = org.admins.some(function(value){
+                            return value.equals(user._id);
+                        });
+
+                        if(isMemberAdmin){
+                            //member is an admin
+                            res.json({first : user.first_name, last : user.last_name, email : user.email, hours : user.memberOrganizationAssociation[0].hours, status: 1});
+                        }else{
+                            //member is not an admin
+                            res.json({first : user.first_name, last : user.last_name, email : user.email, hours : user.memberOrganizationAssociation[0].hours, status: 0});
+                        }
                     });
                 }else{
                     console.log('getUserInfo org is null');
