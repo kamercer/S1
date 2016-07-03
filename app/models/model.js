@@ -90,11 +90,13 @@ module.exports = {
 
                 //at this point, user is either a member or an admin of the specified organization  
                 //This gets all the users that are a member of the organization, it populates their memberOrganizationAssociation.  I forget what the rest does, need to review this query
-                User.find({_id : {$in : organization.members}}).populate({path : 'memberOrganizationAssociation' , match : {organization : organization._id}, options : {limit : 1}}).populate({path : 'eventUserRecords', select : {event : {$in : organization.events}}}).exec(function(err, docs){
+                User.find({_id : {$in : organization.members}}).populate({path : 'memberOrganizationAssociation' , match : {organization : organization._id}}).populate({path : 'eventUserRecords', select : {event : {$in : organization.events}}}).exec(function(err, docs){
                     //check if user is an admin of the specified organization and respond appropriately
                     var isMemberAdmin = organization.admins.some(function(value){
                         return value._id.equals(req.user._id);
                     });
+
+                    console.log(docs);
 
                     if(isMemberAdmin){
                         res.render('tempOrganization', {name : organization.name, summary: organization.summary, statusNumber: 3, user: req.user, members : docs, events : organization.events});
@@ -108,21 +110,36 @@ module.exports = {
         });
     },
     
+    //This method adds a new member to an organization by updating organization, member and creating a new memberOrganization
+    //TODO: if one addition fails, should change others
     joinUser : function(req, res){
-        Organization.findOneAndUpdate({name : req.params.id}, {$addToSet: {members: req.user._id}}, {new : true}, function(err1, doc1){
-            console.log('joinUser organization : ' + err1);
-            console.log(doc1);
-            if(err1 == null){
-                User.findByIdAndUpdate(req.user._id, {$addToSet: {memberOf : doc1._id}}, {new : true}, function(err2, doc2){
-                    console.log('joinUser User: ' + err2);
-                    console.log(doc2);
-                    
-                    var newMemberOrganizationAssociation = MemberOrganizationAssociation({user : req.user._id, organization : doc1._id, hours : 0});
+        Organization.findOneAndUpdate({name : req.params.id}, {$addToSet: {members: req.user._id}}, {new : true}, function(err, org){
+            
+            if(err  == null){
+                if(org != null){
+
+                    var newMemberOrganizationAssociation = new MemberInOrganizationSchema({user : req.user._id, organization : org._id, hours : 0});
                     newMemberOrganizationAssociation.save(function(err, newDoc, numAffected){
-                        res.end();
+                        if(err == null){
+                            User.findByIdAndUpdate(req.user._id, {$addToSet: {memberOf : org._id, memberOrganizationAssociation : newDoc._id}}, {new : true}, function(err2, user){
+                                if(err2 == null){
+                                    res.end();
+                                }else{
+                                    console.log("joinUser error: " + err2);
+                                    res.end();
+                                }
+                            });
+                        }else{
+                            console.log("joinUser error : " + err);
+                            res.end();
+                        }
                     });
-                });
+                }else{
+                    console.log('joinUser org is null');
+                    res.end();
+                }
             }else{
+                console.log('joinUser error: ' + err);
                 res.end();
             }
         });
@@ -477,7 +494,7 @@ module.exports = {
     changeUserStatus : function(req, res){
 
         //First check that calling user is an admin
-        Organization.findById(req.params.id, function(err, org){
+        Organization.findOne({name : req.params.id}, function(err, org){
 
             //Make sure that there is not an error
             if(err != null){

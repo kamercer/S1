@@ -3,7 +3,7 @@ $(function(){
     init();
     
     function init(){
-        /*
+        
         $("#join").click(function(){
             var callback = function(result){
                 location.reload();
@@ -11,7 +11,7 @@ $(function(){
             
             ajaxCall(window.location.href + ((window.location.href.endsWith('/')) ? 'join' : '/join')  , 'Post', null, null, callback);
         });
-        */
+        
 
         $(document).ready(function(){
             $("#orgUpdateImg").click(function(){

@@ -114,11 +114,9 @@
             <% } %>
 
             <div class="column">
-                <form action="join" method="POST">
-                    <% if(statusNumber == 1){ %>
-                        <button class="ui button" type="submit">Join</button>
-                    <% } %>
-                </form> 
+                <% if(statusNumber == 1){ %>
+                    <button class="ui button" id="join">Join</button>
+                <% } %>
             </div>
 
             <div class="right floated column">
