@@ -471,6 +471,68 @@ module.exports = {
             }
         });
     },
+
+    //This function is called by an admin and it changes a member to an admin, an admin to a member
+    //or kicks out an admin/member
+    changeUserStatus : function(req, res){
+
+        //First check that calling user is an admin
+        Organization.findById(req.params.id, function(err, org){
+
+            //Make sure that there is not an error
+            if(err != null){
+
+                //Make sure that the org is not null
+                if(org){
+                    
+                    //make sure the calling user is an admin
+                    var isMemberAdmin = org.admins.some(function(value){
+                        return value.equals(req.user._id);
+                    });
+
+                    if(isMemberAdmin){
+
+                        if(!mongoose.Types.isValid(req.body.user_id)){
+                            console.log("changeUserStatus: given user id is not valid");
+                            res.end();
+                            return;
+                        }
+                        
+                        //This is the option to remove member
+                        if(req.body.selectedOption === "0"){
+                            Organization.findByIdAndUpdate(org._id, {$pullAll : {admins : mongoose.Types.ObjectId(req.body.user._id), members : mongoose.Types.ObjectId(req.user._id)}}, function(err, updatedOrg){
+
+                                if(!err){
+                                    User.findByIdAndUpdate(mongoose.Types.ObjectId(req.body.user._id), {$pullAll : {adminOf : org._id, memberOf: org._id}}, function(err, updatedUser){
+                                        
+                                        if(err){
+                                            console.log("changeUserStatus user update error: " + err);
+                                            res.end();
+                                        }else{
+                                            console.log(req.body.user_id + " has been removed from " + org._id);
+                                            res.end();
+                                        }
+                                    });
+                                }else{
+                                    console.log("changeUserStatus org update error: " + err);
+                                    res.end();
+                                }
+                            });
+                        }
+                    }else{
+                        console.log('changeUserStatus: calling user is not admin');
+                        res.end();
+                    }
+                }else{
+                    console.log('changeUserStatus: org is null');
+                    res.end();
+                }
+            }else{
+                console.log('changeUserStatus error: ' + err);
+                res.end();
+            }
+        });
+    },
     
     //This methods returns the profile picture of an user
     getProfilePic : function(req, res){

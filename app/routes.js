@@ -71,6 +71,12 @@ module.exports = function(app){
     app.get('/organization/:id/userInfo/:userId', loginCheck, function(req, res){
         model.getUserInfo(req, res)
     });
+
+    app.post('/organization/:id/changeUserStatus', loginCheck, function(req, res){
+        console.log(req.params.id);
+        console.log(req.body);
+        model.changeUserStatus(req, res);
+    });
     ///////////////////////////////////
     
     app.post('/createAccount', function(req, res){

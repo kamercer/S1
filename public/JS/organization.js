@@ -30,7 +30,7 @@ $(function(){
         $("table tr").click(function(event){
             $("#userImg").attr('src', '/userImage/' + event.currentTarget.id);
 
-            ajaxCall(window.location.href + 'userInfo/' + event.currentTarget.id, 'Get', null, null, loadUserData);
+            ajaxCall(window.location.href + 'userInfo/' + event.currentTarget.id, 'Get', null, null, function(data){ return loadUserData(data, event.currentTarget.id)});
         });
 
         $("#eventMenu .item").click(function(){
@@ -108,16 +108,16 @@ $(function(){
         ajaxCall(window.location.href + ((window.location.href.endsWith('/')) ? 'changeOrganizationImage' : '/changeOrganizationImage'), 'POST', data, false, null); 
     }
 
-    function loadUserData(data){
+    function loadUserData(data, id){
 
         $("#userName").text(data.first + " " + data.last);
         $("#userEmail").text(data.email);
         $("#userHours").text(data.hours);
 
         if(data.status == 0){
-            $("#statusMenu").html("<div class=\"item\">Make Admin</div><div class=\"item\">Remove Member</div>")
+            $("#statusMenu").html("<div class=\"item\" name=\"1\">Make Admin</div><div class=\"item\" name=\"0\">Remove Member</div>")
         }else{
-            $("#statusMenu").html("<div class=\"item\">Make Member</div><div class=\"item\">Remove Member</div>")
+            $("#statusMenu").html("<div class=\"item\" name=\"2\">Make Member</div><div class=\"item\" name=\"0\">Remove Member</div>")
         }
 
         $(".ui.selection.dropdown").dropdown({
@@ -125,8 +125,14 @@ $(function(){
                 $("#statusChangeConfirmation .description").html("Are you sure you want to change the status of " + $("#userName").text());
 
                 $("#statusConfirmed").click(function(){
-                    console.log('d');
+
+                    var input = {};
+                    input.selectedOption = $("#statusMenu .active").attr('name');
+                    input.user_id = id;
+
+                    ajaxCall(window.location.href + "changeUserStatus", 'POST', JSON.stringify(input), 'application/json', null); 
                 });
+
                 $("#statusChangeConfirmation").modal('show');
             }
         });
