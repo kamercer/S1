@@ -77,11 +77,13 @@ module.exports = {
             //if there is an user logged in
             if (req.user){
 
+                console.log(organization.members);
                 //This checks if the user is a member of the organization
                 var memberinOrganization = organization.members.some(function(value){
                         return value._id.equals(req.user._id);
                 });
-
+                
+                console.log(memberinOrganization);
                 //If the member is not part of the organization, render the page appropriately
                 if (!memberinOrganization){
                     res.render('tempOrganization', {name : organization.name, summary: organization.summary, statusNumber: 1, user: req.user, members : null, events : organization.events.filter(filterPublicEvents)});
@@ -491,13 +493,14 @@ module.exports = {
 
     //This function is called by an admin and it changes a member to an admin, an admin to a member
     //or kicks out an admin/member
+    //TODO: better error handling
     changeUserStatus : function(req, res){
 
         //First check that calling user is an admin
         Organization.findOne({name : req.params.id}, function(err, org){
 
             //Make sure that there is not an error
-            if(err != null){
+            if(err == null){
 
                 //Make sure that the org is not null
                 if(org){
@@ -509,7 +512,7 @@ module.exports = {
 
                     if(isMemberAdmin){
 
-                        if(!mongoose.Types.isValid(req.body.user_id)){
+                        if(!mongoose.Types.ObjectId.isValid(req.body.user_id)){
                             console.log("changeUserStatus: given user id is not valid");
                             res.end();
                             return;
@@ -517,10 +520,10 @@ module.exports = {
                         
                         //This is the option to remove member
                         if(req.body.selectedOption === "0"){
-                            Organization.findByIdAndUpdate(org._id, {$pullAll : {admins : mongoose.Types.ObjectId(req.body.user._id), members : mongoose.Types.ObjectId(req.user._id)}}, function(err, updatedOrg){
+                            Organization.findByIdAndUpdate(org._id, {$pull : {admins : mongoose.Types.ObjectId(req.body.user_id), members : mongoose.Types.ObjectId(req.body.user_id)}}, function(err, updatedOrg){
 
                                 if(!err){
-                                    User.findByIdAndUpdate(mongoose.Types.ObjectId(req.body.user._id), {$pullAll : {adminOf : org._id, memberOf: org._id}}, function(err, updatedUser){
+                                    User.findByIdAndUpdate(mongoose.Types.ObjectId(req.body.user_id), {$pull : {adminOf : org._id, memberOf: org._id}}, function(err, updatedUser){
                                         
                                         if(err){
                                             console.log("changeUserStatus user update error: " + err);
@@ -535,6 +538,47 @@ module.exports = {
                                     res.end();
                                 }
                             });
+                        }else if(req.body.selectedOption === "1"){ //This is the option to make admin
+                            Organization.findByIdAndUpdate(org._id, {$push : {admins : mongoose.Types.ObjectId(req.body.user_id)}}, function(err, updatedOrg){
+
+                                if(!err){
+                                    User.findByIdAndUpdate(mongoose.Types.ObjectId(req.body.user_id), {$push : {adminOf : org._id}}, function(err, updatedUser){
+                                        
+                                        if(err){
+                                            console.log("changeUserStatus user update error: " + err);
+                                            res.end();
+                                        }else{
+                                            console.log(req.body.user_id + " has been made admin for " + org._id);
+                                            res.end();
+                                        }
+                                    });
+                                }else{
+                                    console.log("changeUserStatus org update error: " + err);
+                                    res.end();
+                                }
+                            });
+                        }else if(req.body.selectedOption === "2"){ //This is the option to make member
+                            Organization.findByIdAndUpdate(org._id, {$pull : {admins : mongoose.Types.ObjectId(req.body.user_id)}}, function(err, updatedOrg){
+
+                                if(!err){
+                                    User.findByIdAndUpdate(mongoose.Types.ObjectId(req.body.user_id), {$pull : {adminOf : org._id}}, function(err, updatedUser){
+                                        
+                                        if(err){
+                                            console.log("changeUserStatus user update error: " + err);
+                                            res.end();
+                                        }else{
+                                            console.log(req.body.user_id + " is not an admin anymore in " + org._id);
+                                            res.end();
+                                        }
+                                    });
+                                }else{
+                                    console.log("changeUserStatus org update error: " + err);
+                                    res.end();
+                                }
+                            });
+                        }else{
+                            console.log("changeUserStatus selectedOption is not valid");
+                            res.end();
                         }
                     }else{
                         console.log('changeUserStatus: calling user is not admin');

@@ -9,8 +9,6 @@ module.exports = function(){
         callbackURL : "http://localhost:3000/auth/google/callback"
     },
     function(accessToken, refreshToken, profile, cb){
-        console.log(profile);
-        console.log(profile.emails);
         //check if an user exists with their existing google id
         User.findOne({googleID : profile.id}, function(err, user){
             //if there is an error, call cb(err), else check what is contained in user
