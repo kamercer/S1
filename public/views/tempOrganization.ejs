@@ -75,7 +75,7 @@
                 <h1>Events</h1>
                 <div class="ui vertical menu" id="eventMenu">
                     <% for(var i = 0; i < events.length; i++){ %>
-                        <div class="item">
+                        <div class="item" id="<%= events[i]._id %>">
                             <%= events[i].name %>
 
                             <div class="ui button">Edit</div>
@@ -145,22 +145,42 @@
             New Event
         </div>
         <div class="content">
-            <label for="name">Event Name:</label>
-            <input id="name" required><br>
-                            
-            <label for="sDate">Start Date :</label>
-            <input id="sDate" required/><br>
-                            
-            <label for="eDate">End Date:</label>
-            <input id="eDate" required/><br>
-                            
-            <label for="eventPhoto">Upload Event Photo: </label>
-            <input id="eventPhoto" type="file" accept="image/*"><br>
-                       
-            <label for="public">Public:</label>
-            <input id="public" type="checkbox" required/><br>
-                           
-            <button id="submitEvent">submit event(add feedback to user knows event has been submitted)</button>
+
+            <form class="ui form">
+                <div class="field">
+                    <label>EventName</label>
+                    <input type="text" id="name">
+                </div>
+
+                <div class="field">
+                    <label>Description</label>
+                    <textarea id="description"></textarea>
+                </div>
+
+                <div class="field">
+                    <label>Start Date</label>
+                    <input type="date" id="sDate">
+                </div>
+
+                <div class="field">
+                    <label>End Date</label>
+                    <input type="date" id="eDate">
+                </div>
+
+                <div class="field">
+                    <label>Event Photo</label>
+                    <input id="public" type="file" accept="image/*">
+                </div>
+
+                <div class="field">
+                    <div class="ui toggle checkbox">
+                        <label>Public</label>
+                        <input type="checkbox" tabindex="0" class="hidden">
+                    </div>
+                </div>
+            </form>
+
+            <button class="ui button" id="submitEvent">submit event(add feedback to user knows event has been submitted)</button>
         </div>
     </div>
 
@@ -237,10 +257,35 @@
             Event Info
         </div>
 
-        <div class="description">
-            Event Name</br>
-            Time</br>
-            Location</br>
+        <div class="medium image content">
+            <div class="ui medium image">
+                <img id="eventImg">
+            </div>
+
+            <div class="description">
+                <div class="ui list">
+                    <div class="item">
+                        <div class="ui header">
+                            Event Name
+                        </div>
+                        <div class="content" id="eventName"></div>
+                    </div>
+
+                    <div class="item">
+                        <div class="ui header">
+                            Description
+                        </div>
+                        <div class="content" id="eventDescription"></div>
+                    </div>
+
+                    <div class="item">
+                        <div class="ui header">
+                            Time
+                        </div>
+                        <div class="content" id="eventTime"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

@@ -491,6 +491,22 @@ module.exports = {
         });
     },
 
+    getEventInfo : function(req, res){
+        Event.findById(req.params.id, function(err, event){
+            if(err == null){
+                if(event != null){
+                    res.json({name : event.name, time : (event.startDate.toString() + " - " + event.endDate.toString())});
+                }else{
+                    console.log("getEventInfo event is null");
+                    res.end();
+                }
+            }else{
+                console.log('getEventInfo error: ' + err);
+                res.end();
+            }
+        });
+    },
+
     //This function is called by an admin and it changes a member to an admin, an admin to a member
     //or kicks out an admin/member
     //TODO: better error handling

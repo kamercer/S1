@@ -73,9 +73,11 @@ module.exports = function(app){
     });
 
     app.post('/organization/:id/changeUserStatus', loginCheck, function(req, res){
-        console.log(req.params.id);
-        console.log(req.body);
         model.changeUserStatus(req, res);
+    });
+
+    app.get('/eventInfo/:id', function(req, res){
+        model.getEventInfo(req, res);
     });
     ///////////////////////////////////
     
@@ -126,7 +128,7 @@ module.exports = function(app){
         model.changeOrganizationImage(req, res);
     });
 
-    app.get('/events/eventImage/:id', function(req, res){
+    app.get('/eventImage/:id', function(req, res){
         model.getEventImage(req, res);
     });
     

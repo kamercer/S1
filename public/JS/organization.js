@@ -3,6 +3,8 @@ $(function(){
     init();
     
     function init(){
+
+        $(".ui.checkbox").checkbox();
         
         $("#join").click(function(){
             var callback = function(result){
@@ -33,7 +35,10 @@ $(function(){
             ajaxCall(window.location.href + 'userInfo/' + event.currentTarget.id, 'Get', null, null, function(data){ return loadUserData(data, event.currentTarget.id)});
         });
 
-        $("#eventMenu .item").click(function(){
+        $("#eventMenu .item").click(function(event){
+            $("#eventImg").attr('src', '/eventImage/' + event.currentTarget.id);
+
+            ajaxCall('/eventInfo/' + event.currentTarget.id, 'Get', null, null, loadEventData);
             $("#eventInfoModal").modal('show');
         });      
 
@@ -68,6 +73,7 @@ $(function(){
     var submitEvent = function(){
         var data = new FormData();
         data.append("name", $("#name").val());
+        data.append("description", $("#description").val())
         data.append("sDate", $("#sDate").val());
         data.append("eDate", $("#eDate").val());
         data.append("image", $("#eventPhoto")[0].files[0]);
@@ -138,6 +144,14 @@ $(function(){
         });
 
         $('#memberInfoModal').modal('show');
+    }
+
+    function loadEventData(data){
+        $("#eventName").text(data.name);
+        $("#eventDescription").text("I need to add description");
+        $("#eventTime").text(data.time);
+
+
     }
     
     var ajaxCall = function(url, type, data, cType,callbackSuccess){

@@ -12,6 +12,7 @@ var organizationSchema = mongoose.Schema({
 
 var eventSchema = mongoose.Schema({
     name             : String,
+    description      : String,
     startDate        : Date,
     endDate          : Date,
     organization     : {type : mongoose.Schema.Types.ObjectId, ref : 'Organization'},
