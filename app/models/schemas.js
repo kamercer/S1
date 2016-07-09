@@ -20,7 +20,8 @@ var eventSchema = mongoose.Schema({
     public           : Boolean,
     eventIdentifier  : String,
     //eventUserRecords : [{type : mongoose.Schema.Types.ObjectId, ref : 'eventUserRecord'}],//not sure if I need to use this
-    eventPhoto       : {type : mongoose.Schema.Types.ObjectId, ref : 'fs.files'}
+    eventPhoto       : {type : mongoose.Schema.Types.ObjectId, ref : 'fs.files'},
+    location         : {type : {type : String, default : 'Point'}, coordinates : [Number], address : String}
 });
 
 var eventUserRecordSchema = mongoose.Schema({
@@ -44,7 +45,8 @@ var userSchema = mongoose.Schema({
    eventsAttended                : [{type : mongoose.Schema.Types.ObjectId, ref : 'Event'}], //not sure if I need to use this
    memberOrganizationAssociation : [{type : mongoose.Schema.Types.ObjectId, ref : 'MemberOrganizationAssociation'}],
    eventUserRecords              : [{type : mongoose.Schema.Types.ObjectId, ref : 'eventUserRecord'}],
-   profilePic                    : {type : mongoose.Schema.Types.ObjectId, ref : 'fs.files'}
+   profilePic                    : {type : mongoose.Schema.Types.ObjectId, ref : 'fs.files'},
+   homeLocation                  : {type : {type : String, default : 'Point'}, coordinates : [Number], address : String}
 });
 
 var unregisteredUserSchema = mongoose.Schema({

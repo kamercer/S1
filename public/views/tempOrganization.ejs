@@ -9,9 +9,13 @@
     <!-- Site Properties -->
     <title>Fixed Menu Example - Semantic</title>
 
+
     <script src="//code.jquery.com/jquery-2.2.3.min.js"></script>
     <script src="/semantic/dist/semantic.js"></script>
     <script src="/JS/organization.js"></script>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBexpa9vkX0-EUBAHwMTxxDm6tBuU1GJyY&libraries=places"
+        async defer></script>
 
     <link rel="stylesheet" type="text/css" href="/semantic/dist/semantic.css">
     <style type="text/css">
@@ -157,9 +161,14 @@
                     <textarea id="description"></textarea>
                 </div>
 
+                <div class="field">            
+                    <label>Location</label>
+                    <input id="autocomplete" onFocus="geolocate()" type="text"></input>
+                </div>
+
                 <div class="field">
                     <label>Start Date</label>
-                    <input type="date" id="sDate">
+                    <input type="date" id="sDate"></input>
                 </div>
 
                 <div class="field">
@@ -169,13 +178,13 @@
 
                 <div class="field">
                     <label>Event Photo</label>
-                    <input id="public" type="file" accept="image/*">
+                    <input id="eventPhoto" type="file" accept="image/*">
                 </div>
 
                 <div class="field">
                     <div class="ui toggle checkbox">
                         <label>Public</label>
-                        <input type="checkbox" tabindex="0" class="hidden">
+                        <input type="checkbox" tabindex="0" class="hidden" id="public">
                     </div>
                 </div>
             </form>
@@ -283,6 +292,13 @@
                             Time
                         </div>
                         <div class="content" id="eventTime"></div>
+                    </div>
+
+                    <div class="item">
+                        <div class="ui header">
+                            Location
+                        </div>
+                        <div class="content" id="eventLocation"></div>
                     </div>
                 </div>
             </div>

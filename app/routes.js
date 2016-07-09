@@ -60,6 +60,10 @@ module.exports = function(app){
         model.getProfilePic(req, res);
     });
 
+    app.post('/home/setLocation', loginCheck, function(req, res){
+        model.setLocation(req, res);
+    });
+
     ///////////////////////////////////
     //This is intended to be the one route for profile pics.  will replace /home/userImage
     app.get('/userImage/:id', loginCheck, function(req, res){

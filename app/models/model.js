@@ -159,13 +159,16 @@ module.exports = {
                 }
                 
                 var newEvent = new Event({name : req.body.name,
+                description : req.body.description,
                 startDate : new Date(req.body.sDate),
                 endDate : new Date(req.body.eDate),
                 organization : organization._id,
                 createdBy : req.user._id,
                 public : req.body.public,
                 eventIdentifier : createEventId(),
-                eventPhoto : eventPhotoId});
+                eventPhoto : eventPhotoId,
+                location : {type : 'Point', coordinates : [req.body.lat, req.body.lng], address : req.body.address}
+                });
                 
                 newEvent.save(function(err, savedEvent, numAffected){
                     console.log('new event err : ' + err);
@@ -269,7 +272,7 @@ module.exports = {
                 });
             }
             
-            res.render('tempHome', {organizations : docs, events: upcomingEvents, user: req.user});
+            res.render('tempHome', {organizations : docs, upcomingEvents: upcomingEvents, user: req.user});
         });
     },
     
@@ -495,7 +498,11 @@ module.exports = {
         Event.findById(req.params.id, function(err, event){
             if(err == null){
                 if(event != null){
-                    res.json({name : event.name, time : (event.startDate.toString() + " - " + event.endDate.toString())});
+                    res.json({name : event.name,
+                              time : (event.startDate.toString() + " - " + event.endDate.toString()),
+                              description : event.description,
+                              location : event.location.address
+                              });
                 }else{
                     console.log("getEventInfo event is null");
                     res.end();
@@ -694,6 +701,19 @@ module.exports = {
 
     getEventImage : function(req, res){
         retrieveEventImage(req, res);
+    },
+
+    setLocation : function(req, res){
+        console.log(req.body);
+
+        User.findByIdAndUpdate(req.user._id, {homeLocation : {type : 'Point', coordinates : [req.body.lat, req.body.lng], address : req.body.address}}, function(err, user){
+            if(err == null){
+                res.sendStatus(200);
+            }else{
+                console.log("setLocation error: " + err);
+                res.sendStatus(500);
+            }
+        });
     }
 };
 

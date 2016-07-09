@@ -9,8 +9,12 @@
     <link rel="stylesheet" type="text/css" href="/semantic/dist/semantic.min.css">
     <script src="/semantic/dist/semantic.min.js"></script>
     
-    <link rel="stylesheet" type="text/css" href="/CSS/home.css">
+    <!-- <link rel="stylesheet" type="text/css" href="/CSS/home.css"> -->
     <script type='text/javascript' src="/JS/home.js"></script>
+
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBexpa9vkX0-EUBAHwMTxxDm6tBuU1GJyY&libraries=places"
+        async defer></script>
 
     <style type="text/css">
     #mainContent{
@@ -61,8 +65,8 @@
                 <div class="ui divider"></div>
 
                 <div class="ui list">
-                    <% for(var i = 0; i < events.length; i++){ %>
-                        <a class="item"><%= events[i].name %></a>
+                    <% for(var i = 0; i < upcomingEvents.length; i++){ %>
+                        <a class="item"><%= upcomingEvents[i].name %></a>
                     <% } %>
                 </div>
 
@@ -71,6 +75,15 @@
                 <h4 class="ui header">
                     Nearby Events
                 <h4>
+                <a id="setLocation">set location</a>
+
+                <div class="ui divider"></div>
+                
+                <div class="ui list">
+                    <% for(var i = 0; i < 0; i++){ %>
+                        <a class="item"><%= nearbyEvents[i].name %></a>
+                    <% } %>
+                </div>
             </div>
         </div>
     </div>

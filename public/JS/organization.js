@@ -26,6 +26,7 @@ $(function(){
         });
 
         $("#createEvent").click(function(){
+            initAutocomplete();
             $("#newEventModal").modal('show');
         });
 
@@ -71,19 +72,22 @@ $(function(){
     }
     
     var submitEvent = function(){
+
+        if(addressSelected === false){
+            console.log("Address not selected");
+            return;
+        }
+
         var data = new FormData();
         data.append("name", $("#name").val());
-        data.append("description", $("#description").val())
+        data.append("description", $("#description").val());
+        data.append("address", autocomplete.getPlace().formatted_address);
+        data.append("lat", autocomplete.getPlace().geometry.location.lat());
+        data.append("lng",  autocomplete.getPlace().geometry.location.lng());
         data.append("sDate", $("#sDate").val());
         data.append("eDate", $("#eDate").val());
         data.append("image", $("#eventPhoto")[0].files[0]);
         data.append("public" ,$("#public").prop("checked"));
-        
-        //var data = {};
-        //data.name = $("#name").val();
-        //data.sDate = $("#sDate").val();
-        //data.eDate = $("#eDate").val();
-        //data.public = $("#public").prop("checked");
         
         ajaxCall('createEvent', 'POST', data, false, null); 
     };
@@ -147,12 +151,18 @@ $(function(){
     }
 
     function loadEventData(data){
+
+        $("#eventName").text("");
+        $("#eventDescription").text("");
+        $("#eventTime").text("");
+        $("#eventLocation").text("");
+
         $("#eventName").text(data.name);
-        $("#eventDescription").text("I need to add description");
+        $("#eventDescription").text(data.description);
         $("#eventTime").text(data.time);
-
-
+        $("#eventLocation").text(data.location);
     }
+
     
     var ajaxCall = function(url, type, data, cType,callbackSuccess){
         $.ajax({
@@ -173,3 +183,35 @@ $(function(){
         });
     }
 });
+
+    var autocomplete;
+    var addressSelected = false;
+
+
+    function initAutocomplete() {
+        // Create the autocomplete object, restricting the search to geographical
+        // location types.
+        autocomplete = new google.maps.places.Autocomplete(
+            /** @type {!HTMLInputElement} */(document.getElementById('autocomplete')),
+            {types: ['geocode']});
+
+        autocomplete.addListener('place_changed', function(){
+            addressSelected = true;
+        });
+    }
+
+    function geolocate() {
+       if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            var geolocation = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+            var circle = new google.maps.Circle({
+              center: geolocation,
+              radius: position.coords.accuracy
+            });
+            autocomplete.setBounds(circle.getBounds());
+          });
+        }
+      }
