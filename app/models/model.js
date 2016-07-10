@@ -272,7 +272,8 @@ module.exports = {
                 });
             }
 
-            Event.find({location : 
+            if(req.user.homeLocation.coordinates.length > 0){
+                Event.find({location : 
                         {$near : {
                             $geometry : {
                                 type : "Point",
@@ -280,14 +281,17 @@ module.exports = {
                             },
                             $maxDistance : 1000 //meters
                         }}},
-            function(err, nearbyEvents){
-                if(err == null){
-                    res.render('tempHome', {organizations : docs, upcomingEvents: upcomingEvents, nearbyEvents: nearbyEvents, user: req.user});
-                }else{
-                    console.log("createHomePage error: " + err);
-                    res.end();
-                }
-            });
+                function(err, nearbyEvents){
+                    if(err == null){
+                        res.render('tempHome', {organizations : docs, upcomingEvents: upcomingEvents, nearbyEvents: nearbyEvents, user: req.user});
+                    }else{
+                        console.log("createHomePage error: " + err);
+                        res.end();
+                    }
+                });
+            }else{
+                res.render('tempHome', {organizations : docs, upcomingEvents: upcomingEvents, nearbyEvents: [], user: req.user});
+            }
         });
     },
     
