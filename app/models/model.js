@@ -284,7 +284,7 @@ module.exports = {
                 if(err == null){
                     res.render('tempHome', {organizations : docs, upcomingEvents: upcomingEvents, nearbyEvents: nearbyEvents, user: req.user});
                 }else{
-                    console,log("createHomePage error: " + err);
+                    console.log("createHomePage error: " + err);
                     res.end();
                 }
             });
