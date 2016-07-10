@@ -39,6 +39,7 @@ $(function(){
             {types: ['geocode']});
 
         autocomplete.addListener('place_changed', function(){
+            //sometimes an address might not return coordinates such as "5200 U.S. 70, Mebane, NC, United States".  I need to handle this case
             var data = {};
             data.address = autocomplete.getPlace().formatted_address;
             data.lat = autocomplete.getPlace().geometry.location.lat();

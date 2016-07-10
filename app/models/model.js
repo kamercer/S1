@@ -271,8 +271,23 @@ module.exports = {
                     }
                 });
             }
-            
-            res.render('tempHome', {organizations : docs, upcomingEvents: upcomingEvents, user: req.user});
+
+            Event.find({location : 
+                        {$near : {
+                            $geometry : {
+                                type : "Point",
+                                coordinates : req.user.homeLocation.coordinates
+                            },
+                            $maxDistance : 1000 //meters
+                        }}},
+            function(err, nearbyEvents){
+                if(err == null){
+                    res.render('tempHome', {organizations : docs, upcomingEvents: upcomingEvents, nearbyEvents: nearbyEvents, user: req.user});
+                }else{
+                    console,log("createHomePage error: " + err);
+                    res.end();
+                }
+            });
         });
     },
     

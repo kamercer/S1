@@ -24,6 +24,8 @@ var eventSchema = mongoose.Schema({
     location         : {type : {type : String, default : 'Point'}, coordinates : [Number], address : String}
 });
 
+eventSchema.index({ location : '2dsphere' });
+
 var eventUserRecordSchema = mongoose.Schema({
     parentEvent      : {type : mongoose.Schema.Types.ObjectId, ref : 'Event'},
     user             : {type : mongoose.Schema.Types.ObjectId, ref : 'User'},
