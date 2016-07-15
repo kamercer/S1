@@ -132,6 +132,14 @@ module.exports = function(app){
         model.changeOrganizationImage(req, res);
     });
 
+    app.post('/changeEventImage/:id', upload.any(), loginCheck, function(req, res){
+        model.changeEventImage(req, res);
+    });
+
+    app.post('/eventEdit/:id', loginCheck, function(req, res){
+        model.eventEdit(req, res);
+    });
+
     app.get('/eventImage/:id', function(req, res){
         model.getEventImage(req, res);
     });

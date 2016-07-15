@@ -34,3 +34,6 @@ to-do:
   add config file for things such as facebook app id and google app id
 
   I might change javascript files so strangers get a different javascript file than an admin
+
+  update nearby events after change
+  change image size for load speed

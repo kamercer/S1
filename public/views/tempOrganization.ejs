@@ -50,6 +50,8 @@
                             <% } %>
                         </div>
                     </div>
+
+                    <a class="item">Log</a>
                 
                     <a class="right item"><%= user.first_name %></a>
                 <% } %>
@@ -79,11 +81,15 @@
                 <h1>Events</h1>
                 <div class="ui vertical menu" id="eventMenu">
                     <% for(var i = 0; i < events.length; i++){ %>
-                        <div class="item" id="<%= events[i]._id %>">
+                        <div class="ui simple dropdown item" id="<%= events[i]._id %>">
+                            
                             <%= events[i].name %>
 
-                            <div class="ui button">Edit</div>
-                            <div class="ui button">Admin View</div>
+                            <i class="dropdown icon"></i>
+                            <div class="menu">
+                                <a class="item"><i class="edit icon"></i> Edit Event</a>
+                                <a class="item"><i class="globe icon"></i> View Details</a>
+                            </div>
                         </div>
                     <% } %>
 
@@ -299,6 +305,91 @@
                             Location
                         </div>
                         <div class="content" id="eventLocation"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ui modal" id="eventEditModal">
+        <div class="header">
+            Event Edit
+        </div>
+
+        <div class="medium image content">
+            <div class="ui medium image">
+                <img id="eventImgEdit">
+            </div>
+        
+
+            <div class="description">
+                <div class="ui list">
+                    <div class="item">
+                        <div class="ui header">
+                            Event Name
+                        </div>
+                        <div class="content">
+                            <div class="ui input">
+                                <input id="eventNameInput" type="text"></input>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="item">
+                        <div class="ui header">
+                            Description
+                        </div>
+                        <div class="content">
+                            <div class="ui input">
+                                <input id="eventDescriptionInput" type="text"></input>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="item">
+                        <div class="ui header">
+                            Start Date
+                        </div>
+                        <div class="content">
+                            <div class="ui input">
+                                <input id="eventStartInput" type="text"></input>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="item">
+                        <div class="ui header">
+                            End Date
+                        </div>
+                        <div class="content">
+                            <div class="ui input">
+                                <input id="eventEndInput" type="text"></input>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="item">
+                        <div class="ui header">
+                            Location
+                        </div>
+                        <div class="content">
+                            <div class="ui input">
+                                <input id="autocompleteEdit" onFocus="geolocate()" type="text"></input>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="item">
+                        <div class="ui header">
+                            Event Image
+                        </div>
+                        <div class="content">
+                            <input id="newEventImage" type="file" accept="image/*"><br>
+                        </div>
+                    </div>
+
+                    <div class="item">
+                        <button class="ui button" id="eventEditSubmit">Submit</button>
                     </div>
                 </div>
             </div>

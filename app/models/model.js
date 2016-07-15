@@ -518,7 +518,8 @@ module.exports = {
             if(err == null){
                 if(event != null){
                     res.json({name : event.name,
-                              time : (event.startDate.toString() + " - " + event.endDate.toString()),
+                              startDate : event.startDate.toString(),
+                              endDate : event.endDate.toString(),
                               description : event.description,
                               location : event.location.address
                               });
@@ -716,6 +717,80 @@ module.exports = {
 
     getOrganizationImage : function(req, res){
         retrieveOrganizationImage(req, res);
+    },
+
+    changeEventImage : function(req, res){
+
+        if(!mongoose.Types.ObjectId.isValid(req.params.id)){
+            console.log('changeEventImage invalid id supplied');
+            res.end();
+            return;
+        }
+
+        //verify that user is an admin
+        Organization.findOne({events : {$all : req.params.id}}).populate('admins').exec(function(err, organization){
+
+            if(err != null){
+                res.end();
+                console.log('changeEventImage error: ' + err);
+                return;
+            }
+
+            if(organization == null){
+                res.end();
+                console.log('changeEventImage organization is null');
+                return;
+            }
+
+            var isMemberAdmin = organization.admins.some(function(value){
+                        return value._id.equals(req.user.id);
+            });
+
+            //if user is not an admin, do not go any further
+            if(!isMemberAdmin){
+                console.log('requesting user is not an admin');
+                res.end();
+                return;
+            }
+
+            //upload the image to the database, then add the id to the organization record
+            uploadImage(req,res).then(function(imageId){
+                if(imageId == null){
+                    res.end();
+                    console.log('upload Event image failed');
+                    return;
+                }
+
+                Event.findByIdAndUpdate(req.params.id, {eventPhoto : imageId}, {new : true}, function(err, doc){
+                    if(err != null){
+                        console.log('error updating Event image');
+                        console.log('err: ' + err);
+                        console.log('doc: ' + doc);
+
+                        res.end();
+                        return;
+                    }
+
+                    res.end();
+                });
+            });
+        });
+    },
+
+    //check if requesting user is able to make changes
+    eventEdit : function(req, res){
+        if(!mongoose.Types.ObjectId.isValid(req.params.id)){
+            console.log('eventEdit invalid id supplied');
+            res.end();
+            return;
+        }
+
+        Event.findByIdAndUpdate(req.params.id, {name : req.body.name, description : req.body.description, startDate : req.body.startDate, endDate : req.body.endDate, location : {type : 'Point', coordinates : [req.body.lat, req.body.lng], address : req.body.address}}, function(err, event){
+            if(err != null){
+                console.log('eventEdit error: ' + err);
+            }
+            res.end();
+        });
     },
 
     getEventImage : function(req, res){

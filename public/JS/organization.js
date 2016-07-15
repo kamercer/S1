@@ -1,6 +1,7 @@
 $(function(){
     
     init();
+    var activeEventEdit;
     
     function init(){
 
@@ -26,7 +27,7 @@ $(function(){
         });
 
         $("#createEvent").click(function(){
-            initAutocomplete();
+            initAutocomplete('autocomplete');
             $("#newEventModal").modal('show');
         });
 
@@ -36,15 +37,30 @@ $(function(){
             ajaxCall(window.location.href + 'userInfo/' + event.currentTarget.id, 'Get', null, null, function(data){ return loadUserData(data, event.currentTarget.id)});
         });
 
-        $("#eventMenu .item").click(function(event){
-            $("#eventImg").attr('src', '/eventImage/' + event.currentTarget.id);
+        $("#eventMenu .ui.simple.dropdown").click(function(event){
 
-            ajaxCall('/eventInfo/' + event.currentTarget.id, 'Get', null, null, loadEventData);
-            $("#eventInfoModal").modal('show');
-        });      
+            activeEventEdit = event.currentTarget.id;
+
+            //side button was pressed
+            if(event.originalEvent.originalTarget.classList[0] === "item" || event.originalEvent.originalTarget.classList[0] === "edit"){
+                $("#eventImgEdit").attr('src', '/eventImage/' + event.currentTarget.id);
+
+                ajaxCall('/eventInfo/' + event.currentTarget.id, 'Get', null, null, loadEditEventData);
+            }else{
+                $("#eventImg").attr('src', '/eventImage/' + event.currentTarget.id);
+
+                ajaxCall('/eventInfo/' + event.currentTarget.id, 'Get', null, null, loadEventData);
+                $("#eventInfoModal").modal('show');
+            }
+        });
+
 
         $("#submitEvent").click(function(){
            submitEvent();
+        });
+
+        $("#eventEditSubmit").click(function(event){
+            editEventSubmit(event);
         });
 
         /*
@@ -105,10 +121,6 @@ $(function(){
 
         $("#detailModal").modal('show');
     }
-    
-    function editEvent(event){
-        window.location.href = window.location.href + 'editEvent/' + event.id;
-    }
 
     function submitPic(){
         var data = new FormData();
@@ -163,6 +175,44 @@ $(function(){
         $("#eventLocation").text(data.location);
     }
 
+    function loadEditEventData(data){
+        $("#eventNameInput").val("");
+        $("#eventDescriptionInput").val("");
+        $("#eventStartInput").val("");
+        $("#eventEndInput").val("");
+        $("#autocompleteEdit").val("");
+
+        $("#eventNameInput").val(data.name);
+        $("#eventDescriptionInput").val(data.description);
+        $("#eventStartInput").val(data.startDate);
+        $("#eventEndInput").val(data.endDate);
+        $("#autocompleteEdit").val(data.location);
+
+        initAutocomplete('autocompleteEdit');
+
+        $("#eventEditModal").modal('show');
+    }
+
+    function editEventSubmit(event){
+
+        if($("#newEventImage")[0].files.length > 0){
+            var data = new FormData();
+            data.append('image', $("#newEventImage")[0].files[0]);
+            ajaxCall('/changeEventImage/' + activeEventEdit, 'POST', data, false, null);
+        }
+
+        var data = {};
+        data.name = $("#eventNameInput").val();
+        data.description = $("#eventDescriptionInput").val();
+        data.startDate = $("#eventStartInput").val();
+        data.endDate = $("#eventEndInput").val();
+        data.address = autocomplete.getPlace().formatted_address;
+        data.lat = autocomplete.getPlace().geometry.location.lat();
+        data.lng = autocomplete.getPlace().geometry.location.lng();
+
+        ajaxCall('/eventEdit/' + activeEventEdit, 'POST', JSON.stringify(data), 'application/json', null);
+    }
+
     
     var ajaxCall = function(url, type, data, cType,callbackSuccess){
         $.ajax({
@@ -188,11 +238,11 @@ $(function(){
     var addressSelected = false;
 
 
-    function initAutocomplete() {
+    function initAutocomplete(id) {
         // Create the autocomplete object, restricting the search to geographical
         // location types.
         autocomplete = new google.maps.places.Autocomplete(
-            /** @type {!HTMLInputElement} */(document.getElementById('autocomplete')),
+            /** @type {!HTMLInputElement} */(document.getElementById(id)),
             {types: ['geocode']});
 
         autocomplete.addListener('place_changed', function(){
