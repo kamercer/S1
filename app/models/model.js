@@ -54,7 +54,8 @@ module.exports = {
             newMemberOrganizationAssociation.save(function(err, newDoc1, numAffected){
                     
                 User.findByIdAndUpdate(req.user._id, {$addToSet: {adminOf : newOrganization._id, memberOf : newOrganization._id ,memberOrganizationAssociation: newDoc1._id}}, {new : true}, function(err2, doc2){
-                    res.redirect('/');
+                    console.log(newDoc);
+                    res.redirect('/organization/' + newDoc.name);
                 });
             });
         });

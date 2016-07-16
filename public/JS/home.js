@@ -9,6 +9,10 @@ $(function(){
         $("#setLocation").click(function(){
             openSetLocation();
         });
+
+        $("#newOrgCreateButton").click(function(){
+            $("#createNewOrgModal").modal('show');
+        })
     }
     
     function submitPic(){

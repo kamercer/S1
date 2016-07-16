@@ -52,7 +52,7 @@
     <div class="ui segment" id="mainContent">
         <div class="ui left rail">
             <div class="ui segment">
-                
+                <button class="ui button" id="newOrgCreateButton">Create New Organization</i></button>
             </div>
         </div>
 
@@ -85,6 +85,26 @@
                     <% } %>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="ui modal" id="createNewOrgModal">
+        <div class="header">
+            Create New Organization
+        </div>
+
+        <div class="description">
+            <form class="ui form" action="/createOrganization" method="post">
+                <div class="field">
+                <label >Organization name</label>
+                <input id="name" name="name" required>
+                </div>
+                
+                <label>summary</label>
+                <input id="summary" name="summary" required><br>
+                
+                <button class="ui button" type="submit">submit new organization</button>
+            </form>
         </div>
     </div>
   </body>
