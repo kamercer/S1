@@ -43,9 +43,15 @@ $(function(){
 
             //side button was pressed
             if(event.originalEvent.originalTarget.classList[0] === "item" || event.originalEvent.originalTarget.classList[0] === "edit"){
-                $("#eventImgEdit").attr('src', '/eventImage/' + event.currentTarget.id);
 
-                ajaxCall('/eventInfo/' + event.currentTarget.id, 'Get', null, null, loadEditEventData);
+                if(event.originalEvent.originalTarget.id === "edit"){
+                    $("#eventImgEdit").attr('src', '/eventImage/' + event.currentTarget.id);
+                    ajaxCall('/eventInfo/' + event.currentTarget.id, 'Get', null, null, loadEditEventData);
+                }else if(event.originalEvent.originalTarget.id === "view"){
+                    ajaxCall('/eventViewInfo/' + event.currentTarget.id, 'GET', null, null, detailedView);
+                }else if(event.originalEvent.originalTarget.id === "RSVP"){
+                    submitRSVP(event);
+                }
             }else{
                 $("#eventImg").attr('src', '/eventImage/' + event.currentTarget.id);
 
@@ -64,10 +70,6 @@ $(function(){
         });
 
         /*
-        
-        $(".RSVP").click(function(){
-            submitRSVP(this); 
-        });
 
         $(".Details").click(function(){
             viewDetails(this);
@@ -81,8 +83,6 @@ $(function(){
         $("#updateImage").click(function(){
             $("#imageModal").modal('show');
         });
-        
-        $('.menu .item').tab();
 
         */
     }
@@ -109,10 +109,7 @@ $(function(){
     };
     
     var submitRSVP = function(event){
-        var data = {};
-        data.id = event.id;
-        
-        ajaxCall(window.location.href + ((window.location.href.endsWith('/')) ? 'submitRSVP' : '/submitRSVP'), 'POST', JSON.stringify(data), 'application/json', null);
+        ajaxCall('/RSVP/' + event.currentTarget.id, 'POST', null, 'application/json', function(data) {console.log('yep')});
     }
 
     function viewDetails(event){
@@ -206,11 +203,36 @@ $(function(){
         data.description = $("#eventDescriptionInput").val();
         data.startDate = $("#eventStartInput").val();
         data.endDate = $("#eventEndInput").val();
-        data.address = autocomplete.getPlace().formatted_address;
-        data.lat = autocomplete.getPlace().geometry.location.lat();
-        data.lng = autocomplete.getPlace().geometry.location.lng();
+        if(addressSelected){
+            data.address = autocomplete.getPlace().formatted_address;
+            data.lat = autocomplete.getPlace().geometry.location.lat();
+            data.lng = autocomplete.getPlace().geometry.location.lng();
+            addressSelected = false;
+        }
 
         ajaxCall('/eventEdit/' + activeEventEdit, 'POST', JSON.stringify(data), 'application/json', null);
+    }
+
+    function detailedView(data){
+        console.log(data);
+        data.forEach(function(element, index) {
+            $("#eventViewModal table tbody").html("<tr>" + 
+                "<td>" + 
+                    index + 
+                "</td>" + 
+                "<td>" +
+                    element.user.first_name + 
+                "</td>" + 
+                ((element.signIn) ? "<td>" +
+                    element.signIn + 
+                "</td>" : "") + 
+                ((element.signOut) ? "<td>" +
+                    element.signOut + 
+                "</td>" : "") + 
+            "</tr>")
+        }, this);
+
+        $("#eventViewModal").modal('show');
     }
 
     

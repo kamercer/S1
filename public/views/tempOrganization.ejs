@@ -85,11 +85,19 @@
                             
                             <%= events[i].name %>
 
+                            
                             <i class="dropdown icon"></i>
                             <div class="menu">
-                                <a class="item"><i class="edit icon"></i> Edit Event</a>
-                                <a class="item"><i class="globe icon"></i> View Details</a>
+                                <% if(statusNumber == 3){ %>
+                                    <a class="item" id="edit"><i class="edit icon"></i> Edit Event</a>
+                                    <a class="item" id="view"><i class="globe icon"></i> View Details</a>
+                                <% } %>
+
+                                <% if(statusNumber > 2){ %>
+                                    <a class="item" id="RSVP">RSVP</a>
+                                <% } %>
                             </div>
+                            
                         </div>
                     <% } %>
 
@@ -395,6 +403,27 @@
             </div>
         </div>
     </div>
+
+    <div class="ui modal" id="eventViewModal">
+        <div class="header">
+            Event View
+        </div>
+
+        <div class="description">
+            <table class="ui celled table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>SignIn Date</th>
+                        <th>Signout Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                </tbody>
+            </table>
+        </div>
 
     </body>
 </html>

@@ -83,6 +83,10 @@ module.exports = function(app){
     app.get('/eventInfo/:id', function(req, res){
         model.getEventInfo(req, res);
     });
+
+    app.get('/eventViewInfo/:id', function(req, res){
+        model.getEventViewInfo(req, res);
+    });
     ///////////////////////////////////
     
     app.post('/createAccount', function(req, res){
@@ -124,8 +128,8 @@ module.exports = function(app){
        model.createEvent(req, res); 
     });
     
-    app.post('/organization/:id/submitRSVP', loginCheck, function(req, res){
-        model.submitRSVP(req, res);
+    app.post('/RSVP/:id', loginCheck, function(req, res){
+        model.RSVP(req, res);
     });
 
     app.post('/organization/:id/changeOrganizationImage', upload.any(), loginCheck, function(req, res){
@@ -185,5 +189,4 @@ module.exports = function(app){
 		  res.redirect('/');
 		}
 	}
-    
 }

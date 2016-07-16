@@ -312,20 +312,20 @@ module.exports = {
     },
     
     //could I cut down the database calls?
-    submitRSVP : function(req, res){
+    RSVP : function(req, res){
         //req.body.id is an event id
         
         //verify that req.body.id is of an objectId form
-        if (!mongoose.Types.ObjectId.isValid(req.body.id)){
-            console.log('submitRSVP: req.body.id is not a valid objectID form');
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)){
+            console.log('RSVP: ' + req.params.id + ' is not a valid objectID form');
             res.end();
             return;
         }
         
         //verify that req.body.id is an actual event id
-        Event.findById(req.body.id, function(err, parentEvent){
+        Event.findById(req.params.id, function(err, parentEvent){
             if(err != null){
-                console.log('submitRSVP: parent event does not exist');
+                console.log('RSVP: parent event does not exist');
                 res.end();
                 return;
             }
@@ -333,13 +333,13 @@ module.exports = {
             //check if eventUserRecord already exists
             eventUserRecord.find({event : parentEvent._id, user : req.user.id}, function(err, docs){
                 if(err != null){
-                    console.log('submitRSVP: error when checking for existing eventUserRecords');
+                    console.log('RSVP: error when checking for existing eventUserRecords');
                     res.end();
                     return;
                 }
                 
                 if(docs.length > 0){
-                    console.log('submitRSVP: eventUserRecords already exists');
+                    console.log('RSVP: eventUserRecords already exists');
                     res.end();
                     return;
                 }
@@ -348,7 +348,7 @@ module.exports = {
                 var newEventUserRecord = new eventUserRecord({parentEvent : parentEvent._id, user : req.user._id});
                 newEventUserRecord.save(function(err, newRecord, numAffected){
                     if(err != null){
-                        console.log('submitRSVP: error saving newEventUserRecord');
+                        console.log('RSVP: error saving newEventUserRecord');
                         res.end();
                         return;
                     }
@@ -357,60 +357,7 @@ module.exports = {
                     return;
                 });
             });
-        });
-        
-                            /*
-                    //update parentEvent to include newEventUserRecord
-                    Event.findByIdAndUpdate(parentEvent._id, {$addToSet : {eventUserRecords : newRecord._id}}, function(err, doc){
-                        if(err != null){
-                            console.log('submitRSVP: error updating parentEvent with newEventUserRecords');
-                        }
-                            
-                        res.end();
-                        return;
-                    });
-                    */
-        
-        /*
-        eventUserRecord.findOne({event : req.body.id}, function(err, doc){
-            
-            console.log('err:' + err);
-            console.log(doc);
-            
-            if(doc == null){
-                
-                var newEventUserRecord = new eventUserRecord({event : mongoose.Types.ObjectId(req.body.id), user : req.user._id});
-                newEventUserRecord.save(function(err, record, numAffected){
-                    console.log(err);
-                    
-                    Event.findOneAndUpdate({_id : req.body.id}, {$addToSet : {eventUserRecords : record._id}}, {new : true}, function(err, eventDoc){
-                        console.log('d ' + err);
-                        console.log(eventDoc);
-                        res.end();
-                    });
-                });
-            }else{
-                Event.findOneAndUpdate({_id : req.body.id}, {$addToSet : {eventUserRecords : doc._id}}, {new : true}, function(err, eventDoc){
-                    console.log('d ' + err);
-                    console.log(eventDoc);
-                    res.end();
-                });
-            }
-        });
-        */
-        
-        /*
-        Event.findOneAndUpdate({_id : req.body.id}, {$addToSet : {usersGoing : req.user._id}}, {new : true}, function(err, doc){
-            console.log(err);events
-            console.log(doc);
-            
-           User.findOneAndUpdate({_id : req.user._id}, {$addToSet : {eventsAttended : req.body.id}}, {new: true}, function(err, doc){
-                console.log('submitRSVP err: ' + err);
-                console.log('submitRSVP doc: ' + doc);
-                res.end();
-            });
-        });
-        */   
+        }); 
     },
     
     //check event id
@@ -529,6 +476,30 @@ module.exports = {
                 }
             }else{
                 console.log('getEventInfo error: ' + err);
+                res.end();
+            }
+        });
+    },
+
+    //add check to verify that calling user has permission
+    getEventViewInfo : function(req, res){
+        //verify that req.body.id is of an objectId form
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)){
+            console.log('RSVP: ' + req.params.id + ' is not a valid objectID form');
+            res.end();
+            return;
+        }
+
+        eventUserRecord.find({parentEvent : req.params.id}).select('user unregisteredUser signIn signOut').populate('user').exec(function(err, docs){
+            if(err == null){
+                if(docs != null){
+                    res.json(docs);
+                }else{
+                    console.log('getEventViewInfo: no documents were returned');
+                    res.end();
+                }
+            }else{
+                console.log('getEventViewInfo error: ' + err);
                 res.end();
             }
         });
@@ -785,7 +756,14 @@ module.exports = {
             return;
         }
 
-        Event.findByIdAndUpdate(req.params.id, {name : req.body.name, description : req.body.description, startDate : req.body.startDate, endDate : req.body.endDate, location : {type : 'Point', coordinates : [req.body.lat, req.body.lng], address : req.body.address}}, function(err, event){
+        var updateThing = {name : req.body.name, description : req.body.description, startDate : req.body.startDate, endDate : req.body.endDate};
+
+
+        if(req.body.address){
+            updateThing.location =  {type : 'Point', coordinates : [req.body.lat, req.body.lng], address : req.body.address};
+        }
+
+        Event.findByIdAndUpdate(req.params.id, updateThing, function(err, event){
             if(err != null){
                 console.log('eventEdit error: ' + err);
             }
