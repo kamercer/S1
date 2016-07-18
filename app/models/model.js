@@ -102,7 +102,7 @@ module.exports = {
                         element.eventUserRecords.forEach(function(element1, index1){
                             if(element1.user.equals(req.user._id)){
                                 organization.events[index].RSVPCheck = false;
-                                break;
+                                return;
                             }
                         });
                     });
