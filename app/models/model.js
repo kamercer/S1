@@ -66,7 +66,7 @@ module.exports = {
     loadOrganizationPage : function(req, res){
 
         //find the requested organization and populate the members and events
-        Organization.findOne({name : req.params.id}).populate('members admins events').exec(function(err, organization){
+        Organization.findOne({name : req.params.id}).populate({path : 'members admins events', populate : {path : 'eventUserRecords'}}).exec(function(err, organization){
 
             //checks if the query did not find the organization and if so, exits
             if(organization == null){
@@ -78,13 +78,11 @@ module.exports = {
             //if there is an user logged in
             if (req.user){
 
-                console.log(organization.members);
                 //This checks if the user is a member of the organization
                 var memberinOrganization = organization.members.some(function(value){
                         return value._id.equals(req.user._id);
                 });
                 
-                console.log(memberinOrganization);
                 //If the member is not part of the organization, render the page appropriately
                 if (!memberinOrganization){
                     res.render('tempOrganization', {name : organization.name, summary: organization.summary, statusNumber: 1, user: req.user, members : null, events : organization.events.filter(filterPublicEvents)});
@@ -99,7 +97,17 @@ module.exports = {
                         return value._id.equals(req.user._id);
                     });
 
-                    console.log(docs);
+                    organization.events.forEach(function(element, index){
+                        organization.events[index].RSVPCheck = true;
+                        element.eventUserRecords.forEach(function(element1, index1){
+                            if(element1.user.equals(req.user._id)){
+                                organization.events[index].RSVPCheck = false;
+                                break;
+                            }
+                        });
+                    });
+
+                    //console.log(organization.events[0].RSVPCheck);
 
                     if(isMemberAdmin){
                         res.render('tempOrganization', {name : organization.name, summary: organization.summary, statusNumber: 3, user: req.user, members : docs, events : organization.events});
@@ -349,13 +357,18 @@ module.exports = {
                 var newEventUserRecord = new eventUserRecord({parentEvent : parentEvent._id, user : req.user._id});
                 newEventUserRecord.save(function(err, newRecord, numAffected){
                     if(err != null){
-                        console.log('RSVP: error saving newEventUserRecord');
+                        console.log('RSVP error saving newEventUserRecord: ' + err);
                         res.end();
                         return;
                     }
-                    
-                    res.end();
-                    return;
+
+                    Event.findByIdAndUpdate(parentEvent._id, {$push : {eventUserRecords : newRecord._id}}, function(err, s){
+                        if(err != null){
+                            console.log('RSVP error updating event: ' + err);
+                        }
+
+                        res.end();
+                    });
                 });
             });
         }); 

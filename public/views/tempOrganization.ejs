@@ -64,15 +64,30 @@
                 <div class="column">
                     <p><%= name %></p>
                     <img class="ui medium image" src="organizationImage">
-                    <p> <%= summary %></p>
+                    
                 </div>
-                <div class="right floated column">
-                <p>contact organization(what other things should be here?)</p>
+
+                <div class="column">
+                    <% if(statusNumber == 1){ %>
+                        <button class="ui button" id="join">Join</button>
+                    <% } %>
+
+                    <p> <%= summary %></p>
+
+                    <h2 class="ui sub header">
+                        Contact Email
+                    </h2>
+                    <span>Not set yet</span>
+                </div>
+
+                <div class="column">
 
                 <% if (statusNumber === 3){ %>
-                    <button class="ui button" id="orgUpdateImg">Update Image</button>
-                    <button class="ui button" id="createEvent">Create Event</button>
-                    <button class="ui button">Organization settings</button>
+                    <div class="ui list">
+                        <div class="item"><button class="ui button" id="orgUpdateImg">Update Image</button></div>
+                        <div class="item"><button class="ui button" id="createEvent">Create Event</button></div>
+                        <div class="item"><button class="ui button" id="orgSettings">Organization settings</button></div>
+                    </div>
                 <% } %>
                 </div>
             </div>
@@ -94,10 +109,13 @@
                                 <% } %>
 
                                 <% if(statusNumber > 2){ %>
-                                    <a class="item" id="RSVP">RSVP</a>
+                                    <% if(events[i].RSVPCheck){ %>
+                                        <a class="item" id="RSVP">RSVP</a>
+                                    <% }else{ %>
+                                        <a class="red item" id="RSVP" name="<%= events[i].RSVPCheck %>">Leave</a>
+                                    <% } %>
                                 <% } %>
                             </div>
-                            
                         </div>
                     <% } %>
 
@@ -132,13 +150,27 @@
             <% } %>
 
             <div class="column">
-                <% if(statusNumber == 1){ %>
-                    <button class="ui button" id="join">Join</button>
-                <% } %>
-            </div>
-
-            <div class="right floated column">
                 <h1>Service Report</h1>
+
+                <h2 class="ui sub header">
+                    Individual Service Goal
+                </h2>
+                <span>Not set yet</span>
+
+                <h2 class="ui sub header">
+                    Organization Service Goal
+                </h2>
+                <span>Not set yet</span>
+
+                <h2 class="ui sub header">
+                    Organization Total Hours
+                </h2>
+                <span>Not set yet</span>
+
+                <h2 class="ui sub header">
+                    Your Total Hours
+                </h2>
+                <span>Not set yet</span>
             </div>
         </div>
 
@@ -409,7 +441,7 @@
             Event View
         </div>
 
-        <div class="description">
+        <div class="content">
             <table class="ui celled table">
                 <thead>
                     <tr>
@@ -423,6 +455,76 @@
                     
                 </tbody>
             </table>
+        </div>
+
+        <div class="ui modal" id="orgSettingsModal">
+            <div class="header">
+                Organization Settings
+            </div>
+
+            <div class="content">
+
+                <div class="ui relaxed divided list">
+                    <div class="item">
+                        <form class="ui form"  action="changeOrganizationName" method="POST">
+                            <div class="inline field">
+                                <label>Organization Name</label>
+                                <input type="text"></input>
+                            </div>
+
+                            <button class="ui button" type="submit">Change</button>
+                        </form>
+                    </div>
+
+                    <div class="item">
+                        <form class="ui form"  action="changeIndividualGoalHours" method="POST">
+                            <div class="inline field">
+                                <label>Individual Service Goal</label>
+                                <input type="number"></input>
+                            </div>
+
+                            <button class="ui button" type="submit">Change</button>
+                        </form>
+                    </div>
+
+                    <div class="item">
+                        <form class="ui form"  action="changeOrganizationGoalHours" method="POST">
+                            <div class="inline field">
+                                <label>Organization Service Goal</label>
+                                <input type="number"></input>
+                            </div>
+
+                            <button class="ui button" type="submit">Change</button>
+                        </form>
+                    </div>
+
+                    <div class="item">
+                        <form class="ui form"  action="changeOrgEmail" method="POST">
+                            <div class="inline field">
+                                <label>Contact Email</label>
+                                <input type="text"></input>
+                            </div>
+
+                            <button class="ui button" type="submit">Change</button>
+                        </form>
+                    </div>
+
+                    <div class="item">
+                        <form class="ui form" action="changeFee" method="POST">
+                            <div class="inline field">
+                                <label>Member Fee</label>
+                                <input type="number"></input>
+                            </div>
+
+                            <button class="ui button" type="submit">Change</button>
+                        </form>
+                    </div>
+
+                    <div class="item">
+                        <button class="ui button">Delete Organization</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </body>

@@ -69,6 +69,10 @@ $(function(){
             editEventSubmit(event);
         });
 
+        $("#orgSettings").click(function(){
+            $("#orgSettingsModal").modal('show');
+        });
+
         /*
 
         $(".Details").click(function(){

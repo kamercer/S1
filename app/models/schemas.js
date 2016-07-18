@@ -19,7 +19,7 @@ var eventSchema = mongoose.Schema({
     createdBy        : {type : mongoose.Schema.Types.ObjectId, ref : 'User'},
     public           : Boolean,
     eventIdentifier  : String,
-    //eventUserRecords : [{type : mongoose.Schema.Types.ObjectId, ref : 'eventUserRecord'}],//not sure if I need to use this
+    eventUserRecords : [{type : mongoose.Schema.Types.ObjectId, ref : 'eventUserRecord'}],
     eventPhoto       : {type : mongoose.Schema.Types.ObjectId, ref : 'fs.files'},
     location         : {type : {type : String, default : 'Point'}, coordinates : [Number], address : String}
 });
