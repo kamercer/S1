@@ -37,3 +37,6 @@ to-do:
 
   update nearby events after change
   change image size for load speed
+  
+  search bar
+  approved member join
