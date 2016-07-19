@@ -87,6 +87,10 @@ module.exports = function(app){
     app.get('/eventViewInfo/:id', function(req, res){
         model.getEventViewInfo(req, res);
     });
+
+    app.get('/organization/:id/orgSettingsInfo', loginCheck, function(req, res){
+        model.getOrgSettingsInfo(req, res);
+    });
     ///////////////////////////////////
     
     app.post('/createAccount', function(req, res){

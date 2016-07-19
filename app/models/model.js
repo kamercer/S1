@@ -47,7 +47,7 @@ module.exports = {
         var temp = [];
         temp.push(req.user);
         
-        var newOrganization = new Organization({name: req.body.name, summary: req.body.summary, admins: temp, members : temp});
+        var newOrganization = new Organization({name: req.body.name, nickname : req.body.nickname, summary: req.body.summary, admins: temp, members : temp});
         newOrganization.save(function(err, newDoc, numAffected){
             
             var newMemberOrganizationAssociation = new MemberInOrganizationSchema({user : req.user._id, organization: newOrganization._id, hours: 0, events : []});
@@ -55,7 +55,7 @@ module.exports = {
                     
                 User.findByIdAndUpdate(req.user._id, {$addToSet: {adminOf : newOrganization._id, memberOf : newOrganization._id ,memberOrganizationAssociation: newDoc1._id}}, {new : true}, function(err2, doc2){
                     console.log(newDoc);
-                    res.redirect('/organization/' + newDoc.name);
+                    res.redirect('/organization/' + newDoc.nickname);
                 });
             });
         });
@@ -66,7 +66,7 @@ module.exports = {
     loadOrganizationPage : function(req, res){
 
         //find the requested organization and populate the members and events
-        Organization.findOne({name : req.params.id}).populate({path : 'members admins events', populate : {path : 'eventUserRecords'}}).exec(function(err, organization){
+        Organization.findOne({nickname : req.params.id}).populate({path : 'members admins events', populate : {path : 'eventUserRecords'}}).exec(function(err, organization){
 
             //checks if the query did not find the organization and if so, exits
             if(organization == null){
@@ -85,7 +85,7 @@ module.exports = {
                 
                 //If the member is not part of the organization, render the page appropriately
                 if (!memberinOrganization){
-                    res.render('tempOrganization', {name : organization.name, summary: organization.summary, statusNumber: 1, user: req.user, members : null, events : organization.events.filter(filterPublicEvents)});
+                    res.render('tempOrganization', {org : organization, summary: organization.summary, statusNumber: 1, user: req.user, members : null, events : organization.events.filter(filterPublicEvents)});
                     return;
                 }
 
@@ -110,13 +110,13 @@ module.exports = {
                     //console.log(organization.events[0].RSVPCheck);
 
                     if(isMemberAdmin){
-                        res.render('tempOrganization', {name : organization.name, summary: organization.summary, statusNumber: 3, user: req.user, members : docs, events : organization.events});
+                        res.render('tempOrganization', {org : organization, summary: organization.summary, statusNumber: 3, user: req.user, members : docs, events : organization.events});
                     }else{
-                        res.render('tempOrganization', {name : organization.name, summary: organization.summary, statusNumber: 2, user: req.user, members : docs, events : organization.events});
+                        res.render('tempOrganization', {org : organization, summary: organization.summary, statusNumber: 2, user: req.user, members : docs, events : organization.events});
                     }
                 });
             }else{//if there is not an user logged in
-                res.render('tempOrganization', {name : organization.name, summary: organization.summary, statusNumber: 0, user: null, members : null, events : organization.events.filter(filterPublicEvents)});
+                res.render('tempOrganization', {org : organization, summary: organization.summary, statusNumber: 0, user: null, members : null, events : organization.events.filter(filterPublicEvents)});
             }
         });
     },
@@ -519,6 +519,22 @@ module.exports = {
         });
     },
 
+    getOrgSettingsInfo : function(req, res){
+        Organization.findOne({nickname : req.params.id}, function(err, org){
+            if(err == null){
+                if(org != null){
+                    res.json({name : org.name, nickname : org.nickname, individualServiceGoal : org.individualServiceGoal, OrganizationServiceGoal : org.OrganizationServiceGoal, serviceEmail : org.serviceEmail})
+                }else{
+                    console.log('getOrgSettingsInfo org is null');
+                    res.end();
+                }
+            }else{
+                console.log('getOrgSettingsInfo error: ' + err);
+                res.end();
+            }
+        });
+    },
+
     //This function is called by an admin and it changes a member to an admin, an admin to a member
     //or kicks out an admin/member
     //TODO: better error handling
@@ -664,7 +680,7 @@ module.exports = {
 
     changeOrganizationImage : function(req, res){
         //verify that user is an admin
-        Organization.findOne({name : req.params.id}).populate('admins').exec(function(err, organization){
+        Organization.findOne({nickname : req.params.id}).populate('admins').exec(function(err, organization){
             var isMemberAdmin = organization.admins.some(function(value){
                         return value._id.equals(req.user.id);
             });
@@ -871,7 +887,7 @@ function retrieveOrganizationImage(req, res){
 
     var bucket = new mongodb.GridFSBucket(db.db);
 
-    Organization.findOne({name : req.params.id}, function(err, organization){
+    Organization.findOne({nickname : req.params.id}, function(err, organization){
         if(organization == null){
             res.end();
             console.log('retrieveOrganizationImage: organization could not be found');

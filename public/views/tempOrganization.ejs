@@ -46,12 +46,10 @@
                         Organizations <i class="dropdown icon"></i>
                         <div class="menu">
                             <% for(var i = 0; i < user.memberOf.length; i++){ %>
-                                <a class="item" href="/organization/<%= user.memberOf[i].name %>"><%= user.memberOf[i].name %></a>
+                                <a class="item" href="/organization/<%= user.memberOf[i].nicknamename %>"><%= user.memberOf[i].name %></a>
                             <% } %>
                         </div>
                     </div>
-
-                    <a class="item">Log</a>
                 
                     <a class="right item"><%= user.first_name %></a>
                 <% } %>
@@ -62,7 +60,7 @@
         <div class="ui three column grid container" id="mainView">
             <div class="row">
                 <div class="column">
-                    <p><%= name %></p>
+                    <p><%= org.name %>(<%= org.nickname %>)</p>
                     <img class="ui medium image" src="organizationImage">
                     
                 </div>
@@ -469,7 +467,18 @@
                         <form class="ui form"  action="changeOrganizationName" method="POST">
                             <div class="inline field">
                                 <label>Organization Name</label>
-                                <input type="text"></input>
+                                <input type="text" id="settingsOrgName"></input>
+                            </div>
+
+                            <button class="ui button" type="submit">Change</button>
+                        </form>
+                    </div>
+
+                    <div class="item">
+                        <form class="ui form"  action="changeOrganizationNickname" method="POST">
+                            <div class="inline field">
+                                <label>Organization Nickname</label>
+                                <input type="text" id="settingsOrgNickname"></input>
                             </div>
 
                             <button class="ui button" type="submit">Change</button>
@@ -480,7 +489,7 @@
                         <form class="ui form"  action="changeIndividualGoalHours" method="POST">
                             <div class="inline field">
                                 <label>Individual Service Goal</label>
-                                <input type="number"></input>
+                                <input type="number" id="individualGoal"></input>
                             </div>
 
                             <button class="ui button" type="submit">Change</button>
@@ -491,7 +500,7 @@
                         <form class="ui form"  action="changeOrganizationGoalHours" method="POST">
                             <div class="inline field">
                                 <label>Organization Service Goal</label>
-                                <input type="number"></input>
+                                <input type="number" id="organizationGoal"></input>
                             </div>
 
                             <button class="ui button" type="submit">Change</button>
@@ -503,17 +512,6 @@
                             <div class="inline field">
                                 <label>Contact Email</label>
                                 <input type="text"></input>
-                            </div>
-
-                            <button class="ui button" type="submit">Change</button>
-                        </form>
-                    </div>
-
-                    <div class="item">
-                        <form class="ui form" action="changeFee" method="POST">
-                            <div class="inline field">
-                                <label>Member Fee</label>
-                                <input type="number"></input>
                             </div>
 
                             <button class="ui button" type="submit">Change</button>

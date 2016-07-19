@@ -2,12 +2,16 @@ var mongoose = require('mongoose');
 
 var organizationSchema = mongoose.Schema({
     name                          : String,
+    nickname                      : String,
     summary                       : String,
     events                        : [{type : mongoose.Schema.Types.ObjectId, ref: 'Event'}],
     admins                        : [{type : mongoose.Schema.Types.ObjectId, ref: 'User'}],
     members                       : [{type : mongoose.Schema.Types.ObjectId, ref: 'User'}],
     memberOrganizationAssociation : [{type : mongoose.Schema.Types.ObjectId, ref : 'MemberOrganizationAssociation'}],
-    organizationImage             : {type : mongoose.Schema.Types.ObjectId, ref : 'fs.files'}
+    organizationImage             : {type : mongoose.Schema.Types.ObjectId, ref : 'fs.files'},
+    individualServiceGoal         : Number,
+    OrganizationServiceGoal       : Number,
+    serviceEmail                  : String
 });
 
 var eventSchema = mongoose.Schema({

@@ -40,7 +40,7 @@
                 Organizations <i class="dropdown icon"></i>
                     <div class="menu">
                         <% for(var i = 0; i < user.memberOf.length; i++){ %>
-                            <a class="item" href="/organization/<%= user.memberOf[i].name %>"><%= user.memberOf[i].name %></a>
+                            <a class="item" href="/organization/<%= user.memberOf[i].nickname %>"><%= user.memberOf[i].name %></a>
                         <% } %>
                     </div>
                 </div>
@@ -93,16 +93,23 @@
             Create New Organization
         </div>
 
-        <div class="description">
+        <div class="content">
             <form class="ui form" action="/createOrganization" method="post">
                 <div class="field">
-                <label >Organization name</label>
-                <input id="name" name="name" required>
+                    <label>Organization name</label>
+                    <input id="name" name="name" required>
                 </div>
                 
-                <label>summary</label>
-                <input id="summary" name="summary" required><br>
-                
+                <div class="field">
+                    <label>summary</label>
+                    <input id="summary" name="summary" required>
+                </div>
+
+                <div class="field">
+                    <label>Nickname</label>
+                    <input id="nickname" name="nickname" required>
+                </div>
+
                 <button class="ui button" type="submit">submit new organization</button>
             </form>
         </div>

@@ -70,7 +70,7 @@ $(function(){
         });
 
         $("#orgSettings").click(function(){
-            $("#orgSettingsModal").modal('show');
+            ajaxCall('orgSettingsInfo', 'Get', null, null, loadSettingsInfo);
         });
 
         /*
@@ -237,6 +237,21 @@ $(function(){
         }, this);
 
         $("#eventViewModal").modal('show');
+    }
+
+    function loadSettingsInfo(data){
+        console.log(data);
+        $("#settingsOrgName").val("");
+        $("#settingsOrgNickname").val("");
+        $("#individualGoal").val("");
+        $("#organizationGoal").val("");
+
+        $("#settingsOrgName").val(data.name);
+        $("#settingsOrgNickname").val(data.nickname);
+        $("#individualGoal").val(data.individualServiceGoal);
+        $("#organizationGoal").val(data.OrganizationServiceGoal);
+
+        $("#orgSettingsModal").modal('show');
     }
 
     
