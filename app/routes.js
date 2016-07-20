@@ -64,7 +64,6 @@ module.exports = function(app){
         model.setLocation(req, res);
     });
 
-    ///////////////////////////////////
     //This is intended to be the one route for profile pics.  will replace /home/userImage
     app.get('/userImage/:id', loginCheck, function(req, res){
         model.getProfilePic(req, res);
@@ -91,7 +90,6 @@ module.exports = function(app){
     app.get('/organization/:id/orgSettingsInfo', loginCheck, function(req, res){
         model.getOrgSettingsInfo(req, res);
     });
-    ///////////////////////////////////
     
     app.post('/createAccount', function(req, res){
          model.createAccount(req, res);
@@ -162,6 +160,22 @@ module.exports = function(app){
     
     app.post('/organization/:id/editEvent/:eventId/updateUser', loginCheck, function(req,res){
         model.updateUser(req, res);
+    });
+
+    app.post('/organization/:id/changeOrganizationName', loginCheck, function(req, res){
+        model.changeOrganizationName(req, res);
+    });
+
+    app.post('/organization/:id/changeOrganizationNickname', loginCheck, function(req, res){
+        model.changeOrganizationNickname(req, res);
+    });
+
+    app.post('/organization/:id/changeIndividualGoalHours', loginCheck, function(req, res){
+        model.changeIndividualGoalHours(req, res);
+    });
+
+    app.post('/organization/:id/changeOrganizationGoalHours', loginCheck, function(req, res){
+        model.changeOrganizationGoalHours(req, res);
     });
     
     //used for log page  not used

@@ -159,7 +159,7 @@ module.exports = {
     createEvent : function(req, res){
         uploadImage(req, res).then(function(eventPhotoId){
             
-            Organization.findOne({name : req.params.id}, function(err, organization){
+            Organization.findOne({nickname : req.params.id}, function(err, organization){
                 
                 if(req.body.name == null || !req.body.name || req.body.sDate == null || !req.body.sDate || req.body.eDate == null || !req.body.eDate || organization == null || req.body.public == null || !req.body.public){
                     console.log('CreateEvent error: something is undefined or null');
@@ -437,8 +437,6 @@ module.exports = {
                 if (org != null){
                      User.findById(req.params.userId).populate('memberOrganizationAssociation', null, {organization : org._id}).exec(function(err, user){
 
-                         console.log(org);
-                         console.log(org.members);
                         //This checks if the user is a member of the organization
                         var memberinOrganization = org.members.some(function(value){
                             return value.equals(user._id);
@@ -806,14 +804,56 @@ module.exports = {
     },
 
     setLocation : function(req, res){
-        console.log(req.body);
-
         User.findByIdAndUpdate(req.user._id, {homeLocation : {type : 'Point', coordinates : [req.body.lat, req.body.lng], address : req.body.address}}, function(err, user){
             if(err == null){
                 res.sendStatus(200);
             }else{
                 console.log("setLocation error: " + err);
                 res.sendStatus(500);
+            }
+        });
+    },
+
+    changeOrganizationName : function(req, res){
+        Organization.findOneAndUpdate({nickname : req.params.id}, {name : req.body.name}, function(err, org){
+            if(err == null){
+                res.redirect('/organization/' + org.nickname + '/');
+            }else{
+                console.log('changeOrganizationName error: ' + err);
+                res.end();
+            }
+        });
+    },
+
+    changeOrganizationNickname : function(req, res){
+        Organization.findOneAndUpdate({nickname : req.params.id}, {nickname : req.body.nickname}, function(err, org){
+            if(err == null){
+                res.redirect('/organization/' + org.nickname + '/');
+            }else{
+                console.log('changeOrganizationNickname error: ' + err);
+                res.end();
+            }
+        });
+    },
+
+    changeIndividualGoalHours : function(req, res){
+        Organization.findOneAndUpdate({nickname : req.params.id}, {individualServiceGoal : req.body.individualGoal}, function(err, org){
+            if(err == null){
+                res.redirect('/organization/' + org.nickname + '/');
+            }else{
+                console.log('changeOrganizationNickname error: ' + err);
+                res.end();
+            }
+        });
+    },
+
+    changeOrganizationGoalHours : function(req, res){
+        Organization.findOneAndUpdate({nickname : req.params.id}, {OrganizationServiceGoal : req.body.organizationGoal}, function(err, org){
+            if(err == null){
+                res.redirect('/organization/' + org.nickname + '/');
+            }else{
+                console.log('changeOrganizationNickname error: ' + err);
+                res.end();
             }
         });
     }
