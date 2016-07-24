@@ -5,7 +5,7 @@ $(function(){
     
     function init(){
 
-        $(".ui.checkbox").checkbox();
+        //$(".ui.checkbox").checkbox();
         
         $("#join").click(function(){
             var callback = function(result){
@@ -117,7 +117,6 @@ $(function(){
     }
 
     function viewDetails(event){
-
         $("#eventImage").attr('src', "/events/eventImage/" + event.id);
 
         $("#detailModal").modal('show');
@@ -164,7 +163,6 @@ $(function(){
     }
 
     function loadEventData(data){
-
         $("#eventName").text("");
         $("#eventDescription").text("");
         $("#eventTime").text("");
@@ -218,29 +216,51 @@ $(function(){
     }
 
     function detailedView(data){
-        console.log(data);
         data.forEach(function(element, index) {
-            $("#eventViewModal table tbody").html("<tr>" + 
+            $("#eventViewModal table tbody").html("<tr id=\"" + element.user._id + "\">" + 
                 "<td>" + 
                     index + 
                 "</td>" + 
                 "<td>" +
                     element.user.first_name + 
                 "</td>" + 
-                ((element.signIn) ? "<td>" +
-                    element.signIn + 
-                "</td>" : "") + 
-                ((element.signOut) ? "<td>" +
-                    element.signOut + 
-                "</td>" : "") + 
+                "<td><div class=\"ui input signIn\"><input value=\"" + ((element.signIn) ? element.signIn : "") + 
+                "\"></div></td>" + 
+                "<td><div class=\"ui input signOut\"><input value=\"" + ((element.signOut) ? element.signOut : "") + 
+                "\"></div></td>" + 
             "</tr>")
         }, this);
+
+        $(".signIn").change(function(event){
+            signInEdit(event);
+        });
+
+        $(".signOut").change(function(event){
+            signOutEdit(event);
+        });
 
         $("#eventViewModal").modal('show');
     }
 
+    function signInEdit(event){
+        var data = {};
+        data.user = event.currentTarget.parentNode.parentNode.id;
+        data.event = activeEventEdit;
+        data.signIn = $(event.target).val();
+
+        ajaxCall('/eventDetailEdit', 'POST', JSON.stringify(data), 'application/json', null);
+    }
+
+    function signOutEdit(event){
+        var data = {};
+        data.user = event.currentTarget.parentNode.parentNode.id;
+        data.event = activeEventEdit;
+        data.signOut = $(event.target).val();
+
+        ajaxCall('/eventDetailEdit', 'POST', JSON.stringify(data), 'application/json', null);
+    }
+
     function loadSettingsInfo(data){
-        console.log(data);
         $("#settingsOrgName").val("");
         $("#settingsOrgNickname").val("");
         $("#individualGoal").val("");
@@ -250,6 +270,8 @@ $(function(){
         $("#settingsOrgNickname").val(data.nickname);
         $("#individualGoal").val(data.individualServiceGoal);
         $("#organizationGoal").val(data.OrganizationServiceGoal);
+
+        $('#orgSettingsModal .ui.checkbox').checkbox();
 
         $("#orgSettingsModal").modal('show');
     }

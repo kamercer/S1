@@ -11,6 +11,7 @@ var organizationSchema = mongoose.Schema({
     organizationImage             : {type : mongoose.Schema.Types.ObjectId, ref : 'fs.files'},
     individualServiceGoal         : Number,
     OrganizationServiceGoal       : Number,
+    applyToJoin                   : Boolean,
     serviceEmail                  : String
 });
 

@@ -41,6 +41,14 @@ module.exports = function(app){
     app.post('/login', passport.authenticate('local'),function(req, res){
        res.redirect('/home/');
     });
+
+    app.post('/createAccount', function(req, res){
+         model.createAccount(req, res);
+    });
+    
+    app.post('/createOrganization', loginCheck, function(req, res){
+       model.createOrganization(req, res);
+    });
     
     //homepage of users
     app.get('/home/', loginCheck, function(req, res){
@@ -55,10 +63,6 @@ module.exports = function(app){
     app.post('/home/changeProfilePic', upload.any(), loginCheck, function(req, res){
         model.changeProfilePic(req, res);
     });
-    
-    app.get('/home/userImage', loginCheck, function(req, res){
-        model.getProfilePic(req, res);
-    });
 
     app.post('/home/setLocation', loginCheck, function(req, res){
         model.setLocation(req, res);
@@ -68,7 +72,6 @@ module.exports = function(app){
     app.get('/userImage/:id', loginCheck, function(req, res){
         model.getProfilePic(req, res);
     });
-
 
     //This returns information about a particular user, used for a modal
     app.get('/organization/:id/userInfo/:userId', loginCheck, function(req, res){
@@ -89,14 +92,6 @@ module.exports = function(app){
 
     app.get('/organization/:id/orgSettingsInfo', loginCheck, function(req, res){
         model.getOrgSettingsInfo(req, res);
-    });
-    
-    app.post('/createAccount', function(req, res){
-         model.createAccount(req, res);
-    });
-    
-    app.post('/createOrganization', loginCheck, function(req, res){
-       model.createOrganization(req, res);
     });
     
     app.get('/organization/:id/', function(req, res){
@@ -126,7 +121,6 @@ module.exports = function(app){
     //check to make sure that user has permission to create event
     //add date and time picker
     app.post('/organization/:id/createEvent', upload.any(), loginCheck, function(req, res){
-       //console.log('create event: ' + req.body.name);
        model.createEvent(req, res); 
     });
     
@@ -144,6 +138,10 @@ module.exports = function(app){
 
     app.post('/eventEdit/:id', loginCheck, function(req, res){
         model.eventEdit(req, res);
+    });
+
+    app.post('/eventDetailEdit', loginCheck, function(req, res){
+        model.eventDetailEdit(req, res);
     });
 
     app.get('/eventImage/:id', function(req, res){
@@ -177,12 +175,18 @@ module.exports = function(app){
     app.post('/organization/:id/changeOrganizationGoalHours', loginCheck, function(req, res){
         model.changeOrganizationGoalHours(req, res);
     });
+
+    app.post('/organization/:id/changeJoinOption', loginCheck, function(req, res){
+        model.changeJoinOption(req, res);
+    });
     
     //used for log page  not used
     //app.get('/log', loginCheck, function(req, res){
       //  model.getUserOrganizations(req, res);
     //});
     
+
+    /*
     app.post('/log', loginCheck, function(req, res){
         model.logEventHours(req, res);
     });
@@ -199,6 +203,7 @@ module.exports = function(app){
     app.get('/signIn', loginCheck, function(req, res){
         res.redirect('/signIn/');
     });
+    */
     
     function loginCheck(req, res, next){
         if (req.user){

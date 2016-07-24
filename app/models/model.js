@@ -497,12 +497,12 @@ module.exports = {
     getEventViewInfo : function(req, res){
         //verify that req.body.id is of an objectId form
         if (!mongoose.Types.ObjectId.isValid(req.params.id)){
-            console.log('RSVP: ' + req.params.id + ' is not a valid objectID form');
+            console.log('getEventViewInfo: ' + req.params.id + ' is not a valid objectID form');
             res.end();
             return;
         }
 
-        eventUserRecord.find({parentEvent : req.params.id}).select('user unregisteredUser signIn signOut').populate('user').exec(function(err, docs){
+        eventUserRecord.find({parentEvent : req.params.id}).select('user unregisteredUser signIn signOut _id').populate('user').exec(function(err, docs){
             if(err == null){
                 if(docs != null){
                     res.json(docs);
@@ -853,6 +853,46 @@ module.exports = {
                 res.redirect('/organization/' + org.nickname + '/');
             }else{
                 console.log('changeOrganizationNickname error: ' + err);
+                res.end();
+            }
+        });
+    },
+
+    changeJoinOption : function(req, res){
+        console.log(req.body);
+        res.end();
+    },
+
+    eventDetailEdit : function(req, res){
+        if(!mongoose.Types.ObjectId.isValid(req.body.user)){
+            console.log('eventEdit invalid id supplied');
+            res.end();
+            return;
+        }
+
+        if(!mongoose.Types.ObjectId.isValid(req.body.event)){
+            console.log('eventEdit invalid id supplied');
+            res.end();
+            return;
+        }
+
+        var update = {};
+
+        if(req.body.signIn){
+            update.signIn = req.body.signIn;
+        }else if(req.body.signOut){
+            update.signOut = req.body.signOut;
+        }else{
+            console.log("eventDetailEdit: neither signIn nor signOut data available");
+            res.end();
+            return;
+        }
+
+        eventUserRecord.findOneAndUpdate({parentEvent : mongoose.Types.ObjectId(req.body.event), user : mongoose.Types.ObjectId(req.body.user)}, update, function(err, doc){
+            if(err != null){
+                console.log('eventDetailEdit update error: ' + err);
+                res.end();
+            }else{
                 res.end();
             }
         });

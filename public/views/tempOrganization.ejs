@@ -85,6 +85,7 @@
                         <div class="item"><button class="ui button" id="orgUpdateImg">Update Image</button></div>
                         <div class="item"><button class="ui button" id="createEvent">Create Event</button></div>
                         <div class="item"><button class="ui button" id="orgSettings">Organization settings</button></div>
+                        <div class="item"><button class="ui button" id="joinCheck">Check Applications</button></div>
                     </div>
                 <% } %>
                 </div>
@@ -102,8 +103,8 @@
                             <i class="dropdown icon"></i>
                             <div class="menu">
                                 <% if(statusNumber == 3){ %>
-                                    <a class="item" id="edit"><i class="edit icon"></i> Edit Event</a>
-                                    <a class="item" id="view"><i class="globe icon"></i> View Details</a>
+                                    <a class="item" id="edit">Edit Event</a>
+                                    <a class="item" id="view">View Details</a>
                                 <% } %>
 
                                 <% if(statusNumber > 2){ %>
@@ -512,6 +513,20 @@
                             <div class="inline field">
                                 <label>Organization Service Goal</label>
                                 <input type="number" id="organizationGoal" name="organizationGoal"></input>
+                            </div>
+
+                            <button class="ui button" type="submit">Change</button>
+                        </form>
+                    </div>
+
+                    <div class="item">
+                        <form class="ui form"  action="changeJoinOption" method="POST">
+                            <div class="inline field">
+                                <label>Users have to apply to join(wording needs work)</label>
+                                <div class="ui toggle checkbox">
+                                    <input type="checkbox" class="hidden" name="joinOption">    
+                                    <label>M</label>
+                                </div>
                             </div>
 
                             <button class="ui button" type="submit">Change</button>
