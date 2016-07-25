@@ -520,17 +520,12 @@
                     </div>
 
                     <div class="item">
-                        <form class="ui form"  action="changeJoinOption" method="POST">
-                            <div class="inline field">
-                                <label>Users have to apply to join(wording needs work)</label>
-                                <div class="ui toggle checkbox">
-                                    <input type="checkbox" class="hidden" name="joinOption">    
-                                    <label>M</label>
-                                </div>
+                        <div class="inline field">
+                            <label>Users have to apply to join(wording needs work)</label>
+                            <div class="ui toggle checkbox">
+                                <input type="checkbox" class="hidden" id="joinOption">    
                             </div>
-
-                            <button class="ui button" type="submit">Change</button>
-                        </form>
+                        </div>
                     </div>
 
                     <div class="item">
@@ -550,6 +545,15 @@
                 </div>
             </div>
         </div>
+
+        <div class="ui modal" id="joinCheckModal">
+            <div class="header">
+                Manage Applications
+            </div>
+
+            <div class="content">
+
+            </div>
 
     </body>
 </html>

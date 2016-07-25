@@ -176,8 +176,12 @@ module.exports = function(app){
         model.changeOrganizationGoalHours(req, res);
     });
 
-    app.post('/organization/:id/changeJoinOption', loginCheck, function(req, res){
+    app.post('/organization/:id/changeJoinOption/:value', loginCheck, function(req, res){
         model.changeJoinOption(req, res);
+    });
+
+    app.get('/organization/:id/getApplications', loginCheck, function(req, res){
+        model.getApplications(req, res);
     });
     
     //used for log page  not used

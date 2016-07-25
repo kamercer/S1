@@ -73,6 +73,15 @@ $(function(){
             ajaxCall('orgSettingsInfo', 'Get', null, null, loadSettingsInfo);
         });
 
+        //changeJoinOption
+        $("#joinOption").change(function(){
+            ajaxCall('changeJoinOption/' + $("#joinOption").prop("checked"), 'POST', null, null, null);
+        });
+
+        $("#joinCheck").click(function(){
+            ajaxCall('getApplications', 'GET', null, null, loadApplicationData);
+        });
+
         /*
 
         $(".Details").click(function(){
@@ -274,6 +283,10 @@ $(function(){
         $('#orgSettingsModal .ui.checkbox').checkbox();
 
         $("#orgSettingsModal").modal('show');
+    }
+
+    function loadApplicationData(data){
+        $("#joinCheckModal").modal('show');
     }
 
     

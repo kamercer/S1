@@ -124,34 +124,50 @@ module.exports = {
     //This method adds a new member to an organization by updating organization, member and creating a new memberOrganization
     //TODO: if one addition fails, should change others
     joinUser : function(req, res){
-        Organization.findOneAndUpdate({name : req.params.id}, {$addToSet: {members: req.user._id}}, {new : true}, function(err, org){
-            
-            if(err  == null){
-                if(org != null){
-
-                    var newMemberOrganizationAssociation = new MemberInOrganizationSchema({user : req.user._id, organization : org._id, hours : 0});
-                    newMemberOrganizationAssociation.save(function(err, newDoc, numAffected){
-                        if(err == null){
-                            User.findByIdAndUpdate(req.user._id, {$addToSet: {memberOf : org._id, memberOrganizationAssociation : newDoc._id}}, {new : true}, function(err2, user){
-                                if(err2 == null){
-                                    res.end();
+        Organization.findOne({nickname : req.params.id}, function(err, org){
+            if(org.applyToJoin === true){
+                Organization.findOneAndUpdate({nickname : req.params.id}, {$addToSet : {applyToJoin : req.user._id}}, function(err, org){
+                    if(err == null){
+                        if(org != null){
+                            res.end();
+                        }else{
+                            console.log('joinUser: org is null');
+                            res.end();
+                        }
+                    }else{
+                        console.log('joinUser error: ' + err);
+                        res.end();
+                    }
+                });
+            }else{
+                Organization.findOneAndUpdate({name : req.params.id}, {$addToSet: {members: req.user._id}}, {new : true}, function(err, org){
+                    if(err  == null){
+                        if(org != null){
+                            var newMemberOrganizationAssociation = new MemberInOrganizationSchema({user : req.user._id, organization : org._id, hours : 0});
+                            newMemberOrganizationAssociation.save(function(err, newDoc, numAffected){
+                                if(err == null){
+                                    User.findByIdAndUpdate(req.user._id, {$addToSet: {memberOf : org._id, memberOrganizationAssociation : newDoc._id}}, {new : true}, function(err2, user){
+                                        if(err2 == null){
+                                            res.end();
+                                        }else{
+                                            console.log("joinUser error: " + err2);
+                                            res.end();
+                                        }
+                                    });
                                 }else{
-                                    console.log("joinUser error: " + err2);
+                                    console.log("joinUser error : " + err);
                                     res.end();
                                 }
                             });
                         }else{
-                            console.log("joinUser error : " + err);
+                            console.log('joinUser org is null');
                             res.end();
                         }
-                    });
-                }else{
-                    console.log('joinUser org is null');
-                    res.end();
-                }
-            }else{
-                console.log('joinUser error: ' + err);
-                res.end();
+                    }else{
+                        console.log('joinUser error: ' + err);
+                        res.end();
+                    }
+                });
             }
         });
     },
@@ -859,8 +875,34 @@ module.exports = {
     },
 
     changeJoinOption : function(req, res){
-        console.log(req.body);
-        res.end();
+        console.log(req.params);
+
+        if(!(req.params.value !== 'true' || req.params.value !== 'false')){
+            console.log('changeJoinOption: incorrect value supplied');
+            res.end();
+            return;
+        }
+
+        var joinValue;
+        if(req.params.value === "true"){
+            joinValue = true;
+        }else{
+            joinValue = false;
+        }
+
+        Organization.findOneAndUpdate({nickname : req.params.id}, {applyToJoin : joinValue}, function(err, doc){
+            if(err == null){
+                if(doc != null){
+                    res.end();
+                }else{
+                    console.log('changeJoinOption: no org found');
+                    res.end();
+                }
+            }else{
+                console.log('changeJoinOption error: ' + err);
+                res.end();
+            }
+        });
     },
 
     eventDetailEdit : function(req, res){

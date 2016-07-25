@@ -12,6 +12,7 @@ var organizationSchema = mongoose.Schema({
     individualServiceGoal         : Number,
     OrganizationServiceGoal       : Number,
     applyToJoin                   : Boolean,
+    waitingUsers                  : [{type : mongoose.Schema.Types.ObjectId, ref: 'User'}],
     serviceEmail                  : String
 });
 
