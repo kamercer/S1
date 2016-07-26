@@ -286,6 +286,15 @@ $(function(){
     }
 
     function loadApplicationData(data){
+        console.log(data);
+        data.waitingUsers.forEach(function(element, index) {
+            $("#joinCheckModal .content").append("<div class=\"item\">" +
+            "<div class=\"content\">" + 
+            "<div class=\"header\">" + element.first_name
+             + "</div></div></div>"            
+            );
+        }, this);
+
         $("#joinCheckModal").modal('show');
     }
 

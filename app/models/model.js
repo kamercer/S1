@@ -126,7 +126,7 @@ module.exports = {
     joinUser : function(req, res){
         Organization.findOne({nickname : req.params.id}, function(err, org){
             if(org.applyToJoin === true){
-                Organization.findOneAndUpdate({nickname : req.params.id}, {$addToSet : {applyToJoin : req.user._id}}, function(err, org){
+                Organization.findOneAndUpdate({nickname : req.params.id}, {$addToSet : {waitingUsers : req.user._id}}, function(err, org){
                     if(err == null){
                         if(org != null){
                             res.end();
@@ -935,6 +935,22 @@ module.exports = {
                 console.log('eventDetailEdit update error: ' + err);
                 res.end();
             }else{
+                res.end();
+            }
+        });
+    },
+
+    getApplications : function(req, res){
+        Organization.findOne({nickname : req.params.id}).populate('waitingUsers').exec(function(err, org){
+            if(err == null){
+                if(org != null){
+                    res.send(org);
+                }else{
+                    console.log('getApplications: org is null');
+                    res.end();
+                }
+            }else{
+                console.log('getApplications error: ' + err);
                 res.end();
             }
         });
