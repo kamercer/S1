@@ -140,7 +140,7 @@ module.exports = {
                     }
                 });
             }else{
-                Organization.findOneAndUpdate({name : req.params.id}, {$addToSet: {members: req.user._id}}, {new : true}, function(err, org){
+                Organization.findOneAndUpdate({nickname : req.params.id}, {$addToSet: {members: req.user._id}}, {new : true}, function(err, org){
                     if(err  == null){
                         if(org != null){
                             var newMemberOrganizationAssociation = new MemberInOrganizationSchema({user : req.user._id, organization : org._id, hours : 0});
@@ -951,6 +951,37 @@ module.exports = {
                 }
             }else{
                 console.log('getApplications error: ' + err);
+                res.end();
+            }
+        });
+    },
+
+    allowMember : function(req, res){
+        Organization.findOneAndUpdate({nickname : req.params.id}, {$addToSet: {members: req.user._id}}, {new : true}, function(err, org){
+            if(err  == null){
+                if(org != null){
+                    var newMemberOrganizationAssociation = new MemberInOrganizationSchema({user : req.user._id, organization : org._id, hours : 0});
+                    newMemberOrganizationAssociation.save(function(err, newDoc, numAffected){
+                        if(err == null){
+                            User.findByIdAndUpdate(req.user._id, {$addToSet: {memberOf : org._id, memberOrganizationAssociation : newDoc._id}}, {new : true}, function(err2, user){
+                                if(err2 == null){
+                                    res.end();
+                                }else{
+                                    console.log("joinUser error: " + err2);
+                                    res.end();
+                                }
+                            });
+                        }else{
+                            console.log("joinUser error : " + err);
+                            res.end();
+                        }
+                    });
+                }else{
+                    console.log('joinUser org is null');
+                    res.end();
+                }
+            }else{
+                console.log('joinUser error: ' + err);
                 res.end();
             }
         });

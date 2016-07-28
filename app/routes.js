@@ -183,6 +183,11 @@ module.exports = function(app){
     app.get('/organization/:id/getApplications', loginCheck, function(req, res){
         model.getApplications(req, res);
     });
+
+    //This is used when an admin allows a member into an organization
+    app.post('/organization/:id/allowMember/:value', loginCheck, function(req, res){
+        model.allowMember(req, res);
+    });
     
     //used for log page  not used
     //app.get('/log', loginCheck, function(req, res){

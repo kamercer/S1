@@ -286,14 +286,19 @@ $(function(){
     }
 
     function loadApplicationData(data){
-        console.log(data);
+        $("#joinCheckModal .list").append("");
+
         data.waitingUsers.forEach(function(element, index) {
-            $("#joinCheckModal .content").append("<div class=\"item\">" +
-            "<div class=\"content\">" + 
-            "<div class=\"header\">" + element.first_name
-             + "</div></div></div>"            
+            $("#joinCheckModal .list").append("<div class=\"item\" id=\"" + element._id + "\">" +
+            "<div class=\"right floated content\">" + "<button class=\"ui button\">Add</button>" + 
+            "</div><div class=\"content\">" + element.first_name + " " + element.last_name
+             + "</div></div>"            
             );
         }, this);
+
+        $("#joinCheckModal .list button").click(function(event){
+            ajaxCall("allowMember/" + event.currentTarget.parentNode.parentNode.id, "POST", null, null, null);
+        });
 
         $("#joinCheckModal").modal('show');
     }
