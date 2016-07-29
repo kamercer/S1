@@ -45,7 +45,6 @@ var userSchema = mongoose.Schema({
    googleID                      : String,
    first_name                    : String,
    last_name                     : String,
-   username                      : String,
    password                      : String,
    email                         : String,
    memberOf                      : [{type : mongoose.Schema.Types.ObjectId, ref : 'Organization'}],

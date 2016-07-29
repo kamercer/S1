@@ -12,54 +12,71 @@ var fs = require('fs');
 
 module.exports = {
     createAccount : function(req, res){
-        if(req.body.username == null || !req.body.username || req.body.password == null || !req.body.password || req.body.email == null || !req.body.email){
-            console.log('user or password or email is null or undefined');
+
+        //check for required fields
+        if(!req.body.fName || !req.body.lName || !req.body.password || !req.body.email){
             res.end();
+            console.log('createAccount: user or password or email is null or undefined');
             return;
         }
         
         //encrypt password later
-        var newAccount = new User({username: req.body.username, password: req.body.password, email: req.body.email});
+        var newAccount = new User({first_name: req.body.fName, last_name: req.body.lName, password: req.body.password, email: req.body.email});
         
-        User.find({username : req.body.username}, {email : req.body.email}, function(err, docs){
+        User.find({email : req.body.email}, function(err, users){
             if(docs.length > 0){
-                console.log('new accout not made');
+                console.log('createAccount: account with email already exists');
                 res.redirect('/');
                 return;
             }else{
                 newAccount.save(function(err, newAccount, numAffected){
-                    console.log("create new Account error : " + err);
-                    res.redirect('/');
+                    if(err != null){
+                        res.redirect('/login');
+                    }else{
+                        console.log("createAccount error: " + err);
+                    }
                 });
             }
         });
     },
     
-    //debugging reasons   send email or have admin look at new organization
     createOrganization : function(req, res){
         
-        if(req.body.name == null || !req.body.name || req.body.summary == null || !req.body.summary){
-            console.log('name or summary is null or undefined');
+        if(!req.body.name || !req.body.nickname || !req.body.summary){
             res.end();
+            console.log('createOrganization: a field is undefined');
             return;
         }
         
-        var temp = [];
-        temp.push(req.user);
+        //var temp = [];
+        //temp.push(req.user);
         
-        var newOrganization = new Organization({name: req.body.name, nickname : req.body.nickname, summary: req.body.summary, admins: temp, members : temp});
-        newOrganization.save(function(err, newDoc, numAffected){
-            
-            var newMemberOrganizationAssociation = new MemberInOrganizationSchema({user : req.user._id, organization: newOrganization._id, hours: 0, events : []});
-            newMemberOrganizationAssociation.save(function(err, newDoc1, numAffected){
-                    
-                User.findByIdAndUpdate(req.user._id, {$addToSet: {adminOf : newOrganization._id, memberOf : newOrganization._id ,memberOrganizationAssociation: newDoc1._id}}, {new : true}, function(err2, doc2){
-                    console.log(newDoc);
-                    res.redirect('/organization/' + newDoc.nickname);
+        var newOrganization = new Organization({name: req.body.name, nickname : req.body.nickname, summary: req.body.summary, admins: [req.user], members : req.user});
+        newOrganization.save(function(err, newOrg, numAffected){
+
+            if(err == null){
+                var newMemberOrganizationAssociation = new MemberInOrganizationSchema({user : req.user._id, organization: newOrganization._id, hours: 0, events : []});
+                newMemberOrganizationAssociation.save(function(err1, newMemberOrg, numAffected){
+                        
+                    if(err == null){
+                        User.findByIdAndUpdate(req.user._id, {$addToSet: {adminOf : newOrganization._id, memberOf : newOrganization._id ,memberOrganizationAssociation: newMemberOrg._id}}, {new : true}, function(err2, doc2){
+
+                            if(err == null){
+                                if(doc2 != null){
+                                    res.redirect('/organization/' + newDoc.nickname);
+                                }else{
+                                    console.log('createOrganization: user was not found')
+                                }
+                            }else{
+                                console.log('createOrganization error: ' + err);
+                            }
+                        });
+                    }
                 });
-            });
+            }
         });
     },
+    
     
     //needs work?
     //This function determines the status of an user in an organization and loads the appropriate organization page

@@ -14,10 +14,13 @@ module.exports = function(app){
         res.sendFile('/views/tempIndex.html', {root: __dirname + '/../public'});
     });
     
+    //I dont know why this is here
+    /*
     app.post('/', function(req, res){
         console.log('hit post /');
         res.end();
     });
+    */
 
     //This is called when the user clicks on the facebook login button.  It redirects them to the facebook popup and they log in.
     //They are then redirected back to the callback route specified in facebook.js
@@ -50,6 +53,7 @@ module.exports = function(app){
        model.createOrganization(req, res);
     });
     
+    ///////////////////////////////////mark
     //homepage of users
     app.get('/home/', loginCheck, function(req, res){
        model.createHomePage(req, res);
