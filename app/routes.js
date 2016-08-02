@@ -34,26 +34,28 @@ module.exports = function(app){
 
     app.get('/auth/google', passport.authenticate('google', {scope : ['profile', 'email']}));
 
-    app.get('/auth/google/callback', 
-    passport.authenticate('google', {failureRedirect : '/'}),
+    app.get('/auth/google/callback', passport.authenticate('google', {failureRedirect : '/'}),
     function(req, res){
         res.redirect('/home/');
     });
 
+    /* not used right now
     //used to login through local authentication
     app.post('/login', passport.authenticate('local'),function(req, res){
        res.redirect('/home/');
     });
+    
 
     app.post('/createAccount', function(req, res){
          model.createAccount(req, res);
     });
+    */
     
+    //need to notification if nickname already exists
     app.post('/createOrganization', loginCheck, function(req, res){
        model.createOrganization(req, res);
     });
     
-    ///////////////////////////////////mark
     //homepage of users
     app.get('/home/', loginCheck, function(req, res){
        model.createHomePage(req, res);

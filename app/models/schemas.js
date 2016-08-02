@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 
 var organizationSchema = mongoose.Schema({
     name                          : String,
-    nickname                      : String,
+    nickname                      : {type : String, unique: true},
     summary                       : String,
     events                        : [{type : mongoose.Schema.Types.ObjectId, ref: 'Event'}],
     admins                        : [{type : mongoose.Schema.Types.ObjectId, ref: 'User'}],

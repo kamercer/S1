@@ -11,6 +11,8 @@ var mongodb = require('mongodb');
 var fs = require('fs');
 
 module.exports = {
+    
+    /* not used 
     createAccount : function(req, res){
 
         //check for required fields
@@ -39,6 +41,7 @@ module.exports = {
             }
         });
     },
+    */
     
     createOrganization : function(req, res){
         
@@ -48,8 +51,8 @@ module.exports = {
             return;
         }
         
-        //var temp = [];
-        //temp.push(req.user);
+        //check if nickname already exists
+
         
         var newOrganization = new Organization({name: req.body.name, nickname : req.body.nickname, summary: req.body.summary, admins: [req.user], members : req.user});
         newOrganization.save(function(err, newOrg, numAffected){
@@ -63,7 +66,7 @@ module.exports = {
 
                             if(err == null){
                                 if(doc2 != null){
-                                    res.redirect('/organization/' + newDoc.nickname);
+                                    res.redirect('/organization/' + newOrg.nickname);
                                 }else{
                                     console.log('createOrganization: user was not found')
                                 }
@@ -73,6 +76,9 @@ module.exports = {
                         });
                     }
                 });
+            }else{
+                console.log("createOrganization error: " + err);
+                res.redirect('/home');
             }
         });
     },
@@ -301,8 +307,6 @@ module.exports = {
     
     createHomePage : function(req, res){
         Organization.find({_id : {$in : req.user.memberOf}}).populate('events').exec(function(err, docs){            
-            //console.log(err);
-            //console.log(docs);
             
             //There is probably a better way to do this
             var upcomingEvents = [];
