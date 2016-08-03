@@ -200,12 +200,45 @@ module.exports = {
             
             Organization.findOne({nickname : req.params.id}, function(err, organization){
                 
-                if(req.body.name == null || !req.body.name || req.body.sDate == null || !req.body.sDate || req.body.eDate == null || !req.body.eDate || organization == null || req.body.public == null || !req.body.public){
+                if(!req.body.name || !req.body.sDate || !req.body.eDate || !organization || !req.body.public){
                     console.log('CreateEvent error: something is undefined or null');
-                    res.end();
+                    res.sendStatus(400);
                     return;
                 }
+
+                var sDate = new Date(req.body.sDate);
+                var eDate = new Date(req.body.eDate);
+
+                if(isNaN(sDate) || isNaN(eDate)){
+                    res.sendStatus(400);
+                    return;
+                }
+
+                var newEvent = new Event({name : req.body.name,
+                startDate : sDate,
+                endDate : eDate,
+                organization : organization._id,
+                createdBy : req.user._id,
+                public : req.body.public,
+                //eventIdentifier : createEventId(), currently not necessary
+                });
+
+                if(req.body.description){
+                    newEvent.description = req.body.description;
+                }
+
+                if(eventPhotoId){
+                    newEvent.eventPhoto = eventPhotoId;
+                }
+
+                //validate this later
+                console.log(req.body);
+                if(req.body.lat && req.body.lng && req.body.address){
+                    console.log('d');
+                    newEvent.location = {type : 'Point', coordinates : [req.body.lat, req.body.lng], address : req.body.address};
+                }
                 
+                /*
                 var newEvent = new Event({name : req.body.name,
                 description : req.body.description,
                 startDate : new Date(req.body.sDate),
@@ -213,22 +246,26 @@ module.exports = {
                 organization : organization._id,
                 createdBy : req.user._id,
                 public : req.body.public,
-                eventIdentifier : createEventId(),
+                //eventIdentifier : createEventId(), currently not necessary
                 eventPhoto : eventPhotoId,
                 location : {type : 'Point', coordinates : [req.body.lat, req.body.lng], address : req.body.address}
                 });
+                */
                 
                 newEvent.save(function(err, savedEvent, numAffected){
-                    console.log('new event err : ' + err);
-                    console.log('new event savedEvent : ' + savedEvent);
-                    if(savedEvent != null){
+
+                    if(err == null){
                         organization.update({$addToSet : {events : savedEvent._id}}, function(err, doc){
-                        console.log('update add event organization err: ' + err);
-                        console.log('update add event organization doc: ' + doc); 
-                        res.end();
+                            if(err == null){
+                                res.sendStatus(200);
+                            }else{
+                                console.log("createEvent error: " + err);
+                                res.sendStatus(500);
+                            }
                         });
                     }else{
-                        res.end();
+                        console.log("createEvent error: " + err);
+                        res.sendStatus(500);
                     }
                 });
             });
@@ -513,12 +550,21 @@ module.exports = {
         Event.findById(req.params.id, function(err, event){
             if(err == null){
                 if(event != null){
-                    res.json({name : event.name,
+
+                    var output = {name : event.name,
                               startDate : event.startDate.toString(),
                               endDate : event.endDate.toString(),
-                              description : event.description,
-                              location : event.location.address
-                              });
+                            };
+
+                    if(event.location){
+                        output.location = event.location.address;
+                    }
+
+                    if(event.description){
+                        output.description = event.description;
+                    }
+                    
+                    res.json(output);
                 }else{
                     console.log("getEventInfo event is null");
                     res.end();
@@ -1020,7 +1066,12 @@ function uploadImage(req, res){
             var uploadStream = bucket.openUploadStream(req.files[0].originalName);
             
             uploadStream.once('finish', function(){
-                console.log('upload image success: ' + uploadStream.id);
+                //console.log('upload image success: ' + uploadStream.id);
+                fs.unlink(req.files[0].path, function(err){
+                    if(err){
+                        console.log("uploadImage error: " + err);
+                    }
+                });
                 resolve(uploadStream.id);
             });
             
@@ -1041,8 +1092,6 @@ function createEventId(){
     var random = Math.floor(Math.random() * 10000);
     
     var id = random.toString() + "-" + milliseconds.toString();
-    
-    console.log(id);
     
     return id;
 }

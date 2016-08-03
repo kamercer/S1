@@ -5,7 +5,7 @@ $(function(){
     
     function init(){
 
-        //$(".ui.checkbox").checkbox();
+        $(".ui.checkbox").checkbox();
         
         $("#join").click(function(){
             var callback = function(result){
@@ -102,23 +102,53 @@ $(function(){
     
     var submitEvent = function(){
 
-        if(addressSelected === false){
-            console.log("Address not selected");
+        $("#newEventModal .message").remove()
+
+        var data = new FormData();
+
+        var errorCheck = false;
+        if($("#name").val() === ""){
+            $("#name").parent().append("<div class=\"ui red message\"><div class=\"header\">Error</div><p>Event Name cannot be blank</p></div>");
+            errorCheck = true;
+        }
+
+        if($("#sDate").val() == ""){
+            $("#sDate").parent().append("<div class=\"ui red message\"><div class=\"header\">Error</div><p>Start Date cannot be blank</p></div>");
+            errorCheck = true;
+        }
+
+        if($("#eDate").val() == ""){
+            $("#eDate").parent().append("<div class=\"ui red message\"><div class=\"header\">Error</div><p>End Date cannot be blank</p></div>");
+            errorCheck = true;
+        }
+
+        if(errorCheck){
             return;
         }
 
-        var data = new FormData();
         data.append("name", $("#name").val());
-        data.append("description", $("#description").val());
-        data.append("address", autocomplete.getPlace().formatted_address);
-        data.append("lat", autocomplete.getPlace().geometry.location.lat());
-        data.append("lng",  autocomplete.getPlace().geometry.location.lng());
+
+        if($("#description").val() !== ""){
+            data.append("description", $("#description").val());
+        }
+
+        if(autocomplete.getPlace()){
+            data.append("address", autocomplete.getPlace().formatted_address);
+            data.append("lat", autocomplete.getPlace().geometry.location.lat());
+            data.append("lng",  autocomplete.getPlace().geometry.location.lng());
+        }
         data.append("sDate", $("#sDate").val());
         data.append("eDate", $("#eDate").val());
         data.append("image", $("#eventPhoto")[0].files[0]);
         data.append("public" ,$("#public").prop("checked"));
         
-        ajaxCall('createEvent', 'POST', data, false, null); 
+        ajaxCall('createEvent', 'POST', data, false, function(data){
+            if(data !== "OK"){
+                $("#submitEvent").append("<div class=\"ui red message\"><div class=\"header\">Error</div><p>Error Creating Event</p></div>");
+            }else{
+                location.reload();
+            }
+        }); 
     };
     
     var submitRSVP = function(event){

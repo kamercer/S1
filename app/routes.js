@@ -127,7 +127,7 @@ module.exports = function(app){
     //check to make sure that user has permission to create event
     //add date and time picker
     app.post('/organization/:id/createEvent', upload.any(), loginCheck, function(req, res){
-       model.createEvent(req, res); 
+       model.createEvent(req, res);
     });
     
     app.post('/RSVP/:id', loginCheck, function(req, res){

@@ -27,7 +27,7 @@ var eventSchema = mongoose.Schema({
     eventIdentifier  : String,
     eventUserRecords : [{type : mongoose.Schema.Types.ObjectId, ref : 'eventUserRecord'}],
     eventPhoto       : {type : mongoose.Schema.Types.ObjectId, ref : 'fs.files'},
-    location         : {type : {type : String, default : 'Point'}, coordinates : [Number], address : String}
+    location         : {type : String, coordinates : [Number], address : String}
 });
 
 eventSchema.index({ location : '2dsphere' });
