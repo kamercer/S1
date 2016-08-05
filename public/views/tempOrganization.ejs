@@ -13,11 +13,13 @@
     <script src="//code.jquery.com/jquery-2.2.3.min.js"></script>
     <script src="/semantic/dist/semantic.js"></script>
     <script src="/JS/organization.js"></script>
+    <script src="/JS/support/calendar.min.js"></script>
 
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBexpa9vkX0-EUBAHwMTxxDm6tBuU1GJyY&libraries=places"
         async defer></script>
 
     <link rel="stylesheet" type="text/css" href="/semantic/dist/semantic.css">
+    <link rel="stylesheet" type="text/css" href="/CSS/support/calendar.min.css">
     <style type="text/css">
     body {
         background-color: #FFFFFF;
@@ -224,7 +226,14 @@
 
                 <div class="field">
                     <label>Start Date</label>
-                    <input type="date" id="sDate"></input>
+
+                    <div class="ui calendar" id="example1">
+                        <div class="ui input left icon">
+                        <i class="calendar icon"></i>
+                        <input type="text" id="sDate" placeholder="Date/Time">
+                        </div>
+                    </div>
+                    
                 </div>
 
                 <div class="field">
