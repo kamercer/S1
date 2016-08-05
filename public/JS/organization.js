@@ -29,6 +29,7 @@ $(function(){
         $("#createEvent").click(function(){
             initAutocomplete('autocomplete');
             $("#newEventModal").modal('show');
+            $(".ui.calendar").calendar();
         });
 
         $("table tr").click(function(event){
@@ -205,7 +206,7 @@ $(function(){
 
         $("#eventName").text(data.name);
         $("#eventDescription").text(data.description);
-        $("#eventTime").text(data.time);
+        $("#eventTime").text(data.startDate + " " + data.endDate);
         $("#eventLocation").text(data.location);
     }
 

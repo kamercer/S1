@@ -48,7 +48,7 @@
                         Organizations <i class="dropdown icon"></i>
                         <div class="menu">
                             <% for(var i = 0; i < user.memberOf.length; i++){ %>
-                                <a class="item" href="/organization/<%= user.memberOf[i].nicknamename %>"><%= user.memberOf[i].name %></a>
+                                <a class="item" href="/organization/<%= user.memberOf[i].nickname %>"><%= user.memberOf[i].nickname %></a>
                             <% } %>
                         </div>
                     </div>
@@ -186,78 +186,6 @@
             </div>
         </div>
 
-    <div class="ui modal" id="imageModal">
-        <div class="header">
-            Organization Image
-        </div>
-        <div class="image content">
-            <div class="ui medium image">
-                <img src="organizationImage">
-            </div>
-            <div class="description">
-                <div class="ui header">Select an image</div>
-                <input id="organizationProfileImage" type="file" accept="image/*"><br>
-                <button id="uploadPic">Upload Pic</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="ui modal" id="newEventModal">
-        <div class="header">
-            New Event
-        </div>
-        <div class="content">
-
-            <form class="ui form">
-                <div class="field">
-                    <label>EventName</label>
-                    <input type="text" id="name">
-                </div>
-
-                <div class="field">
-                    <label>Description</label>
-                    <textarea id="description"></textarea>
-                </div>
-
-                <div class="field">            
-                    <label>Location</label>
-                    <input id="autocomplete" onFocus="geolocate()" type="text"></input>
-                </div>
-
-                <div class="field">
-                    <label>Start Date</label>
-
-                    <div class="ui calendar" id="example1">
-                        <div class="ui input left icon">
-                        <i class="calendar icon"></i>
-                        <input type="text" id="sDate" placeholder="Date/Time">
-                        </div>
-                    </div>
-                    
-                </div>
-
-                <div class="field">
-                    <label>End Date</label>
-                    <input type="date" id="eDate">
-                </div>
-
-                <div class="field">
-                    <label>Event Photo</label>
-                    <input id="eventPhoto" type="file" accept="image/*">
-                </div>
-
-                <div class="field">
-                    <div class="ui toggle checkbox">
-                        <label>Public</label>
-                        <input type="checkbox" tabindex="0" class="hidden" id="public">
-                    </div>
-                </div>
-            </form>
-
-            <button class="ui button" id="submitEvent">submit event</button>
-        </div>
-    </div>
-
     <div class="ui modal" id="memberInfoModal">
         <div class="header">
             Member Info
@@ -372,6 +300,83 @@
     </div>
 
     <% if(statusNumber === 3){ %>
+
+        <div class="ui modal" id="imageModal">
+            <div class="header">
+                Organization Image
+            </div>
+            <div class="image content">
+                <div class="ui medium image">
+                    <img src="organizationImage">
+                </div>
+                <div class="description">
+                    <div class="ui header">Select an image</div>
+                    <input id="organizationProfileImage" type="file" accept="image/*"><br>
+                    <button id="uploadPic">Upload Pic</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="ui modal" id="newEventModal">
+            <div class="header">
+                New Event
+            </div>
+            <div class="content">
+
+                <form class="ui form">
+                    <div class="field">
+                        <label>EventName</label>
+                        <input type="text" id="name">
+                    </div>
+
+                    <div class="field">
+                        <label>Description</label>
+                        <textarea id="description"></textarea>
+                    </div>
+
+                    <div class="field">            
+                        <label>Location</label>
+                        <input id="autocomplete" onFocus="geolocate()" type="text"></input>
+                    </div>
+
+                    <div class="field">
+                        <label>Start Date</label>
+
+                        <div class="ui calendar" id="sCalendar">
+                            <div class="ui input left icon">
+                            <i class="calendar icon"></i>
+                            <input type="text" id="sDate" placeholder="Date/Time">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label>End Date</label>
+                        <div class="ui calendar" id="eCalendar">
+                            <div class="ui input left icon">
+                            <i class="calendar icon"></i>
+                            <input type="text" id="eDate" placeholder="Date/Time">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label>Event Photo</label>
+                        <input id="eventPhoto" type="file" accept="image/*">
+                    </div>
+
+                    <div class="field">
+                        <div class="ui toggle checkbox">
+                            <label>Public</label>
+                            <input type="checkbox" tabindex="0" class="hidden" id="public">
+                        </div>
+                    </div>
+                </form>
+
+                <button class="ui button" id="submitEvent">submit event</button>
+            </div>
+        </div>
+
         <div class="ui modal" id="eventEditModal">
             <div class="header">
                 Event Edit

@@ -206,8 +206,10 @@ module.exports = {
                     return;
                 }
 
+                console.log(req.body);
                 var sDate = new Date(req.body.sDate);
                 var eDate = new Date(req.body.eDate);
+                console.log(sDate);
 
                 if(isNaN(sDate) || isNaN(eDate)){
                     res.sendStatus(400);
