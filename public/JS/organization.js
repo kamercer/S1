@@ -40,18 +40,14 @@ $(function(){
         $("#eventMenu .ui.simple.dropdown").click(function(event){
 
             activeEventEdit = event.currentTarget.id;
-
-            //side button was pressed
-            if(event.originalEvent.originalTarget.classList[0] === "item" || event.originalEvent.originalTarget.classList[0] === "edit"){
-
-                if(event.originalEvent.originalTarget.id === "edit"){
-                    $("#eventImgEdit").attr('src', '/eventImage/' + event.currentTarget.id);
-                    ajaxCall('/eventInfo/' + event.currentTarget.id, 'Get', null, null, loadEditEventData);
-                }else if(event.originalEvent.originalTarget.id === "view"){
-                    ajaxCall('/eventViewInfo/' + event.currentTarget.id, 'GET', null, null, detailedView);
-                }else if(event.originalEvent.originalTarget.id === "RSVP"){
-                    submitRSVP(event);
-                }
+  
+            if(event.target.id === "edit"){
+                $("#eventImgEdit").attr('src', '/eventImage/' + event.currentTarget.id);
+                ajaxCall('/eventInfo/' + event.currentTarget.id, 'Get', null, null, loadEditEventData);
+            }else if(event.target.id === "view"){
+                ajaxCall('/eventViewInfo/' + event.currentTarget.id, 'GET', null, null, detailedView);
+            }else if(event.target.id === "RSVP"){
+                submitRSVP(event);
             }else{
                 $("#eventImg").attr('src', '/eventImage/' + event.currentTarget.id);
 

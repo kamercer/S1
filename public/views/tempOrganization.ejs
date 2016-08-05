@@ -107,7 +107,7 @@
                                     <a class="item" id="view">View Details</a>
                                 <% } %>
 
-                                <% if(statusNumber > 2){ %>
+                                <% if(statusNumber >= 2){ %>
                                     <% if(events[i].RSVPCheck){ %>
                                         <a class="item" id="RSVP">RSVP</a>
                                     <% }else{ %>
@@ -282,13 +282,14 @@
                         <div class="content" id="userHours"></div>
                     </div>
 
-                    <div class="ui selection dropdown">
-                        <i class="dropdown icon"></i>
-                        <div class="default text">Member Status</div>
+                    <% if(statusNumber === 3){ %>
+                        <div class="ui selection dropdown">
+                            <i class="dropdown icon"></i>
+                            <div class="default text">Member Status</div>
 
-                        <div class="menu" id="statusMenu"></div>
-                    </div>
-                    <div class="ui button">Change hours</div>
+                            <div class="menu" id="statusMenu"></div>
+                        </div>
+                    <% } %>
                 </div>
             </div>
         </div>
@@ -361,112 +362,114 @@
         </div>
     </div>
 
-    <div class="ui modal" id="eventEditModal">
-        <div class="header">
-            Event Edit
-        </div>
-
-        <div class="medium image content">
-            <div class="ui medium image">
-                <img id="eventImgEdit">
+    <% if(statusNumber === 3){ %>
+        <div class="ui modal" id="eventEditModal">
+            <div class="header">
+                Event Edit
             </div>
-        
 
-            <div class="description">
-                <div class="ui list">
-                    <div class="item">
-                        <div class="ui header">
-                            Event Name
-                        </div>
-                        <div class="content">
-                            <div class="ui input">
-                                <input id="eventNameInput" type="text"></input>
+            <div class="medium image content">
+                <div class="ui medium image">
+                    <img id="eventImgEdit">
+                </div>
+            
+
+                <div class="description">
+                    <div class="ui list">
+                        <div class="item">
+                            <div class="ui header">
+                                Event Name
+                            </div>
+                            <div class="content">
+                                <div class="ui input">
+                                    <input id="eventNameInput" type="text"></input>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="item">
-                        <div class="ui header">
-                            Description
-                        </div>
-                        <div class="content">
-                            <div class="ui input">
-                                <input id="eventDescriptionInput" type="text"></input>
+                        <div class="item">
+                            <div class="ui header">
+                                Description
+                            </div>
+                            <div class="content">
+                                <div class="ui input">
+                                    <input id="eventDescriptionInput" type="text"></input>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="item">
-                        <div class="ui header">
-                            Start Date
-                        </div>
-                        <div class="content">
-                            <div class="ui input">
-                                <input id="eventStartInput" type="text"></input>
+                        <div class="item">
+                            <div class="ui header">
+                                Start Date
+                            </div>
+                            <div class="content">
+                                <div class="ui input">
+                                    <input id="eventStartInput" type="text"></input>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="item">
-                        <div class="ui header">
-                            End Date
-                        </div>
-                        <div class="content">
-                            <div class="ui input">
-                                <input id="eventEndInput" type="text"></input>
+                        <div class="item">
+                            <div class="ui header">
+                                End Date
+                            </div>
+                            <div class="content">
+                                <div class="ui input">
+                                    <input id="eventEndInput" type="text"></input>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="item">
-                        <div class="ui header">
-                            Location
-                        </div>
-                        <div class="content">
-                            <div class="ui input">
-                                <input id="autocompleteEdit" onFocus="geolocate()" type="text"></input>
+                        <div class="item">
+                            <div class="ui header">
+                                Location
+                            </div>
+                            <div class="content">
+                                <div class="ui input">
+                                    <input id="autocompleteEdit" onFocus="geolocate()" type="text"></input>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="item">
-                        <div class="ui header">
-                            Event Image
+                        <div class="item">
+                            <div class="ui header">
+                                Event Image
+                            </div>
+                            <div class="content">
+                                <input id="newEventImage" type="file" accept="image/*"><br>
+                            </div>
                         </div>
-                        <div class="content">
-                            <input id="newEventImage" type="file" accept="image/*"><br>
-                        </div>
-                    </div>
 
-                    <div class="item">
-                        <button class="ui button" id="eventEditSubmit">Submit</button>
+                        <div class="item">
+                            <button class="ui button" id="eventEditSubmit">Submit</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="ui modal" id="eventViewModal">
-        <div class="header">
-            Event View
+        <div class="ui modal" id="eventViewModal">
+            <div class="header">
+                Event View
+            </div>
+
+            <div class="content">
+                <table class="ui celled table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>SignIn Date</th>
+                            <th>Signout Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+            </div>
         </div>
-
-        <div class="content">
-            <table class="ui celled table">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Name</th>
-                        <th>SignIn Date</th>
-                        <th>Signout Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    
-                </tbody>
-            </table>
-        </div>
-
+        
         <div class="ui modal" id="orgSettingsModal">
             <div class="header">
                 Organization Settings
@@ -556,6 +559,8 @@
 
                 </div>
             </div>
+        </div>
+    <% } %>
 
     </body>
 </html>
