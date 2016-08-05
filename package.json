@@ -16,7 +16,7 @@
     "passport-local": "latest",
     "passport-facebook": "latest",
     "passport-google-oauth20": "latest",
-    "semantic-ui": "2.2.1"
+    "semantic-ui": "2.2.2"
   },
   "scripts": {
     "start": "node server.js"

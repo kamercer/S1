@@ -1,5 +1,12 @@
 ## RELEASE NOTES
 
+### Version 2.2.2 - July 07, 2016
+
+**Bugs**
+- **Shape** - Fixed issue where shape was animating incorrectly when using jQuery 3.0, due to secret changes in how `width` are calculated on elements with `transform`
+- **Dropdown** - Fixed "pointer" cursor appearing in hitbox above search input in `search selection`, now all input area will appear with "text" input cursor
+- **Dimmer/Modal** - Fixed a bug which could cause a modal's dimmer to not obey `inverted: true` or `blurring: true` when initializing modals with *then afterwards* without either setting.
+
 ### Version 2.2.1 - June 27, 2016
 
 **Bugs**
@@ -54,7 +61,7 @@
 - **Progress** - Added progress `is complete` for returning whether success, warning, or error conditions are met
 
 **CSS Enhancements**
-- **All UI** Extended variables which return exact pixel values in em (`@relativePX` and @px) up to 40px to allow for simple theming with exact values
+- **All UI** Extended variables which return exact pixel values in em (`@relativePX` and @px) up to 64px to allow for simple theming with exact values
 - **Button** - Added variables for configuring `disabled` background image and box shadow.
 - **Site** - Added colored box shadow defaults. `ui message` now includes individual colored border shadows based on new site defaults.
 - **Site** - Added new `@inputColor` and `@inputPlaceholderColor` global variables that now control placeholder text styles across all components.
