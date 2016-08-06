@@ -39,6 +39,11 @@ module.exports = function(app){
         res.redirect('/home/');
     });
 
+    app.get('/logout', loginCheck, function(req, res){
+        req.logout();
+        res.redirect('/');
+    })
+
     /* not used right now
     //used to login through local authentication
     app.post('/login', passport.authenticate('local'),function(req, res){

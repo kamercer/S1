@@ -567,6 +567,12 @@ module.exports = {
                     if(event.description){
                         output.description = event.description;
                     }
+
+                    if(event.eventPhoto){
+                        output.photo = true;
+                    }else{
+                        output.photo = false;
+                    }
                     
                     res.json(output);
                 }else{

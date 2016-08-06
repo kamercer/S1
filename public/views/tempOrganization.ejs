@@ -48,12 +48,15 @@
                         Organizations <i class="dropdown icon"></i>
                         <div class="menu">
                             <% for(var i = 0; i < user.memberOf.length; i++){ %>
-                                <a class="item" href="/organization/<%= user.memberOf[i].nickname %>"><%= user.memberOf[i].nickname %></a>
+                                <a class="item" href="/organization/<%= user.memberOf[i].nickname %>"><%= user.memberOf[i].name %></a>
                             <% } %>
                         </div>
                     </div>
-                
-                    <a class="right item"><%= user.first_name %></a>
+                    
+                    <div class="right menu">
+                        <a class="item" href="/logout">Logout</a>
+                        <a class="item" href="/home"><%= user.first_name %></a>
+                    </div>
                 <% } %>
             </div>
         </div>
@@ -266,7 +269,7 @@
             </div>
 
             <div class="description">
-                <div class="ui list">
+                <div class="ui divided list">
                     <div class="item">
                         <div class="ui header">
                             Event Name

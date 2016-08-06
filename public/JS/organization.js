@@ -50,10 +50,7 @@ $(function(){
             }else if(event.target.id === "RSVP"){
                 submitRSVP(event);
             }else{
-                $("#eventImg").attr('src', '/eventImage/' + event.currentTarget.id);
-
-                ajaxCall('/eventInfo/' + event.currentTarget.id, 'Get', null, null, loadEventData);
-                $("#eventInfoModal").modal('show');
+                ajaxCall('/eventInfo/' + event.currentTarget.id, 'Get', null, null, function(data){return loadEventData(data, event)});
             }
         });
 
@@ -198,16 +195,37 @@ $(function(){
         $('#memberInfoModal').modal('show');
     }
 
-    function loadEventData(data){
+    function loadEventData(data, event){
         $("#eventName").text("");
         $("#eventDescription").text("");
         $("#eventTime").text("");
         $("#eventLocation").text("");
 
         $("#eventName").text(data.name);
-        $("#eventDescription").text(data.description);
-        $("#eventTime").text(data.startDate + " " + data.endDate);
-        $("#eventLocation").text(data.location);
+        if(data.description){
+            $("#eventDescription").text(data.description);
+        }else{
+            $("#eventDescription").text("(not provided)");
+        }
+        if(data.location){
+            $("#eventLocation").text(data.location);
+        }else{
+            $("#eventLocation").text("(not provided)");
+        }
+
+        var sDate = new Date(data.startDate);
+        sDate = sDate.toDateString() + " at " + sDate.toTimeString().substr(0, 5);
+
+        var eDate = new Date(data.endDate);
+        eDate = eDate.toDateString() + " at " + eDate.toTimeString().substr(0, 5);
+
+        $("#eventTime").text(sDate + " - " + eDate);
+
+        if(data.photo){
+            $("#eventImg").attr('src', '/eventImage/' + event.currentTarget.id);
+        }
+
+        $("#eventInfoModal").modal('show');
     }
 
     function loadEditEventData(data){
