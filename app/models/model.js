@@ -614,7 +614,7 @@ module.exports = {
         Organization.findOne({nickname : req.params.id}, function(err, org){
             if(err == null){
                 if(org != null){
-                    res.json({name : org.name, nickname : org.nickname, individualServiceGoal : org.individualServiceGoal, OrganizationServiceGoal : org.OrganizationServiceGoal, serviceEmail : org.serviceEmail})
+                    res.json({name : org.name, nickname : org.nickname, individualServiceGoal : org.individualServiceGoal, OrganizationServiceGoal : org.OrganizationServiceGoal, serviceEmail : org.serviceEmail, summary : org.summary})
                 }else{
                     console.log('getOrgSettingsInfo org is null');
                     res.end();
@@ -924,6 +924,17 @@ module.exports = {
                 res.redirect('/organization/' + org.nickname + '/');
             }else{
                 console.log('changeOrganizationNickname error: ' + err);
+                res.end();
+            }
+        });
+    },
+
+    changeOrganizationSummary : function(req, res){
+        Organization.findOneAndUpdate({nickname : req.params.id}, {summary : req.body.summary}, function(err, org){
+            if(err == null){
+                res.redirect('/organization/' + org.nickname + "/");
+            }else{
+                console.log('changeOrganizationSummary error: ' + err);
                 res.end();
             }
         });

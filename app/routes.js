@@ -179,6 +179,10 @@ module.exports = function(app){
         model.changeOrganizationNickname(req, res);
     });
 
+    app.post('/organization/:id/changeOrganizationSummary', loginCheck, function(req, res){
+        model.changeOrganizationSummary(req, res);
+    })
+
     app.post('/organization/:id/changeIndividualGoalHours', loginCheck, function(req, res){
         model.changeIndividualGoalHours(req, res);
     });

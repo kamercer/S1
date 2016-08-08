@@ -319,14 +319,15 @@ $(function(){
         $("#settingsOrgNickname").val("");
         $("#individualGoal").val("");
         $("#organizationGoal").val("");
+        $("#organizationSummary").val("");
 
         $("#settingsOrgName").val(data.name);
         $("#settingsOrgNickname").val(data.nickname);
         $("#individualGoal").val(data.individualServiceGoal);
         $("#organizationGoal").val(data.OrganizationServiceGoal);
+        $("#organizationSummary").val(data.summary);
 
         $('#orgSettingsModal .ui.checkbox').checkbox();
-
         $("#orgSettingsModal").modal('show');
     }
 
