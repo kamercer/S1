@@ -168,7 +168,12 @@ $(function () {
                     input.selectedOption = $("#statusMenu .active").attr('name');
                     input.user_id = id;
 
-                    ajaxCall(window.location.href + "changeUserStatus", 'POST', JSON.stringify(input), 'application/json', null);
+                    ajaxCall(window.location.href + "changeUserStatus", 'POST', JSON.stringify(input), 'application/json', function(data){
+                        console.log(data);
+                        if(data === 200){
+                            location.reload();
+                        }
+                    });
                 });
 
                 $("#statusChangeConfirmation").modal('show');
@@ -220,6 +225,8 @@ $(function () {
 
         $("#eventNameInput").val(data.name);
         $("#eventDescriptionInput").val(data.description);
+        
+        var d = new Date(data.startDate);
         $("#eventStartInput").val(data.startDate);
         $("#eventEndInput").val(data.endDate);
         $("#autocompleteEdit").val(data.location);
@@ -227,6 +234,8 @@ $(function () {
         initAutocomplete('autocompleteEdit');
 
         $("#eventEditModal").modal('show');
+
+        $("#eventEditModal .ui.calendar").calendar();
     }
 
     function editEventSubmit(event) {

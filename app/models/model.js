@@ -130,8 +130,6 @@ module.exports = {
                         });
                     });
 
-                    //console.log(organization.events[0].RSVPCheck);
-
                     if (isMemberAdmin) {
                         res.render('tempOrganization', { org: organization, summary: organization.summary, statusNumber: 3, user: req.user, members: docs, events: organization.events });
                     } else {
@@ -206,10 +204,8 @@ module.exports = {
                     return;
                 }
 
-                console.log(req.body);
                 var sDate = new Date(req.body.sDate);
                 var eDate = new Date(req.body.eDate);
-                console.log(sDate);
 
                 if (isNaN(sDate) || isNaN(eDate)) {
                     res.sendStatus(400);
@@ -235,10 +231,10 @@ module.exports = {
                 }
 
                 //validate this later
-                console.log(req.body);
                 if (req.body.lat && req.body.lng && req.body.address) {
-                    console.log('d');
                     newEvent.location = { type: 'Point', coordinates: [req.body.lat, req.body.lng], address: req.body.address };
+                }else{
+                    newEvent.location = undefined;
                 }
 
                 /*
@@ -257,9 +253,9 @@ module.exports = {
 
                 newEvent.save(function (err, savedEvent, numAffected) {
 
-                    if (err == null) {
+                    if (err === null) {
                         organization.update({ $addToSet: { events: savedEvent._id } }, function (err, doc) {
-                            if (err == null) {
+                            if (err === null) {
                                 res.sendStatus(200);
                             } else {
                                 console.log("createEvent error: " + err);
@@ -372,7 +368,7 @@ module.exports = {
                     }
                 },
                     function (err, nearbyEvents) {
-                        if (err == null) {
+                        if (err === null) {
                             res.render('tempHome', { organizations: docs, upcomingEvents: upcomingEvents, nearbyEvents: nearbyEvents, user: req.user });
                         } else {
                             console.log("createHomePage error: " + err);
@@ -602,8 +598,8 @@ module.exports = {
         }
 
         eventUserRecord.find({ parentEvent: req.params.id }).select('user unregisteredUser signIn signOut _id').populate('user').exec(function (err, docs) {
-            if (err == null) {
-                if (docs != null) {
+            if (err === null) {
+                if (docs !== null) {
                     res.json(docs);
                 } else {
                     console.log('getEventViewInfo: no documents were returned');
@@ -618,9 +614,9 @@ module.exports = {
 
     getOrgSettingsInfo: function (req, res) {
         Organization.findOne({ nickname: req.params.id }, function (err, org) {
-            if (err == null) {
-                if (org != null) {
-                    res.json({ name: org.name, nickname: org.nickname, individualServiceGoal: org.individualServiceGoal, OrganizationServiceGoal: org.OrganizationServiceGoal, serviceEmail: org.serviceEmail, summary: org.summary })
+            if (err === null) {
+                if (org !== null) {
+                    res.json({ name: org.name, nickname: org.nickname, individualServiceGoal: org.individualServiceGoal, OrganizationServiceGoal: org.OrganizationServiceGoal, serviceEmail: org.serviceEmail, summary: org.summary });
                 } else {
                     console.log('getOrgSettingsInfo org is null');
                     res.end();
@@ -655,7 +651,7 @@ module.exports = {
 
                         if (!mongoose.Types.ObjectId.isValid(req.body.user_id)) {
                             console.log("changeUserStatus: given user id is not valid");
-                            res.end();
+                            res.status(400).end();
                             return;
                         }
 
@@ -663,7 +659,7 @@ module.exports = {
                         if (req.body.selectedOption === "0") {
                             //a check to make sure that the last member cannot remove themselves.
                             if (org.members.length <= 1) {
-                                res.end();
+                                res.status(200).end();
                                 return;
                             }
                             Organization.findByIdAndUpdate(org._id, { $pull: { admins: mongoose.Types.ObjectId(req.body.user_id), members: mongoose.Types.ObjectId(req.body.user_id) } }, function (err, updatedOrg) {
@@ -673,15 +669,14 @@ module.exports = {
 
                                         if (err) {
                                             console.log("changeUserStatus user update error: " + err);
-                                            res.end();
+                                            res.status(500).end();
                                         } else {
-                                            console.log(req.body.user_id + " has been removed from " + org._id);
-                                            res.end();
+                                            res.status(200).send("OK");
                                         }
                                     });
                                 } else {
                                     console.log("changeUserStatus org update error: " + err);
-                                    res.end();
+                                    res.status(500).end();
                                 }
                             });
                         } else if (req.body.selectedOption === "1") { //This is the option to make admin
@@ -692,21 +687,21 @@ module.exports = {
 
                                         if (err) {
                                             console.log("changeUserStatus user update error: " + err);
-                                            res.end();
+                                            res.status(500).end();
                                         } else {
-                                            console.log(req.body.user_id + " has been made admin for " + org._id);
-                                            res.end();
+                                            res.status(200).send("OK");
+                                            
                                         }
                                     });
                                 } else {
                                     console.log("changeUserStatus org update error: " + err);
-                                    res.end();
+                                    res.status(500).end();
                                 }
                             });
                         } else if (req.body.selectedOption === "2") { //This is the option to make member
                             //This makes sure that last admin cannot make himself a member
                             if (org.admins.length <= 1) {
-                                res.end();
+                                res.status(200).end();
                                 return;
                             }
 
@@ -717,32 +712,31 @@ module.exports = {
 
                                         if (err) {
                                             console.log("changeUserStatus user update error: " + err);
-                                            res.end();
+                                            res.status(500).end();
                                         } else {
-                                            console.log(req.body.user_id + " is not an admin anymore in " + org._id);
-                                            res.end();
+                                            res.status(200).send("OK");
                                         }
                                     });
                                 } else {
                                     console.log("changeUserStatus org update error: " + err);
-                                    res.end();
+                                    res.status(500).end();
                                 }
                             });
                         } else {
                             console.log("changeUserStatus selectedOption is not valid");
-                            res.end();
+                            res.status(400).end();
                         }
                     } else {
                         console.log('changeUserStatus: calling user is not admin');
-                        res.end();
+                        res.status(400).end();
                     }
                 } else {
                     console.log('changeUserStatus: org is null');
-                    res.end();
+                    res.status(400).end();
                 }
             } else {
                 console.log('changeUserStatus error: ' + err);
-                res.end();
+                res.status(500).end();
             }
         });
     },
