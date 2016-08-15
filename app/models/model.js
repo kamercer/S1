@@ -382,10 +382,8 @@ module.exports = {
     createEventEditPage: function (req, res) {
         Event.findOne({ _id: req.params.eventId }, function (err, event) {
             eventUserRecord.find({ event: req.params.eventId }).populate('user unregisteredUser').exec(function (err, docs) {
-                console.log(err);
-                console.log('createEventEditPage: ' + docs);
 
-                if (err == null) {
+                if (err === null) {
                     res.render('eventEdit', { qrcode: event.eventIdentifier, docs: docs });
                 } else {
                     res.end();
@@ -407,7 +405,7 @@ module.exports = {
 
         //verify that req.body.id is an actual event id
         Event.findById(req.params.id, function (err, parentEvent) {
-            if (err != null) {
+            if (err !== null) {
                 console.log('RSVP: parent event does not exist');
                 res.end();
                 return;
@@ -415,7 +413,7 @@ module.exports = {
 
             //check if eventUserRecord already exists
             eventUserRecord.find({ event: parentEvent._id, user: req.user.id }, function (err, docs) {
-                if (err != null) {
+                if (err !== null) {
                     console.log('RSVP: error when checking for existing eventUserRecords');
                     res.end();
                     return;
