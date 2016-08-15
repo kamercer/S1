@@ -268,7 +268,7 @@ module.exports = {
                     }
                 });
             });
-        })
+        });
     },
 
     //this query may be incorrect
@@ -287,11 +287,10 @@ module.exports = {
     logEventHours: function (req, res) {
 
         Event.findOne({ eventIdentifier: req.body.data }).populate('eventUserRecords').exec(function (err, doc) {
-            console.log('a ' + err);
-            console.log(doc);
 
-            if (doc != null) {
-                var temp = doc.eventUserRecords.filter(function (value, index) {
+            var temp;
+            if (doc !== null) {
+                temp = doc.eventUserRecords.filter(function (value, index) {
                     if (value.user.equals(req.user._id)) {
                         return true;
                     } else {
@@ -303,18 +302,16 @@ module.exports = {
                 return;
             }
 
-            console.log(temp);
             var updateRecord = {};
-            if (temp[0].signIn == null) {
+            if (temp[0].signIn === null) {
                 updateRecord.signIn = new Date();
-            } else if (temp[0].signOut == null) {
+            } else if (temp[0].signOut === null) {
                 updateRecord.signOut = new Date();
             } else {
                 res.end();
                 return;
             }
 
-            console.log(updateRecord);
             eventUserRecord.findOneAndUpdate({ user: req.user._id, event: doc._id }, updateRecord, { new: true }, function (err, doc) {
                 console.log(err);
                 console.log(doc);

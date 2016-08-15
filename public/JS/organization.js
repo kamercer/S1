@@ -270,27 +270,39 @@ $(function () {
                 "<td>" +
                 element.user.first_name +
                 "</td>" +
-                "<td><div class=\"ui input signIn\"><input value=\"" + ((element.signIn) ? element.signIn : "") +
-                "\"></div></td>" +
-                "<td><div class=\"ui input signOut\"><input value=\"" + ((element.signOut) ? element.signOut : "") +
-                "\"></div></td>" +
+                "<td>" + 
+                "<div class=\"ui calendar\"><div class=\"ui input left icon signIn\"><i class=\"calendar icon\"></i><input type=\"text\" value=\"" + ((element.signIn) ? element.signIn : "") + "\"></div></div>" + 
+                "</td>" +
+                "<td>" +
+                "<div class=\"ui calendar\"><div class=\"ui input left icon signOut\"><i class=\"calendar icon\"></i><input value=\"" + ((element.signOut) ? element.signOut : "") + "\"></div></div>" +  
+                "</td>" +
                 "</tr>");
         }, this);
 
-        $(".signIn").change(function (event) {
-            signInEdit(event);
+
+
+        $("#eventViewModal").modal('show');
+
+        
+        $(".signIn input").focus(function(event){
+
+            console.log(event);
+
+            $(".signIn input").blur(function (event) {
+                signInEdit(event);
+            }); 
         });
 
-        $(".signOut").change(function (event) {
+        $(".signOut input").blur(function (event) {
             signOutEdit(event);
         });
 
-        $("#eventViewModal").modal('show');
+        $("#eventViewModal .ui.calendar").calendar();
     }
 
     function signInEdit(event) {
         var data = {};
-        data.user = event.currentTarget.parentNode.parentNode.id;
+        data.user = event.target.parentNode.parentNode.parentNode.parentNode.id;
         data.event = activeEventEdit;
         data.signIn = $(event.target).val();
 
@@ -299,7 +311,7 @@ $(function () {
 
     function signOutEdit(event) {
         var data = {};
-        data.user = event.currentTarget.parentNode.parentNode.id;
+        data.user = event.target.parentNode.parentNode.parentNode.parentNode.id;
         data.event = activeEventEdit;
         data.signOut = $(event.target).val();
 
