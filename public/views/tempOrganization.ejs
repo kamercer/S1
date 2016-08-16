@@ -102,8 +102,11 @@
                     <% for(var i = 0; i < events.length; i++){ %>
                         <div class="ui simple dropdown item" id="<%= events[i]._id %>">
                             
-                            <%= events[i].name %>
-
+                            <% if(statusNumber >= 2 && !events[i].RSVPCheck){ %>
+                                <span><i class="checkmark icon"></i><%= events[i].name %></span>
+                            <% }else{ %>
+                                <%= events[i].name %>
+                            <% } %>
                             
                             <i class="dropdown icon"></i>
                             <div class="menu">

@@ -129,7 +129,7 @@ $(function () {
     };
 
     function submitRSVP(event) {
-        ajaxCall('/RSVP/' + event.currentTarget.id, 'POST', null, 'application/json', function (data) { console.log('yep'); });
+        ajaxCall('/RSVP/' + event.currentTarget.id, 'POST', null, 'application/json', function (data) { console.log(data); });
     }
 
     function viewDetails(event) {

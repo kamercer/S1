@@ -428,14 +428,14 @@ module.exports = {
                 //create new eventUserRecord and save it
                 var newEventUserRecord = new eventUserRecord({ parentEvent: parentEvent._id, user: req.user._id });
                 newEventUserRecord.save(function (err, newRecord, numAffected) {
-                    if (err != null) {
+                    if (err !== null) {
                         console.log('RSVP error saving newEventUserRecord: ' + err);
                         res.end();
                         return;
                     }
 
                     Event.findByIdAndUpdate(parentEvent._id, { $push: { eventUserRecords: newRecord._id } }, function (err, s) {
-                        if (err != null) {
+                        if (err !== null) {
                             console.log('RSVP error updating event: ' + err);
                         }
 
@@ -1154,22 +1154,24 @@ function retrieveOrganizationImage(req, res) {
     var bucket = new mongodb.GridFSBucket(db.db);
 
     Organization.findOne({ nickname: req.params.id }, function (err, organization) {
-        if (organization == null) {
+        if (organization === null) {
             res.end();
-            console.log('retrieveOrganizationImage: organization could not be found');
+            //console.log('retrieveOrganizationImage: organization could not be found');
             return;
         }
 
-        if (organization.organizationImage == null) {
+        if (organization.organizationImage === undefined) {
             res.end();
-            console.log('retrieveOrganizationImage: organization image cannot be found or does not exist');
+            //console.log('retrieveOrganizationImage: organization image cannot be found or does not exist');
             return;
         }
+
+        
 
         var downloadStream = bucket.openDownloadStream(organization.organizationImage);
 
         downloadStream.once('error', function (error) {
-            console.log('retrieveOrganizationImage: error opening organization image: ' + error);
+            console.log('retrieveOrganizationImage Error:' + error);
             res.end();
         });
 
