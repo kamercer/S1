@@ -51,34 +51,57 @@ module.exports = {
             return;
         }
 
+        //I am removing the characters / ? ' ;
+        var legalCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~:#[]@!$&\()*+,=';
+        for(var i = 0; i < req.body.nickname.length; i++){
+            if(legalCharacters.indexOf(req.body.nickname[i]) < 0){
+                //nickname contains illegal characters
+                console.log('createOrganization : nickaname contains illegal characters');
+                res.end();
+                return;
+            }
+        }
+
         //check if nickname already exists
+        Organization.find({ nickname: req.body.nickname }, function (err, docs) {
+            if (!err) {
+                if (docs === null) {
+                    var newOrganization = new Organization({ name: req.body.name, nickname: req.body.nickname, summary: req.body.summary, admins: [req.user], members: req.user });
+                    newOrganization.save(function (err, newOrg, numAffected) {
 
+                        if (err === null) {
+                            var newMemberOrganizationAssociation = new MemberInOrganizationSchema({ user: req.user._id, organization: newOrganization._id, hours: 0, events: [] });
+                            newMemberOrganizationAssociation.save(function (err1, newMemberOrg, numAffected) {
 
-        var newOrganization = new Organization({ name: req.body.name, nickname: req.body.nickname, summary: req.body.summary, admins: [req.user], members: req.user });
-        newOrganization.save(function (err, newOrg, numAffected) {
+                                if (err === null) {
+                                    User.findByIdAndUpdate(req.user._id, { $addToSet: { adminOf: newOrganization._id, memberOf: newOrganization._id, memberOrganizationAssociation: newMemberOrg._id } }, { new: true }, function (err2, doc2) {
 
-            if (err === null) {
-                var newMemberOrganizationAssociation = new MemberInOrganizationSchema({ user: req.user._id, organization: newOrganization._id, hours: 0, events: [] });
-                newMemberOrganizationAssociation.save(function (err1, newMemberOrg, numAffected) {
-
-                    if (err === null) {
-                        User.findByIdAndUpdate(req.user._id, { $addToSet: { adminOf: newOrganization._id, memberOf: newOrganization._id, memberOrganizationAssociation: newMemberOrg._id } }, { new: true }, function (err2, doc2) {
-
-                            if (err === null) {
-                                if (doc2 !== null) {
-                                    res.redirect('/organization/' + newOrg.nickname);
-                                } else {
-                                    console.log('createOrganization: user was not found');
+                                        if (err === null) {
+                                            if (doc2 !== null) {
+                                                res.redirect('/organization/' + newOrg.nickname);
+                                            } else {
+                                                console.log('createOrganization: user was not found');
+                                                res.end();
+                                            }
+                                        } else {
+                                            console.log('createOrganization error: ' + err);
+                                            res.end();
+                                        }
+                                    });
                                 }
-                            } else {
-                                console.log('createOrganization error: ' + err);
-                            }
-                        });
-                    }
-                });
+                            });
+                        } else {
+                            console.log("createOrganization error: " + err);
+                            res.redirect('/home');
+                        }
+                    });
+                } else {
+                    console.log('createOrganization: nickname already exists');
+                    res.end();
+                }
             } else {
-                console.log("createOrganization error: " + err);
-                res.redirect('/home');
+                console.log('createOrganization error: ' + err);
+                res.end();
             }
         });
     },
@@ -233,7 +256,7 @@ module.exports = {
                 //validate this later
                 if (req.body.lat && req.body.lng && req.body.address) {
                     newEvent.location = { type: 'Point', coordinates: [req.body.lat, req.body.lng], address: req.body.address };
-                }else{
+                } else {
                     newEvent.location = undefined;
                 }
 
@@ -685,7 +708,7 @@ module.exports = {
                                             res.status(500).end();
                                         } else {
                                             res.status(200).send("OK");
-                                            
+
                                         }
                                     });
                                 } else {
@@ -1166,7 +1189,7 @@ function retrieveOrganizationImage(req, res) {
             return;
         }
 
-        
+
 
         var downloadStream = bucket.openDownloadStream(organization.organizationImage);
 
