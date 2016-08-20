@@ -137,7 +137,7 @@
                         <thead>
                             <tr>
                                 <th>Name</th>
-                                <th>hours</th>
+                                <th>Email</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -147,7 +147,7 @@
                                     <%= members[i].first_name %>
                                 </td>
                                 <td>
-                                    <%= members[i].memberOrganizationAssociation[0].hours %>
+                                    <%= members[i].email %>
                                 </td>
                             </tr>
                         <% } %>
@@ -218,12 +218,14 @@
                         <div class="content" id="userEmail"></div>
                     </div>
 
-                    <div class="item">
-                        <div class="header">
-                            Hours
+                    <% if(statusNumber === 3){ %>
+                        <div class="item">
+                            <div class="header">
+                                Hours
+                            </div>
+                            <div class="content" id="userHours"></div>
                         </div>
-                        <div class="content" id="userHours"></div>
-                    </div>
+                    <% } %>
 
                     <% if(statusNumber === 3){ %>
                         <div class="ui selection dropdown">

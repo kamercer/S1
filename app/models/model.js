@@ -555,7 +555,7 @@ module.exports = {
                             res.json({ first: user.first_name, last: user.last_name, email: user.email, hours: user.memberOrganizationAssociation[0].hours, status: 1 });
                         } else {
                             //member is not an admin
-                            res.json({ first: user.first_name, last: user.last_name, email: user.email, hours: user.memberOrganizationAssociation[0].hours, status: 0 });
+                            res.json({ first: user.first_name, last: user.last_name, email: user.email, status: 0 });
                         }
                     });
                 } else {

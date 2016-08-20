@@ -150,7 +150,11 @@ $(function () {
 
         $("#userName").text(data.first + " " + data.last);
         $("#userEmail").text(data.email);
-        $("#userHours").text(data.hours);
+
+        if(data.hours !== null){
+            $("#userHours").text(data.hours);
+        }
+        
 
         if (data.status === 0) {
             $("#statusMenu").html("<div class=\"item\" name=\"1\">Make Admin</div><div class=\"item\" name=\"0\">Remove Member</div>")
