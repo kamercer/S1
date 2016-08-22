@@ -89,17 +89,18 @@ $(function () {
             errorCheck = true;
         }
 
-        if ($("#sDate").val() == "") {
+        if ($("#sDate").val() === "") {
             $("#sDate").parent().append("<div class=\"ui red message\"><div class=\"header\">Error</div><p>Start Date cannot be blank</p></div>");
             errorCheck = true;
         }
 
-        if ($("#eDate").val() == "") {
+        if ($("#eDate").val() === "") {
             $("#eDate").parent().append("<div class=\"ui red message\"><div class=\"header\">Error</div><p>End Date cannot be blank</p></div>");
             errorCheck = true;
         }
 
         if (errorCheck) {
+            $("#newEventModal").modal('refresh');
             return;
         }
 
@@ -159,7 +160,7 @@ $(function () {
         if (data.status === 0) {
             $("#statusMenu").html("<div class=\"item\" name=\"1\">Make Admin</div><div class=\"item\" name=\"0\">Remove Member</div>")
         } else {
-            $("#statusMenu").html("<div class=\"item\" name=\"2\">Make Member</div><div class=\"item\" name=\"0\">Remove Member</div>")
+            $("#statusMenu").html("<div class=\"item\" name=t\"2\">Make Member</div><div class=\"item\" name=\"0\">Remove Member</div>")
         }
 
         $(".ui.selection.dropdown").dropdown({

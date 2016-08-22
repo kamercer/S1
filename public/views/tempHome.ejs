@@ -77,6 +77,11 @@
                         Nearby Events
                     <h4>
                     <a id="setLocation">set location</a>
+                    <% if(user.homeLocation != undefined){ %>
+                        <p>
+                            <%= user.homeLocation.address %>
+                        </p>
+                    <% } %>
 
                     <div class="ui divider"></div>
                     
