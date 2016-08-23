@@ -4,6 +4,8 @@ var mongoose = require('mongoose');
 var passport = require('passport');
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
+var https = require('https');
+var fs = require('fs');
 var express = require('express');
 var app = express();
 
@@ -51,9 +53,16 @@ var passportJS = passportJS();
 //makes everything in the public folder accessible
 app.use(express.static('public'));
 
-require('./app/routes.js')(app)
+require('./app/routes.js')(app);
 
-app.listen(port, "0.0.0.0", function(){
-    console.log('server is running in port ' + port);    
-});
+https.createServer({
+      key: fs.readFileSync('key.pem'),
+      cert: fs.readFileSync('cert.pem')
+    }, app).listen(port, "0.0.0.0", function(){
+            console.log('server is running in port ' + port);    
+        });
+
+//app.listen(port, "0.0.0.0", function(){
+  //  console.log('server is running in port ' + port);    
+//});
 

@@ -7,7 +7,7 @@ module.exports = function(){
     passport.use(new facebookStrategy({
         clientID : "579207438925212",
         clientSecret : "6246ccdee0eb2293a5588984f92f755d",
-        callbackURL : "http://localhost:3000/auth/facebook/callback",
+        callbackURL : "https://localhost:3000/auth/facebook/callback",
         profileFields : ['first_name', 'last_name', 'email']
     }, function(accessToken, refreshToken, profile, cb){
         //check if an user exists with their existing facebook id

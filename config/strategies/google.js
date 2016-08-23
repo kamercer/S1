@@ -6,7 +6,7 @@ module.exports = function(){
     passport.use(new googleStrategy({
         clientID : "12271620777-t2sn9miq2bl2an9in9jrpijk2s3vn130.apps.googleusercontent.com",
         clientSecret : "bG9eqr8YuE7kITizgxXzpK1J",
-        callbackURL : "http://localhost:3000/auth/google/callback"
+        callbackURL : "https://localhost:3000/auth/google/callback"
     },
     function(accessToken, refreshToken, profile, cb){
         //check if an user exists with their existing google id
