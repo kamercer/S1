@@ -85,14 +85,20 @@
 
                 <div class="column">
 
-                <% if (statusNumber === 3){ %>
-                    <div class="ui list">
+                <div class="ui list">
+                    <% if (statusNumber === 3){ %>
                         <div class="item"><button class="ui button" id="orgUpdateImg">Update Image</button></div>
                         <div class="item"><button class="ui button" id="createEvent">Create Event</button></div>
                         <div class="item"><button class="ui button" id="orgSettings">Organization settings</button></div>
                         <div class="item"><button class="ui button" id="joinCheck">Check Applications</button></div>
-                    </div>
-                <% } %>
+                    <% } %>
+
+                    <% if(statusNumber >= 2){ %>
+                        <div class="item"><button class="ui red button">Pay Fee</button></div>
+                    <% } %>
+
+                </div>
+
                 </div>
             </div>
             
@@ -527,7 +533,7 @@
                         <form class="ui form" action="changeOrganizationSummary" method="POST">
                             <div class="inline field">
                                 <label>Organization Summary</label>
-                                <textarea id="organizationSummary" name="summary"></textarea>
+                                <textarea id="organizationSummary" name="summary" rows="3"></textarea>
                             </div>
                         </form>
                     </div>

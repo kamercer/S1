@@ -528,8 +528,8 @@ module.exports = {
 
         //check if requesting user has access
         Organization.findOne({ nickname: req.params.id }, function (err, org) {
-            if (err == null) {
-                if (org != null) {
+            if (err === null) {
+                if (org !== null) {
                     User.findById(req.params.userId).populate('memberOrganizationAssociation', null, { organization: org._id }).exec(function (err, user) {
 
                         //This checks if the user is a member of the organization
@@ -547,8 +547,6 @@ module.exports = {
                         var isMemberAdmin = org.admins.some(function (value) {
                             return value.equals(user._id);
                         });
-
-                        console.log(user);
 
                         if (isMemberAdmin) {
                             //member is an admin

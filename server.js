@@ -4,6 +4,7 @@ var mongoose = require('mongoose');
 var passport = require('passport');
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
+var http = require('http');
 var https = require('https');
 var fs = require('fs');
 var express = require('express');
@@ -28,10 +29,12 @@ db.on('error', function(){
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/public/views');
 
+//443 is the port for https
 var port = 3000;
 
 require('./app/models/schemas.js')
 
+//review
 app.use(cookieParser());
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
@@ -56,11 +59,19 @@ app.use(express.static('public'));
 require('./app/routes.js')(app);
 
 https.createServer({
-      key: fs.readFileSync('key.pem'),
+      key: fs.readFileSync('key.pem'), //debug stuff
       cert: fs.readFileSync('cert.pem')
+      //key: fs.readFileSync('privkey1.pem'), prod stuff
+      //cert: fs.readFileSync('fullchain1.pem')
+
     }, app).listen(port, "0.0.0.0", function(){
             console.log('server is running in port ' + port);    
         });
+
+//http.createServer(function(req, res){
+  //      res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+//	res.end();
+//}).listen(80);
 
 //app.listen(port, "0.0.0.0", function(){
   //  console.log('server is running in port ' + port);    

@@ -13,7 +13,8 @@ var organizationSchema = mongoose.Schema({
     OrganizationServiceGoal       : Number,
     applyToJoin                   : Boolean,
     waitingUsers                  : [{type : mongoose.Schema.Types.ObjectId, ref: 'User'}],
-    serviceEmail                  : String
+    serviceEmail                  : String,
+    fee                           : Number
 });
 
 var eventSchema = mongoose.Schema({
