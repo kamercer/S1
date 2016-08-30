@@ -2,6 +2,7 @@
 var passport = require('passport');
 var model = require('./models/model.js');
 var multer = require('multer');
+var request = require('request');
 var upload = multer({dest: './uploads/'});
 
 module.exports = function(app){
@@ -57,9 +58,14 @@ module.exports = function(app){
     */
 
     app.get('/stripe', function(req, res){
-        console.log('hit');
-        console.log(req.body);
-        res.end();
+        //temporary code
+        if(!req.query.error){
+            
+        }else{
+            console.log(req.query.error);
+            res.end();
+        }
+        //temporary code
     });
     
     //need to notification if nickname already exists
