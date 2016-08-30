@@ -65,7 +65,7 @@ module.exports = {
         //check if nickname already exists
         Organization.find({ nickname: req.body.nickname }, function (err, docs) {
             if (!err) {
-                if (docs === null) {
+                if (docs !== null) {
                     var newOrganization = new Organization({ name: req.body.name, nickname: req.body.nickname, summary: req.body.summary, admins: [req.user], members: req.user });
                     newOrganization.save(function (err, newOrg, numAffected) {
 
@@ -429,42 +429,55 @@ module.exports = {
         //verify that req.body.id is an actual event id
         Event.findById(req.params.id, function (err, parentEvent) {
             if (err !== null) {
-                console.log('RSVP: parent event does not exist');
+                console.log('RSVP Error: ' + err);
                 res.end();
                 return;
             }
 
             //check if eventUserRecord already exists
-            eventUserRecord.find({ event: parentEvent._id, user: req.user.id }, function (err, docs) {
+            eventUserRecord.findOne({parentEvent: parentEvent._id, user: req.user._id}, function (err, doc) {
                 if (err !== null) {
                     console.log('RSVP: error when checking for existing eventUserRecords');
                     res.end();
                     return;
                 }
 
-                if (docs.length > 0) {
-                    console.log('RSVP: eventUserRecords already exists');
-                    res.end();
-                    return;
-                }
+                //If an eventuser record exists, it is assumed that the user wants to unRSVP from an event
+                if (doc !== null) {
+                        eventUserRecord.findByIdAndRemove(doc._id, function(err){
+                            if(err === null){
+                                Event.findByIdAndUpdate(parentEvent._id, { $pull: { eventUserRecords: doc._id } }, function (err, s) {
+                                    if (err !== null) {
+                                        console.log('RSVP error updating event: ' + err);
+                                    }
 
-                //create new eventUserRecord and save it
-                var newEventUserRecord = new eventUserRecord({ parentEvent: parentEvent._id, user: req.user._id });
-                newEventUserRecord.save(function (err, newRecord, numAffected) {
-                    if (err !== null) {
-                        console.log('RSVP error saving newEventUserRecord: ' + err);
-                        res.end();
-                        return;
-                    }
+                                    res.end();
+                                });
+                            }else{
+                                console.log('RSVP Error: ' + err);
+                                res.end();
+                            }
+                    });
+                }else{
 
-                    Event.findByIdAndUpdate(parentEvent._id, { $push: { eventUserRecords: newRecord._id } }, function (err, s) {
+                    //create new eventUserRecord and save it
+                    var newEventUserRecord = new eventUserRecord({ parentEvent: parentEvent._id, user: req.user._id });
+                    newEventUserRecord.save(function (err, newRecord, numAffected) {
                         if (err !== null) {
-                            console.log('RSVP error updating event: ' + err);
+                            console.log('RSVP error saving newEventUserRecord: ' + err);
+                            res.end();
+                            return;
                         }
 
-                        res.end();
+                        Event.findByIdAndUpdate(parentEvent._id, { $push: { eventUserRecords: newRecord._id } }, function (err, s) {
+                            if (err !== null) {
+                                console.log('RSVP error updating event: ' + err);
+                            }
+
+                            res.end();
+                        });
                     });
-                });
+                }
             });
         });
     },
@@ -769,17 +782,16 @@ module.exports = {
         }
 
         if (req.params.id == req.user._id) {
-            if (req.user.profilePic == null || req.user.profilePic == undefined) {
+            if (req.user.profilePic === null || req.user.profilePic === undefined) {
                 res.end();
-                console.log('no profile pic for req.user');
             } else {
                 retrieveProfilePic(req, res, req.user.profilePic);
             }
         } else {
             User.findById(mongoose.Types.ObjectId(req.params.id), function (err, user) {
-                if (err == null) {
-                    if (user != null) {
-                        if (!(req.user.profilePic == null || req.user.profilePic == undefined)) {
+                if (err === null) {
+                    if (user !== null) {
+                        if (!(req.user.profilePic === null || req.user.profilePic === undefined)) {
                             retrieveProfilePic(user.profilePic);
                         } else {
                             res.end();

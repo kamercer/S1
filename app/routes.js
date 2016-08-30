@@ -42,7 +42,7 @@ module.exports = function(app){
     app.get('/logout', loginCheck, function(req, res){
         req.logout();
         res.redirect('/');
-    })
+    });
 
     /* not used right now
     //used to login through local authentication
@@ -55,6 +55,12 @@ module.exports = function(app){
          model.createAccount(req, res);
     });
     */
+
+    app.get('/stripe', function(req, res){
+        console.log('hit');
+        console.log(req.body);
+        res.end();
+    });
     
     //need to notification if nickname already exists
     app.post('/createOrganization', loginCheck, function(req, res){

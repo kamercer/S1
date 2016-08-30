@@ -37,4 +37,5 @@ to-do:
   change image size for load speed
   
   search bar
-  approved member join
+  
+  state parameter on stripe button to prevent CRSF attack - check documentation
