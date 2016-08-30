@@ -3,20 +3,20 @@
   "version": "0.1.0",
   "main": "server.js",
   "dependencies": {
-    "body-parser": "1.15.1",
+    "body-parser": "latest",
     "connect-mongodb-session": "latest",
     "cookie-parser": "latest",
     "ejs": "latest",
     "express": "latest",
     "express-session": "latest",
     "mongodb": "latest",
-    "mongoose": "4.5.1",
+    "mongoose": "latest",
     "multer": "latest",
     "passport": "latest",
     "passport-local": "latest",
     "passport-facebook": "latest",
     "passport-google-oauth20": "latest",
-    "semantic-ui": "2.2.2",
+    "semantic-ui": "latest",
     "request" : "latest"
   },
   "scripts": {
