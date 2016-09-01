@@ -14,6 +14,7 @@ var organizationSchema = mongoose.Schema({
     applyToJoin                   : Boolean,
     waitingUsers                  : [{type : mongoose.Schema.Types.ObjectId, ref: 'User'}],
     serviceEmail                  : String,
+    stripeAccount                 : {type : mongoose.Schema.Types.ObjectId, ref : 'MemberOrganizationAssociation'},
     fee                           : Number
 });
 

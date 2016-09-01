@@ -1,6 +1,7 @@
 "use strict"
 var passport = require('passport');
 var model = require('./models/model.js');
+var stripe = require('./models/stripe.js');
 var multer = require('multer');
 var upload = multer({dest: './uploads/'});
 
@@ -57,13 +58,13 @@ module.exports = function(app){
     */
 
     app.get('/organization/:id/connectStripe', loginCheck, function(req, res){
-        model.connectStripe(req, res);
+        stripe.connectStripe(req, res);
     });
     
 
     //see if this can only be called from one location
     app.get('/stripeCallBack', function(req, res){
-        model.stripeCallBack(req, res);
+        stripe.stripeCallBack(req, res);
     });
     
     //need to notification if nickname already exists
