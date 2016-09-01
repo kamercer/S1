@@ -57,14 +57,16 @@ module.exports = function(app){
     });
     */
 
-    /*
-    app.get('/stripe', function(req, res){
-        console.log('what');
-        res.redirect('/https://connect.stripe.com/oauth/authorize?response_type=code&scope=read_write&client_id=ca_95rnm5Va7cshdm7Ve1ESD4nLfGnid9lt');
+    app.get('/connectStripe', loginCheck, function(req, res){
+        model.stripeConnect(req, res);
     });
-    */
+    
 
-    app.get('/stripe', function(req, res){
+    //see if this can only be called from one location
+    app.get('/stripeCallBack', function(req, res){
+
+        console.log(req.user);
+        console.log(req.query);
 
         //temporary code
         if(!req.query.error){

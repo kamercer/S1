@@ -5,7 +5,7 @@ var Event = require('mongoose').model('Event');
 var MemberInOrganizationSchema = require('mongoose').model('MemberOrganizationAssociation');
 var eventUserRecord = require('mongoose').model('eventUserRecord');
 var UnregisteredUser = require('mongoose').model('UnregisteredUser');
-
+var randomstring = require('randomstring');
 var mongoose = require('mongoose');
 var mongodb = require('mongodb');
 var fs = require('fs');
@@ -1112,6 +1112,17 @@ module.exports = {
                 res.end();
             }
         });
+    },
+
+
+    stripeConnect : function(req, res){
+        //check if requesting is an admin of organization
+        var state = randomstring.generate(20);
+        state = state + (new Date().getTime());
+        
+        User.findByIdAndUpdate(req.user._id, {})
+        
+        res.redirect('https://connect.stripe.com/oauth/authorize?response_type=code&scope=read_write&client_id=ca_95rnm5Va7cshdm7Ve1ESD4nLfGnid9lt&state=' + state);
     }
 };
 

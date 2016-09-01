@@ -67,7 +67,8 @@ var unregisteredUserSchema = mongoose.Schema({
 var MemberInOrganizationSchema = mongoose.Schema({
     user             : {type : mongoose.Schema.Types.ObjectId, ref : 'User'},
     organization     : {type : mongoose.Schema.Types.ObjectId, ref : 'Organization'},
-    hours            : {type : Number, min : 0}
+    hours            : {type : Number, min : 0},
+    stripeAccount    : {state : String}
 });
 
 //salt later
