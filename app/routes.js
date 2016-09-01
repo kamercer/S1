@@ -57,14 +57,33 @@ module.exports = function(app){
     });
     */
 
+    /*
     app.get('/stripe', function(req, res){
+        console.log('what');
+        res.redirect('/https://connect.stripe.com/oauth/authorize?response_type=code&scope=read_write&client_id=ca_95rnm5Va7cshdm7Ve1ESD4nLfGnid9lt');
+    });
+    */
+
+    app.get('/stripe', function(req, res){
+
         //temporary code
         if(!req.query.error){
+            request.post({url :'https://connect.stripe.com/oauth/token',
+            form:{
+                grant_type: "authorization_code",
+                client_id: "ca_95rnm5Va7cshdm7Ve1ESD4nLfGnid9lt",
+                code : req.query.code,
+                client_secret : "sk_test_PSeJlNoAjX9zHfJbDgN1cjyc"
+                }
+            }, function(err, r, body){
+                console.log(err);
+                console.log(body);
+            });
             
         }else{
             console.log(req.query.error);
-            res.end();
         }
+        res.redirect('/');
         //temporary code
     });
     
