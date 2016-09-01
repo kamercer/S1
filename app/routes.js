@@ -2,7 +2,6 @@
 var passport = require('passport');
 var model = require('./models/model.js');
 var multer = require('multer');
-var request = require('request');
 var upload = multer({dest: './uploads/'});
 
 module.exports = function(app){
@@ -57,36 +56,14 @@ module.exports = function(app){
     });
     */
 
-    app.get('/connectStripe', loginCheck, function(req, res){
-        model.stripeConnect(req, res);
+    app.get('/organization/:id/connectStripe', loginCheck, function(req, res){
+        model.connectStripe(req, res);
     });
     
 
     //see if this can only be called from one location
     app.get('/stripeCallBack', function(req, res){
-
-        console.log(req.user);
-        console.log(req.query);
-
-        //temporary code
-        if(!req.query.error){
-            request.post({url :'https://connect.stripe.com/oauth/token',
-            form:{
-                grant_type: "authorization_code",
-                client_id: "ca_95rnm5Va7cshdm7Ve1ESD4nLfGnid9lt",
-                code : req.query.code,
-                client_secret : "sk_test_PSeJlNoAjX9zHfJbDgN1cjyc"
-                }
-            }, function(err, r, body){
-                console.log(err);
-                console.log(body);
-            });
-            
-        }else{
-            console.log(req.query.error);
-        }
-        res.redirect('/');
-        //temporary code
+        model.stripeCallBack(req, res);
     });
     
     //need to notification if nickname already exists

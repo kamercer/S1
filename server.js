@@ -32,7 +32,7 @@ app.set('views', __dirname + '/public/views');
 //443 is the port for https
 var port = 3000;
 
-require('./app/models/schemas.js')
+require('./app/models/schemas.js');
 
 //review
 app.use(cookieParser());

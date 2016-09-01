@@ -71,11 +71,6 @@ var MemberInOrganizationSchema = mongoose.Schema({
     stripeAccount    : {state : String}
 });
 
-//salt later
-userSchema.methods.authenticate = function(password){
-    return password == this.password;
-};
-
 mongoose.model('eventUserRecord', eventUserRecordSchema);
 mongoose.model('User', userSchema);
 mongoose.model('UnregisteredUser', unregisteredUserSchema);

@@ -6,42 +6,12 @@ var MemberInOrganizationSchema = require('mongoose').model('MemberOrganizationAs
 var eventUserRecord = require('mongoose').model('eventUserRecord');
 var UnregisteredUser = require('mongoose').model('UnregisteredUser');
 var randomstring = require('randomstring');
+var request = require('request');
 var mongoose = require('mongoose');
 var mongodb = require('mongodb');
 var fs = require('fs');
 
 module.exports = {
-
-    /* not used 
-    createAccount : function(req, res){
-
-        //check for required fields
-        if(!req.body.fName || !req.body.lName || !req.body.password || !req.body.email){
-            res.end();
-            console.log('createAccount: user or password or email is null or undefined');
-            return;
-        }
-        
-        //encrypt password later
-        var newAccount = new User({first_name: req.body.fName, last_name: req.body.lName, password: req.body.password, email: req.body.email});
-        
-        User.find({email : req.body.email}, function(err, users){
-            if(docs.length > 0){
-                console.log('createAccount: account with email already exists');
-                res.redirect('/');
-                return;
-            }else{
-                newAccount.save(function(err, newAccount, numAffected){
-                    if(err != null){
-                        res.redirect('/login');
-                    }else{
-                        console.log("createAccount error: " + err);
-                    }
-                });
-            }
-        });
-    },
-    */
 
     createOrganization: function (req, res) {
 
@@ -992,7 +962,7 @@ module.exports = {
 
     changeOrganizationGoalHours: function (req, res) {
         Organization.findOneAndUpdate({ nickname: req.params.id }, { OrganizationServiceGoal: req.body.organizationGoal }, function (err, org) {
-            if (err == null) {
+            if (err === null) {
                 res.redirect('/organization/' + org.nickname + '/');
             } else {
                 console.log('changeOrganizationNickname error: ' + err);
@@ -1069,8 +1039,8 @@ module.exports = {
 
     getApplications: function (req, res) {
         Organization.findOne({ nickname: req.params.id }).populate('waitingUsers').exec(function (err, org) {
-            if (err == null) {
-                if (org != null) {
+            if (err === null) {
+                if (org !== null) {
                     res.send(org);
                 } else {
                     console.log('getApplications: org is null');
@@ -1085,7 +1055,7 @@ module.exports = {
 
     allowMember: function (req, res) {
         Organization.findOneAndUpdate({ nickname: req.params.id }, { $addToSet: { members: req.user._id } }, { new: true }, function (err, org) {
-            if (err == null) {
+            if (err === null) {
                 if (org != null) {
                     var newMemberOrganizationAssociation = new MemberInOrganizationSchema({ user: req.user._id, organization: org._id, hours: 0 });
                     newMemberOrganizationAssociation.save(function (err, newDoc, numAffected) {
@@ -1115,14 +1085,118 @@ module.exports = {
     },
 
 
-    stripeConnect : function(req, res){
+    connectStripe : function(req, res){
         //check if requesting is an admin of organization
-        var state = randomstring.generate(20);
-        state = state + (new Date().getTime());
+        Organization.findOne({nickname : req.params.id}, function(err, org){
+            if(!err){
+                if(org !== null){
+                    var isMemberAdmin = org.admins.some(function (value) {
+                        return value.equals(req.user._id);
+                    });
+
+                    if(!isMemberAdmin){
+                        //console.log("stripeConnect: requesting user is not an admin");
+                        res.end();
+                        return;
+                    }
+
+                    var state = randomstring.generate(20);
+                    state = state + (new Date().getTime());
+
+                    //might add time stamp later
+                    MemberInOrganizationSchema.findOneAndUpdate({organization : org._id, user : req.user._id}, {stripeAccount : {state : state}}, function(err, updatedRecord){
+                        if(!err){
+                            if(updatedRecord){
+                                res.redirect('https://connect.stripe.com/oauth/authorize?response_type=code&scope=read_write&client_id=ca_95rnm5Va7cshdm7Ve1ESD4nLfGnid9lt&state=' + state);
+                            }else{
+                                //console.log("stripeConnect updatedRecord is null");
+                                res.end();
+                            }
+                        }else{
+                            //console.log("stripeConnect Error: " + err);
+                            res.end();
+                        }
+                    });
         
-        User.findByIdAndUpdate(req.user._id, {})
+                        
+                }else{
+                    //console.log("stripeConnect: org does not exist");
+                    res.end();
+                }
+            }else{
+                console.log("stripeConnect error: " + err);
+                res.end();
+            }
+        });
+    },
+
+    stripeCallBack : function(req, res){
+        console.log(req.query);
+
+        //check state with database
+        if(req.query.state && req.query.code && !req.query.error){
+            MemberInOrganizationSchema.findOne({stripeAccount : {state : req.query.state}}, function(err, memberInOrganization){
+                if(!err){
+                    if(memberInOrganization){
+                        if(req.user._id.equals(memberInOrganization.user)){
+                            request.post({url :'https://connect.stripe.com/oauth/token',
+                                form:{
+                                    grant_type: "authorization_code",
+                                    client_id: "ca_95rnm5Va7cshdm7Ve1ESD4nLfGnid9lt",
+                                    code : req.query.code,
+                                    client_secret : "sk_test_PSeJlNoAjX9zHfJbDgN1cjyc"
+                                    }
+                                }, function(err, r, body){
+                                    if(!err){
+                                        //not sure if this check is necessary
+                                        if(body){
+                                            MemberInOrganizationSchema.findOneAndUpdate({stripeAccount : {state : req.query.state}}, {stripeAccount : body}, function(err, updatedMemberInOrganization){
+                                                if(!err){
+                                                    if(updatedMemberInOrganization){
+                                                        res.redirect('/');
+                                                    }else{
+                                                        console.log("stripeCallBack updatedMemberInOrganization is null");
+                                                        res.end();
+                                                    }
+                                                }else{
+                                                    console.log("stripeCallBack Error: " + err);
+                                                    res.end();
+                                                }
+                                            });
+                                        }else{
+                                            console.log("stripeCallBack body is null");
+                                            res.end();
+                                        }
+                                    }else{
+                                        console.log("stripeCallBack error: " + err);
+                                        res.end();
+                                    }
+                                });
+                        }else{
+                            console.log("stripeCallBack : user ids do not match");
+                            res.end();
+                        }
+                    }else{
+                        console.log("stripeCallBack memberInOrganization does not exist");
+                        res.end();
+                    }
+                }else{
+                    console.log("stripeCallBack Error: " + err);
+                    res.end();
+                }
+            });
+        }else{
+            //delete state number in database
+            if(!req.query.error){
+                console.log("stripeCallBack : state and/or code not provided");
+            }else{
+                console.log("stripeCallBack Query Error : " + req.query.error);
+            }           
+            res.end();
+        }
+
+        //res.redirect('/');
         
-        res.redirect('https://connect.stripe.com/oauth/authorize?response_type=code&scope=read_write&client_id=ca_95rnm5Va7cshdm7Ve1ESD4nLfGnid9lt&state=' + state);
     }
 };
 
